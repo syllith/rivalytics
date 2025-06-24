@@ -1,20 +1,20 @@
 # Rivalytics
 
-**Rivalytics** is a proficiency and stat tracking tool for Marvel Rivals. It provides detailed insights into your game performance, helping you track progress, analyze hero effectiveness, review match history, and monitor ranked performance—all through a clean, easy-to-use interface.
+**Rivalytics** is a proficiency and stat tracking tool for Marvel Rivals. It provides insights into your game performance, helping you track progress, analyze hero effectiveness, review match history, and monitor ranked performance—all through a clean interface.
 
-Try it here!: https://rivalytics.digi-safe.co/
+Try it here: https://rivalytics.digi-safe.co/
 
 ## Features
 
 ### 🛡️ Proficiency Tracking
 
-* **Capture & Analyze**: Quickly screenshot your in-game proficiency screen. Rivalytics extracts data to populate a table, perfect for checking progress mid-game.
+* **Capture & Analyze**: Screenshot your in-game proficiency screen. Rivalytics extracts data to populate a table, perfect for checking progress mid-game.
 * **Detailed Game History**: Easily step through past matches to see exactly when you gained proficiency points, helping identify the most rewarding challenges for your playstyle or chosen character.
 * **Smart Predictions**: Estimates the number of matches remaining until your next rank-up or challenge completion.
 * **Challenge Insights**: Clearly tracks proficiency points gained from each challenge per match.
 * **Game Simulations**: Simulate future matches based on your historical performance for informed predictions.
 
-> **Privacy Assured**: Rivalytics asks for user consent before capturing the screen, captures only necessary information, and never stores personal or sensitive data. See /src/comps/Proficiency/Proficiency.jsx for more information.
+> **Privacy**: Rivalytics asks for user consent before capturing the screen, captures only necessary information, and never stores personal or sensitive data. See /src/comps/Proficiency/Proficiency.jsx for more information.
 
 ![Proficiency Tracker](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/proficiency.jpg)
 
@@ -22,7 +22,7 @@ Try it here!: https://rivalytics.digi-safe.co/
 
 ### 🎯 Hero Analytics
 
-* **Hero Performance Summary**: Track key metrics like hours played, kills, deaths, assists, damage, healing, and win percentages.
+* **Hero Performance Summary**: Track metrics like hours played, kills, deaths, assists, damage, healing, and win percentages.
 * **Effectiveness Rating**: Provides a comprehensive effectiveness score to help you quickly understand hero performance:
 
 ```
