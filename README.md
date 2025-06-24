@@ -2,6 +2,8 @@
 
 Rivalytics is a React-based tracker for Marvel Rivals player data. It aggregates career, match, and ranked statistics into four built-in views—Proficiency, Heroes, Matches, and Ranked—and presents them in a unified, theme-driven interface.
 
+Running Instance: https://rivalytics.digi-safe.co/
+
 ---
 
 ## Features

@@ -76,39 +76,16 @@ export default function Home() {
     // On mount, load data from localStorage if existing
     useEffect(() => {
         if (!username) return;
-        const stored = localStorage.getItem(`rivalytics-data:${username}`);
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            setHeroData(parsed.heroData);
-            setMatchesData(parsed.matchesData);
-            setRankedData(parsed.rankedData);
+
+        const storedData = localStorage.getItem(`rivalytics-data:${username}`);
+        if (storedData) {
+            const parsedData = JSON.parse(storedData);
+            setHeroData(parsedData.heroData);
+            setMatchesData(parsedData.matchesData);
+            setRankedData(parsedData.rankedData);
             setLastLoadedUsername(username); // Mark as loaded to prevent unnecessary API calls
         }
     }, [username]); // Runs whenever username changes
-
-    useEffect(() => {
-        if (username && username !== lastLoadedUsername) {
-            const stored = localStorage.getItem(`rivalytics-data:${username}`);
-            if (stored) {
-                // Skip API calls if data is already available
-                return;
-            }
-
-            setLoading(true);
-            setError('');
-            setUsernameNotFound(false);
-
-            fetchAllDataForUser(username)
-                .then(() => {
-                    setLastLoadedUsername(username);
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setError('Failed to load data. Please try again.');
-                    setLoading(false);
-                });
-        }
-    }, [username]);
 
     async function fetchAllDataForUser(user) {
         try {
