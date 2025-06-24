@@ -1,0 +1,103 @@
+@font-face {
+    font-family: "Lexend";
+    src: url("../assets/fonts/lexend.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    src: url("../assets/fonts/opensans.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Bebas";
+    src: url("../assets/fonts/bebasneue.ttf") format("opentype");
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url("../assets/fonts/Montserrat.ttf") format("opentype");
+}
+
+@font-face {
+    font-family: "Muli";
+    src: url("../assets/fonts/muli.ttf") format("opentype");
+}
+
+@font-face {
+    font-family: "Kolker";
+    src: url("../assets/fonts/Kolker.ttf") format("opentype");
+}
+
+html {
+    background-color: #1a1a1a;
+    color: white;
+    font-family: "Lexend", "Open Sans";
+    font-size: 14px;
+    overflow: hidden;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: unset;
+}
+
+select,
+option {
+    font: -moz-pull-down-menu;
+}
+
+/* Select element */
+select option {
+    margin: 40px;
+    background: #383838;
+    color: #fff;
+    font-family: 'Lexend';
+}
+
+#root {
+    min-height: 100vh;
+    height: 100vh;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Track bar */
+/* Width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #777777b9;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #636363b9;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    #root {
+        min-height: 100dvh;
+        height: 100dvh;
+    }
+}
