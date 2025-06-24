@@ -34,16 +34,15 @@ export default function Home() {
     );
     const [lastLoadedUsername, setLastLoadedUsername] = useState('');
     const [error, setError] = useState('');
-    const [hasFetchedFor, setHasFetchedFor] = useState('');
     const [usernameNotFound, setUsernameNotFound] = useState(false);
 
-    // Save username to localStorage whenever it changes
     useEffect(() => {
+        // Save username to localStorage whenever it changes
         localStorage.setItem('rivalytics-username', username);
     }, [username]);
 
-    // Whenever username is non-empty, attempt to load from localStorage
     useEffect(() => {
+        // Load data from localStorage when username changes
         if (!username) return;
         const stored = localStorage.getItem(`rivalytics-data:${username}`);
         if (stored) {
@@ -87,52 +86,18 @@ export default function Home() {
         }
     }, [username]); // Runs whenever username changes
 
-    async function fetchAllDataForUser(user) {
-        try {
-            // Fetch data from APIs
-            const [heroJson, matchesJson, rankedJson] = await Promise.all([
-                fetch(`/api/rivals/${user}/career`).then(res => res.json()),
-                fetch(`/api/rivals/${user}/matches`).then(res => res.json()),
-                fetch(`/api/rivals/${user}/ranked`).then(res => res.json()),
-            ]);
-
-            // Store results in state
-            setHeroData(heroJson);
-            setMatchesData(matchesJson);
-            setRankedData(rankedJson);
-
-            // Save results to localStorage
-            localStorage.setItem(
-                `rivalytics-data:${user}`,
-                JSON.stringify({
-                    heroData: heroJson,
-                    matchesData: matchesJson,
-                    rankedData: rankedJson,
-                })
-            );
-
-            addRecentUsername(user);
-        } catch {
-            setHeroData(null);
-            setMatchesData(null);
-            setRankedData(null);
-            throw new Error('Failed to fetch data');
-        }
-    }
-
-    const fetchAll = async () => {
-        if (!username) return;
+    const fetchAll = async (currentUsername = username) => {
+        if (!currentUsername) return;
         setLoading(true);
         setError('');
         setHeroData(null);
         setMatchesData(null);
         setRankedData(null);
-        setHasFetchedFor(username);
         setUsernameNotFound(false);
 
         try {
             // Fetch hero data
-            const heroRes = await fetch(`/api/rivals/${username}/career`);
+            const heroRes = await fetch(`/api/rivals/${currentUsername}/career`);
             const heroJson = await heroRes.json();
             setHeroData(heroJson);
 
@@ -140,7 +105,7 @@ export default function Home() {
             await new Promise(res => setTimeout(res, 250));
 
             // Fetch matches data
-            const matchesRes = await fetch(`/api/rivals/${username}/matches`);
+            const matchesRes = await fetch(`/api/rivals/${currentUsername}/matches`);
             const matchesJson = await matchesRes.json();
             setMatchesData(matchesJson);
 
@@ -148,7 +113,7 @@ export default function Home() {
             await new Promise(res => setTimeout(res, 250));
 
             // Fetch ranked data
-            const rankedRes = await fetch(`/api/rivals/${username}/ranked`);
+            const rankedRes = await fetch(`/api/rivals/${currentUsername}/ranked`);
             const rankedJson = await rankedRes.json();
             setRankedData(rankedJson);
 
@@ -161,14 +126,14 @@ export default function Home() {
                 setHeroData(null);
                 setMatchesData(null);
                 setRankedData(null);
-                setLastLoadedUsername(username);
+                setLastLoadedUsername(currentUsername);
                 setLoading(false);
-                setUsernameNotFound(true); // Set red box
+                setUsernameNotFound(true);
                 return;
             }
 
-            addRecentUsername(username);
-            setLastLoadedUsername(username);
+            addRecentUsername(currentUsername);
+            setLastLoadedUsername(currentUsername);
             setError('');
             setUsernameNotFound(false);
         } catch {
@@ -176,13 +141,14 @@ export default function Home() {
             setMatchesData(null);
             setRankedData(null);
             setError('Failed to load data. Please try again.');
-            setLastLoadedUsername(username);
+            setLastLoadedUsername(currentUsername);
             setUsernameNotFound(false);
         }
         setLoading(false);
     };
 
     useEffect(() => {
+        // Handle URL parameters only on initial load
         if (tab === 'proficiency') return;
         const params = new URLSearchParams(window.location.search);
         const urlUsername = params.get('username');
@@ -260,9 +226,14 @@ export default function Home() {
                                         option === 'CLEAR_ALL' ? '' : option
                                     }
                                     value={username}
-                                    onInputChange={(_, newValue, reason) => {
-                                        if (reason === 'input' || reason === 'clear') {
+                                    onChange={(_, newValue) => {
+                                        if (newValue === 'CLEAR_ALL') {
+                                            clearAllRecents();
+                                            return;
+                                        }
+                                        if (newValue) {
                                             setUsername(newValue);
+                                            fetchAll(newValue); // Explicitly call fetchAll with the new value
                                         }
                                     }}
                                     sx={{ mr: 2, width: 280 }}
@@ -320,7 +291,7 @@ export default function Home() {
                                                 if (e.key === 'Enter') {
                                                     e.preventDefault();
                                                     if (username && !loading) {
-                                                        fetchAll();
+                                                        fetchAll(username); // Explicitly call fetchAll with the current username
                                                     }
                                                 }
                                             }}
