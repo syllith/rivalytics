@@ -2,7 +2,7 @@
 
 **Rivalytics** is a proficiency and stat tracking tool for Marvel Rivals. It provides detailed insights into your game performance, helping you track progress, analyze hero effectiveness, review match history, and monitor ranked performance—all through a clean, easy-to-use interface.
 
-Public use instance: https://rivalytics.digi-safe.co/
+Try it here!: https://rivalytics.digi-safe.co/
 
 ## Features
 
