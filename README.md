@@ -14,7 +14,7 @@ Public use instance: https://rivalytics.digi-safe.co/
 * **Challenge Insights**: Clearly tracks proficiency points gained from each challenge per match.
 * **Game Simulations**: Simulate future matches based on your historical performance for informed predictions.
 
-> **Privacy Assured**: Rivalytics asks for user consent before capturing the screen, captures only necessary information, and never stores personal or sensitive data. See /src/comps/proficiecny.jsx for more information.
+> **Privacy Assured**: Rivalytics asks for user consent before capturing the screen, captures only necessary information, and never stores personal or sensitive data. See /src/comps/Proficiency/Proficiency.jsx for more information.
 
 ![Proficiency Tracker](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/proficiency.jpg)
 
