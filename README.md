@@ -14,20 +14,28 @@ Running Instance: https://rivalytics.digi-safe.co/
 - Undo, Clear, Simulation mode, and time-series charting  
 - History persisted via LocalForage  
 
+![Proficiency Tracker](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/proficiency.jpg)
+
 ### Hero Stats
 - Consolidates per-hero career segments (hours, KDA, damage/heal rates, win%, effectiveness)  
 - Sortable table with short-number formatting  
 - Remembers sort state and table layout in localStorage  
+
+![Hero Stats](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/heros.jpg)
 
 ### Match History
 - Normalizes timestamps, scores, and outcomes  
 - Color-coded rows for wins, losses, and disconnects  
 - Persists last view in localStorage  
 
+![Match History](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/matches.jpg)
+
 ### Ranked Progress
 - Fetches historical SR snapshots (date/time, rank, score)  
 - “All / Last Month / Last Week” filters + live line chart  
 - Highlights gains/drops via green/red row backgrounds  
+
+![Ranked Progress](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/ranked.jpg)
 
 ---
 
@@ -48,4 +56,4 @@ Running Instance: https://rivalytics.digi-safe.co/
 
 ---
 
-*Rivalytics* turns raw API feeds and on-screen captures into actionable insights, letting you track and predict your Marvel Rivals progression with minimal friction.  
+*Rivalytics* turns raw API feeds and on-screen captures into actionable insights, letting you track and predict your Marvel Rivals progression with minimal friction.

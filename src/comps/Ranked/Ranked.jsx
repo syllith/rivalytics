@@ -19,8 +19,8 @@ ChartJS.register(
 function parseRankedTable(rawData) {
     if (!rawData || !rawData.data || !rawData.data.history || !rawData.data.history.data) return []
     const entries = rawData.data.history.data
-    const header = ['Date', 'Rank', 'Score', 'Display Value']
-    const rows = entries.map(rec => {
+    const header = ['Date', 'Rank', 'Score', 'Display Value', 'Gain'] // Add "Gain" column to header
+    const rows = entries.map((rec, index) => {
         const [tsRaw, infoRaw] = rec
         const d = new Date(tsRaw)
         const date = d.toLocaleDateString('en-US', {
@@ -37,8 +37,17 @@ function parseRankedTable(rawData) {
         const rank = typeof val[0] === 'string' ? val[0] : String(val[0] || '')
         const score = String(val[1] || '')
         const disp = infoRaw.displayValue || infoRaw.DisplayValue || ''
-        return [`${date} ${time}`, rank, score, disp]
+        const gain = index === entries.length - 1 ? '' : null // Placeholder for "Gain" column
+        return [`${date} ${time}`, rank, score, disp, gain]
     })
+
+    // Calculate "Gain" values
+    for (let i = rows.length - 2; i >= 1; i--) {
+        const currScore = Number(rows[i][2].replace(/,/g, '')) || 0
+        const prevScore = Number(rows[i + 1][2].replace(/,/g, '')) || 0
+        rows[i][4] = currScore - prevScore // Calculate gain/loss
+    }
+
     return [header, ...rows]
 }
 
@@ -256,17 +265,17 @@ export default function Ranked({ rawData }) {
                         </TableHead>
                         <TableBody>
                             {table.slice(1).map((row, ri, arr) => {
-                                const currScore = Number(String(row[2]).replace(/,/g, '')) || 0;
-                                const nextRow = arr[ri + 1];
-                                const nextScore = nextRow ? Number(String(nextRow[2]).replace(/,/g, '')) || 0 : currScore;
+                                const currScore = Number(String(row[2]).replace(/,/g, '')) || 0
+                                const nextRow = arr[ri + 1]
+                                const nextScore = nextRow ? Number(String(nextRow[2]).replace(/,/g, '')) || 0 : currScore
 
-                                let bgColor;
+                                let bgColor
                                 if (nextRow) {
-                                    if (currScore > nextScore) bgColor = "rgba(56, 183, 80, 0.18)"; // green (score went up)
-                                    else if (currScore < nextScore) bgColor = "rgba(220, 38, 38, 0.18)"; // red (score went down)
-                                    else bgColor = "rgba(120,120,120,0.13)"; // grey (no change)
+                                    if (currScore > nextScore) bgColor = "rgba(56, 183, 80, 0.18)" // green (score went up)
+                                    else if (currScore < nextScore) bgColor = "rgba(220, 38, 38, 0.18)" // red (score went down)
+                                    else bgColor = "rgba(120,120,120,0.13)" // grey (no change)
                                 } else {
-                                    bgColor = "rgba(120,120,120,0.13)"; // last row, no comparison
+                                    bgColor = "rgba(120,120,120,0.13)" // last row, no comparison
                                 }
 
                                 return (
@@ -277,26 +286,36 @@ export default function Ranked({ rawData }) {
                                             backgroundColor: bgColor
                                         }}
                                     >
-                                        {row.map((cell, ci) =>
-                                            <TableCell
-                                                key={ci}
-                                                sx={{
-                                                    fontSize: '0.75rem',
-                                                    px: 0.25,
-                                                    py: 0.25,
-                                                    color: '#e0e0e0',
-                                                    borderBottom: '1px solid rgba(255,255,255,0.07)'
-                                                }}
-                                                padding="none"
-                                            >
-                                                {/* Format the Score column (index 2) with commas */}
-                                                {ci === 2
-                                                    ? (Number(cell).toLocaleString('en-US'))
-                                                    : cell}
-                                            </TableCell>
-                                        )}
+                                        {row.map((cell, ci) => {
+                                            let cellColor = '#e0e0e0'
+                                            if (ci === 4) { // "Gain" column
+                                                const gain = Number(cell)
+                                                if (gain > 0) cellColor = '#38b750' // green for gain
+                                                else if (gain < 0) cellColor = '#dc2626' // red for loss
+                                                else if (gain === 0) cellColor = '#aaa' // grey for no change
+                                            }
+
+                                            return (
+                                                <TableCell
+                                                    key={ci}
+                                                    sx={{
+                                                        fontSize: '0.75rem',
+                                                        px: 0.25,
+                                                        py: 0.25,
+                                                        color: cellColor,
+                                                        borderBottom: '1px solid rgba(255,255,255,0.07)'
+                                                    }}
+                                                    padding="none"
+                                                >
+                                                    {/* Format the Score column (index 2) with commas */}
+                                                    {ci === 2 || ci === 4
+                                                        ? (Number(cell).toLocaleString('en-US'))
+                                                        : cell}
+                                                </TableCell>
+                                            )
+                                        })}
                                     </TableRow>
-                                );
+                                )
                             })}
                         </TableBody>
                     </Table>
