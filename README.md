@@ -8,7 +8,7 @@ Try it here!: https://rivalytics.digi-safe.co/
 
 ### 🛡️ Proficiency Tracking
 
-* **Capture & Analyze**: Quickly screenshot your in-game proficiency screen. Rivalytics intelligently extracts key data to populate an easy-to-reference table, perfect for checking progress mid-game.
+* **Capture & Analyze**: Quickly screenshot your in-game proficiency screen. Rivalytics extracts data to populate a table, perfect for checking progress mid-game.
 * **Detailed Game History**: Easily step through past matches to see exactly when you gained proficiency points, helping identify the most rewarding challenges for your playstyle or chosen character.
 * **Smart Predictions**: Estimates the number of matches remaining until your next rank-up or challenge completion.
 * **Challenge Insights**: Clearly tracks proficiency points gained from each challenge per match.
