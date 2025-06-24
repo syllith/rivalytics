@@ -841,52 +841,52 @@ export default function ProficiencyTracker() {
         let avgMatchDurationMs = 0;
         let validIntervals = 0;
         let totalValidTime = 0;
-        
+
         if (realGames.length > 1) {
             const MAX_MATCH_TIME = 20 * 60 * 1000; // 20 minutes in ms - longest reasonable match
-            
+
             for (let i = 1; i <= currentGameIndex; i++) {
                 const interval = realGames[i].time - realGames[i - 1].time;
-                
+
                 // Only count intervals that are likely actual matches (not breaks)
                 if (interval > 0 && interval <= MAX_MATCH_TIME) {
                     totalValidTime += interval;
                     validIntervals++;
                 }
             }
-            
+
             // Calculate average based only on valid intervals
-            avgMatchDurationMs = validIntervals > 0 
+            avgMatchDurationMs = validIntervals > 0
                 ? totalValidTime / validIntervals
                 : 10 * 60 * 1000; // Default to 10 minutes if no valid intervals
         }
-        
+
         const avgMatchDurationHours = avgMatchDurationMs / 3_600_000; // ms to hours
         const avgMatchDurationMinutes = avgMatchDurationMs / 60_000; // ms to minutes
 
         // Calculate average points gained per match
         const ptsPerMatch = matches > 0 ? (profDiff / matches).toFixed(1) : '–';
         const remaining = last.stats.proficiencyMax - last.stats.proficiencyCurrent;
-        
+
         // Get current rank for scaling calculations
         const currentRank = last.stats.status;
-        
+
         // Points per challenge completion based on rank
         const getPointsPerCompletion = (rank) => {
-            switch(rank) {
+            switch (rank) {
                 case 'Agent': return 10;
                 case 'Knight': return 25;
                 case 'Captain': return 40;
-                case 'Centurion': 
-                case 'Lord': 
+                case 'Centurion':
+                case 'Lord':
                 default: return 50;
             }
         };
-        
+
         // Factor in rank-based point scaling
         const pointsPerMinute = 1; // Base playtime points (always 1 pt per minute)
         const pointsPerCompletion = getPointsPerCompletion(currentRank);
-        
+
         // Calculate matches left based on historical performance
         const matchesLeft = ptsPerMatch > 0 && ptsPerMatch !== '–' ? Math.ceil(remaining / ptsPerMatch) : '–';
 
@@ -899,19 +899,19 @@ export default function ProficiencyTracker() {
         const timeDiff = (last.time - first.time) / 3_600_000; // real hours
         const ptsPerHour = timeDiff > 0 ? (profDiff / timeDiff).toFixed(1) : '–';
         const totalGained = profDiff;
-        
+
         // Calculate guaranteed points from playtime
         const guaranteedPointsPerMatch = avgMatchDurationMinutes * pointsPerMinute;
-        
+
         // Calculate remaining points needed
         const pointsNeededForNextRank = remaining;
 
-        return { 
-            ptsPerHour, 
-            ptsPerMatch, 
-            hoursLeft, 
-            matchesLeft, 
-            totalGained, 
+        return {
+            ptsPerHour,
+            ptsPerMatch,
+            hoursLeft,
+            matchesLeft,
+            totalGained,
             avgMatchDurationHours,
             validMatchesCount: validIntervals,
             currentRank,
@@ -1236,14 +1236,53 @@ export default function ProficiencyTracker() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        background: 'rgba(30, 32, 40, 0.92)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: 3,
                         color: 'white',
                         mb: 3,
-                        minHeight: 180, // adjust as needed for vertical centering
+                        minHeight: 180,
+                        maxWidth: 500,
+                        mx: 'auto',
+                        px: 3,
+                        py: 3,
+                        boxShadow: '0 2px 12px 0 rgba(0,0,0,0.25)'
                     }}
                 >
-                    <Typography variant="body1" align="center">
-                        Click <b>Capture Proficiency</b> and select your Marvel Rivals game window to begin tracking.
+                    <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: 'bold'}}>
+                        How to Track Proficiency
                     </Typography>
+                    <Typography variant="body2" align="center" sx={{ mb: 2, color: '#b0b8c1' }}>
+                        For accurate results, follow these steps after every game:
+                    </Typography>
+                    <Box component="ol" sx={{
+                        pl: 3,
+                        textAlign: 'left',
+                        width: '100%',
+                        color: '#e0e0e0',
+                        '& li': {
+                            mb: 1.2,
+                            fontSize: '1.05rem',
+                            lineHeight: 1.7,
+                        },
+                        '& b': { color: '#ffd600' }
+                    }}>
+                        <li>
+                            Navigate to the hero's proficiency screen in Marvel Rivals.
+                        </li>
+                        <li>
+                            Make sure your game is running in <b>fullscreen mode</b>.
+                        </li>
+                        <li>
+                            Click <b>Capture Proficiency</b> and select the screen where your game is running. Allow your browser to share the <b>entire screen</b>.
+                        </li>
+                        <li>
+                            Wait for the browser to capture and display your proficiency info.
+                        </li>
+                        <li>
+                            Repeat these steps after each game for best tracking accuracy.
+                        </li>
+                    </Box>
                 </Box>
             )}
 
