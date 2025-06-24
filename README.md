@@ -1,59 +1,82 @@
 # Rivalytics
 
-Rivalytics is a React-based tracker for Marvel Rivals player data. It aggregates career, match, and ranked statistics into four built-in views—Proficiency, Heroes, Matches, and Ranked—and presents them in a unified, theme-driven interface.
+**Rivalytics** is a proficiency and stat tracking tool for Marvel Rivals. It provides detailed insights into your game performance, helping you track progress, analyze hero effectiveness, review match history, and monitor ranked performance—all through a clean, easy-to-use interface.
 
-Running Instance: https://rivalytics.digi-safe.co/
-
----
+Public use instance: https://rivalytics.digi-safe.co/
 
 ## Features
 
-### Proficiency Tracker
-- **Screen-capture + OCR** of in-game proficiency  
-- Per-challenge progress, gains, and “matches left” predictions  
-- Undo, Clear, Simulation mode, and time-series charting  
-- History persisted via LocalForage  
+### 🛡️ Proficiency Tracking
+
+* **Capture & Analyze**: Quickly screenshot your in-game proficiency screen. Rivalytics intelligently extracts key data to populate an easy-to-reference table, perfect for checking progress mid-game.
+* **Detailed Game History**: Easily step through past matches to see exactly when you gained proficiency points, helping identify the most rewarding challenges for your playstyle or chosen character.
+* **Smart Predictions**: Estimates the number of matches remaining until your next rank-up or challenge completion.
+* **Challenge Insights**: Clearly tracks proficiency points gained from each challenge per match.
+* **Game Simulations**: Simulate future matches based on your historical performance for informed predictions.
+
+> **Privacy Assured**: Rivalytics asks for user consent before capturing the screen, captures only necessary information, and never stores personal or sensitive data. See /src/comps/proficiecny.jsx for more information.
 
 ![Proficiency Tracker](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/proficiency.jpg)
 
-### Hero Stats
-- Consolidates per-hero career segments (hours, KDA, damage/heal rates, win%, effectiveness)  
-- Sortable table with short-number formatting  
-- Remembers sort state and table layout in localStorage  
+---
+
+### 🎯 Hero Analytics
+
+* **Hero Performance Summary**: Track key metrics like hours played, kills, deaths, assists, damage, healing, and win percentages.
+* **Effectiveness Rating**: Provides a comprehensive effectiveness score to help you quickly understand hero performance:
+
+```
+Effectiveness = (Win% × 40) + (KDA × 20) + (Damage per Match / 1000 × 6) + (Heal per Match / 1000 × 4) + (Damage per Min / 100 × 4) + (Heal per Min / 100 × 2) + (Accuracy × 10) + (Headshot% × 10) + (Survival Kills per Match × 5) − (Damage Taken per Match / 1000 × 5)
+```
+
+* **Sortable Table**: Easily sort your hero data to quickly compare performances across your roster.
 
 ![Hero Stats](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/heros.jpg)
 
-### Match History
-- Normalizes timestamps, scores, and outcomes  
-- Color-coded rows for wins, losses, and disconnects  
-- Persists last view in localStorage  
+---
+
+### 📜 Match History
+
+* **Quick Insights**: Get a clear overview of your recent matches, including results, scores, and timestamps.
+* **Color-coded Results**: Quickly identify wins, losses, and disconnects through intuitive color-coding.
+* **Sortable Entries**: Effortlessly sort match data to find patterns in your gameplay.
 
 ![Match History](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/matches.jpg)
 
-### Ranked Progress
-- Fetches historical SR snapshots (date/time, rank, score)  
-- “All / Last Month / Last Week” filters + live line chart  
-- Highlights gains/drops via green/red row backgrounds  
+---
+
+### 📈 Ranked Progress
+
+* **Progress Charting**: Visualize your Skill Rating (SR) over time with interactive charts.
+* **Time-range Filters**: Use filters such as "All," "Last Month," and "Last Week" to review performance trends.
+* **Visual Gains/Losses**: Clearly highlighted gains and drops make tracking rank changes straightforward.
 
 ![Ranked Progress](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/ranked.jpg)
 
 ---
 
-## Core Principles
+## Security & Privacy
 
-1. **Modular & Extensible**  
-   - Self-contained tab components; new views plug in via `renderTabContent()`  
-2. **Offline-First & Persistent**  
-   - Caches API results, recent usernames, and settings in localStorage/LocalForage  
-3. **Responsive, Theme-Driven UI**  
-   - Built on Material-UI with a custom dark theme; mobile-friendly layouts  
-4. **Accurate & Predictive Analytics**  
-   - OCR parsing with rollover handling; simulation uses historical averages + jitter  
-   - Charts and metrics (pts/hour, matches left) derived from real timestamps  
-5. **User-Centered Controls**  
-   - Autocomplete of recent usernames with “clear all” and per-entry remove  
-   - Confirmation dialogs for destructive actions; loading spinners and error feedback  
+* **User Consent**: Users explicitly authorize each screen capture.
+* **Minimal Data Capture**: Only the necessary screen area is captured, minimizing privacy concerns.
+* **Transparent Notifications**: Browser notifications clearly indicate when the screen is being recorded.
+* **No Data Storage**: Rivalytics does not store any captured images or personal data.
 
 ---
 
-*Rivalytics* turns raw API feeds and on-screen captures into actionable insights, letting you track and predict your Marvel Rivals progression with minimal friction.
+## Developer Information
+
+For developers interested in contributing or running Rivalytics locally:
+
+### Installation
+
+```bash
+git clone https://github.com/syllith/rivalytics.git
+cd rivalytics
+npm install
+npm run dev
+```
+
+Local instance will be available at `http://localhost:5173`.
+
+---
