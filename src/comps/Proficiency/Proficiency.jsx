@@ -644,6 +644,12 @@ export default function ProficiencyTracker() {
         });
     };
 
+    // New helper function to calculate playtime duration based on playtime points
+    function calculatePlaytimeDuration(playtimePoints) {
+        const pointsPerMinute = 1; // Base playtime points (1 point per minute)
+        return playtimePoints / pointsPerMinute; // Duration in minutes
+    }
+
     // Simulate one match's worth of gains
     const getFieldRewardsForRank = (rank) => {
         // 1st item = playtime always 60; rest scale by rank
@@ -676,7 +682,7 @@ export default function ProficiencyTracker() {
             return;
         }
 
-        // Don’t simulate if no history or already at Lord
+        // Don't simulate if no history or already at Lord
         if (history.length === 0) return;
         const last = history[history.length - 1];
         if (last.stats.status === 'Lord') return;
@@ -686,30 +692,57 @@ export default function ProficiencyTracker() {
 
         const snapshot = { ...last.stats };
 
-        // Get rank-based array of field rewards
-        const dynamicRewards = getFieldRewardsForRank(snapshot.status);
+        // Calculate historical average gains per capture (not per full match)
+        const gains = [];
+        for (let i = 0; i < 4; i++) {
+            const fieldKey = `field${i + 1}Current`;
+            const maxKey = `field${i + 1}Max`;
 
-        // Use computeAverageGains or skip partial proficiency as needed
-        const avgGains = computeAverageGains(realEntries);
+            // Calculate total progress made across all real captures
+            let totalProgress = 0;
+            for (let j = 1; j < realEntries.length; j++) {
+                const prev = realEntries[j - 1].stats;
+                const curr = realEntries[j].stats;
+                const progress = computeWrappedDelta(
+                    curr[fieldKey],
+                    prev[fieldKey],
+                    prev[maxKey]
+                );
+                totalProgress += progress;
+            }
 
-        const gains = dynamicRewards.map((baseReward, idx) => {
-            const jitter = SIM.JITTER_MIN + Math.random() * SIM.JITTER_RANGE;
-            // No further multiplier on the first item—its rank scaling is always fixed (60)
-            const multiplier = (idx > 0) ? 1 : 1;
-            const baseline = avgGains[idx] > 0
-                ? avgGains[idx]
-                : snapshot[`field${idx + 1}Max`] * SIM.DEFAULT_RATIO;
-            return Math.max(1, Math.round(baseline * jitter * multiplier));
-        });
+            const matchCount = realEntries.length - 1;
+            const avgProgressPerCapture = totalProgress / matchCount;
 
+            // Add realistic variation (±20%) but use capture-level gains, not full match
+            const jitter = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
+            const simulatedGain = Math.max(1, Math.round(avgProgressPerCapture * jitter));
+
+            gains.push(simulatedGain);
+        }
+
+        // Apply gains and handle challenge completions
         applyChallengeGains(snapshot, gains);
 
-        // Advance time
-        const mins = SIM.MINUTES_MIN + Math.floor(Math.random() * SIM.MINUTES_RANGE);
-        const nextTime = last.time + mins * 60_000;
+        // Calculate realistic match duration based on historical playtime gains
+        let totalPlaytimeMinutes = 0;
+        for (let j = 1; j < realEntries.length; j++) {
+            const prev = realEntries[j - 1].stats;
+            const curr = realEntries[j].stats;
+            const playtimeProgress = computeWrappedDelta(
+                curr.field1Current,
+                prev.field1Current,
+                prev.field1Max
+            );
+            totalPlaytimeMinutes += playtimeProgress;
+        }
+        const avgMatchMins = totalPlaytimeMinutes / (realEntries.length - 1);
+        const simulatedMatchMinutes = Math.round(avgMatchMins * (0.8 + Math.random() * 0.4));
+        const nextTime = last.time + simulatedMatchMinutes * 60_000;
 
         dispatch({ type: 'SIM_STEP', payload: { stats: snapshot, time: nextTime, isSimulated: true } });
     }, [currentCharacter, history, simMode]);
+
 
     // Restore pre-simulation history
     const stopSimulation = useCallback(() => {
@@ -831,95 +864,110 @@ export default function ProficiencyTracker() {
 
     // Metrics for the currently selected real game
     const metrics = useMemo(() => {
-        if (!currentEntry || realGames.length < 2 || currentGameIndex < 1) return null;
-        const first = realGames[0];
-        const last = currentEntry;
-        const profDiff = last.stats.proficiencyCurrent - first.stats.proficiencyCurrent;
-        const matches = currentGameIndex;
+        if (!currentEntry) return null;
 
-        // Calculate average match duration (in ms) with break detection
-        let avgMatchDurationMs = 0;
-        let validIntervals = 0;
-        let totalValidTime = 0;
+        let gamesForCalculation, minIndex;
 
-        if (realGames.length > 1) {
-            const MAX_MATCH_TIME = 20 * 60 * 1000; // 20 minutes in ms - longest reasonable match
+        if (simMode) {
+            // During simulation, use all history (real + simulated) but need at least 2 real games
+            const realCount = history.filter(h => !h.isSimulated).length;
+            if (realCount < 2) return null;
 
-            for (let i = 1; i <= currentGameIndex; i++) {
-                const interval = realGames[i].time - realGames[i - 1].time;
-
-                // Only count intervals that are likely actual matches (not breaks)
-                if (interval > 0 && interval <= MAX_MATCH_TIME) {
-                    totalValidTime += interval;
-                    validIntervals++;
-                }
-            }
-
-            // Calculate average based only on valid intervals
-            avgMatchDurationMs = validIntervals > 0
-                ? totalValidTime / validIntervals
-                : 10 * 60 * 1000; // Default to 10 minutes if no valid intervals
+            gamesForCalculation = history;
+            minIndex = 1; // Need at least 2 entries total
+        } else {
+            // Not simulating, use only real games up to current index
+            if (currentGameIndex < 1) return null;
+            gamesForCalculation = realGames.slice(0, currentGameIndex + 1);
+            minIndex = 1; // Need at least 2 real games
         }
 
-        const avgMatchDurationHours = avgMatchDurationMs / 3_600_000; // ms to hours
-        const avgMatchDurationMinutes = avgMatchDurationMs / 60_000; // ms to minutes
+        const matchCount = gamesForCalculation.length - 1;
+        if (matchCount < minIndex) return null;
 
-        // Calculate average points gained per match
-        const ptsPerMatch = matches > 0 ? (profDiff / matches).toFixed(1) : '–';
-        const remaining = last.stats.proficiencyMax - last.stats.proficiencyCurrent;
+        const first = gamesForCalculation[0].stats;
+        const last = gamesForCalculation[gamesForCalculation.length - 1].stats;
 
-        // Get current rank for scaling calculations
-        const currentRank = last.stats.status;
+        // Calculate playtime using only real games for usage fraction
+        const realGamesForCalc = gamesForCalculation.filter(g => !g.isSimulated);
+        let totalPlaytimeMinutes = 0;
+        for (let j = 1; j < realGamesForCalc.length; j++) {
+            const prev = realGamesForCalc[j - 1].stats;
+            const curr = realGamesForCalc[j].stats;
+            const playtimeProgress = computeWrappedDelta(
+                curr.field1Current,
+                prev.field1Current,
+                prev.field1Max
+            );
+            totalPlaytimeMinutes += playtimeProgress;
+        }
 
-        // Points per challenge completion based on rank
-        const getPointsPerCompletion = (rank) => {
-            switch (rank) {
-                case 'Agent': return 10;
-                case 'Knight': return 25;
-                case 'Captain': return 40;
-                case 'Centurion':
-                case 'Lord':
-                default: return 50;
+        const realMatchCount = realGamesForCalc.length - 1;
+        const avgMatchMins = realMatchCount > 0 ? totalPlaytimeMinutes / realMatchCount : 12;
+        const typicalMatchDuration = 12;
+        const usageFraction = Math.min(1, avgMatchMins / typicalMatchDuration);
+
+        // Calculate challenge projections using real game progress rates
+        let totalProjectedProfPerMatch = 0;
+        for (let i = 0; i < 4; i++) {
+            const fieldKey = `field${i + 1}Current`;
+            const maxKey = `field${i + 1}Max`;
+
+            // Only use real games for calculating progress rates
+            let totalProgress = 0;
+            for (let j = 1; j < realGamesForCalc.length; j++) {
+                const prev = realGamesForCalc[j - 1].stats;
+                const curr = realGamesForCalc[j].stats;
+                const progress = computeWrappedDelta(
+                    curr[fieldKey],
+                    prev[fieldKey],
+                    prev[maxKey]
+                );
+                totalProgress += progress;
             }
-        };
 
-        // Factor in rank-based point scaling
-        const pointsPerMinute = 1; // Base playtime points (always 1 pt per minute)
-        const pointsPerCompletion = getPointsPerCompletion(currentRank);
+            const avgProgressPerCapture = realMatchCount > 0 ? totalProgress / realMatchCount : 0;
+            const avgProgressPerFullMatch = usageFraction > 0 ? avgProgressPerCapture / usageFraction : 0;
+            const currentMax = last[maxKey];
+            const progressFraction = currentMax > 0 ? avgProgressPerFullMatch / currentMax : 0;
+            const proficiencyReward = FIELD_REWARDS[i];
+            const projectedProfFromChallenge = progressFraction * proficiencyReward;
 
-        // Calculate matches left based on historical performance
-        const matchesLeft = ptsPerMatch > 0 && ptsPerMatch !== '–' ? Math.ceil(remaining / ptsPerMatch) : '–';
+            totalProjectedProfPerMatch += projectedProfFromChallenge;
+        }
 
-        // Calculate hours left using actual match duration (in-game time)
-        const hoursLeft = (typeof matchesLeft === 'number')
-            ? (matchesLeft * avgMatchDurationHours).toFixed(1)
-            : '–';
+        // Calculate proficiency gained using all games in the calculation
+        let totalProfGained = 0;
+        for (let j = 1; j < gamesForCalculation.length; j++) {
+            const prev = gamesForCalculation[j - 1].stats;
+            const curr = gamesForCalculation[j].stats;
 
-        // For reference, keep ptsPerHour as real time
-        const timeDiff = (last.time - first.time) / 3_600_000; // real hours
-        const ptsPerHour = timeDiff > 0 ? (profDiff / timeDiff).toFixed(1) : '–';
-        const totalGained = profDiff;
+            if (curr.status !== prev.status) {
+                totalProfGained += (prev.proficiencyMax - prev.proficiencyCurrent) + curr.proficiencyCurrent;
+            } else {
+                totalProfGained += curr.proficiencyCurrent - prev.proficiencyCurrent;
+            }
+        }
 
-        // Calculate guaranteed points from playtime
-        const guaranteedPointsPerMatch = avgMatchDurationMinutes * pointsPerMinute;
+        const remainingPts = last.proficiencyMax - last.proficiencyCurrent;
+        const estMatchesLeft = totalProjectedProfPerMatch > 0
+            ? remainingPts / totalProjectedProfPerMatch
+            : Infinity;
 
-        // Calculate remaining points needed
-        const pointsNeededForNextRank = remaining;
+        const estMinutesLeft = isFinite(estMatchesLeft)
+            ? estMatchesLeft * typicalMatchDuration
+            : Infinity;
 
         return {
-            ptsPerHour,
-            ptsPerMatch,
-            hoursLeft,
-            matchesLeft,
-            totalGained,
-            avgMatchDurationHours,
-            validMatchesCount: validIntervals,
-            currentRank,
-            pointsPerCompletion,
-            guaranteedPointsPerMatch: guaranteedPointsPerMatch.toFixed(1),
-            pointsNeededForNextRank
+            totalGained: totalProfGained,
+            ptsPerMatch: totalProjectedProfPerMatch.toFixed(1),
+            avgMatchDurationMinutes: avgMatchMins.toFixed(1),
+            matchesLeft: isFinite(estMatchesLeft) ? Math.ceil(estMatchesLeft) : '–',
+            hoursLeft: isFinite(estMinutesLeft)
+                ? (estMinutesLeft / 60).toFixed(1)
+                : '–',
         };
-    }, [currentEntry, realGames, currentGameIndex]);
+    }, [currentEntry, realGames, currentGameIndex, history, simMode]);
 
     // Reusable confirmation dialog
     const ConfirmDialog = React.memo(({ open, title, message, onCancel, onConfirm, confirmText = 'Confirm' }) => (
@@ -1205,7 +1253,6 @@ export default function ProficiencyTracker() {
                             >
                                 {/* Left column */}
                                 <Box>
-                                    <Typography>Prof. Per Hour: {metrics.ptsPerHour}</Typography>
                                     <Typography>Prof. Per Match: {metrics.ptsPerMatch}</Typography>
                                     <Typography sx={{ mt: 1 }}>
                                         Total Gained: {formatNumber(metrics.totalGained)}
@@ -1249,7 +1296,7 @@ export default function ProficiencyTracker() {
                         boxShadow: '0 2px 12px 0 rgba(0,0,0,0.25)'
                     }}
                 >
-                    <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: 'bold'}}>
+                    <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: 'bold' }}>
                         How to Track Proficiency
                     </Typography>
                     <Typography variant="body2" align="center" sx={{ mb: 2, color: '#b0b8c1' }}>
