@@ -13,15 +13,18 @@ import {
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
+// Converts an array of match objects into a table (header + rows) for display
 function matchesToTable(matches) {
     const header = [
         "Date/Time", "Map", "Mode", "Result", "Kills", "Deaths", "Damage", "Duration", "K/D"
     ]
     const rows = matches.map(match => {
         const meta = match.metadata;
+        // Find the 'overview' segment for stats
         const overview = match.segments.find(seg => seg.type === "overview");
         const stats = overview?.stats || {};
         return [
+            // Format date and time for display
             (() => {
                 const d = new Date(meta.timestamp);
                 const date = d.toLocaleDateString('en-US', {
@@ -38,10 +41,12 @@ function matchesToTable(matches) {
             })(),
             meta.mapName,
             meta.mapModeName,
+            // Capitalize first letter of result (e.g. 'Win', 'Loss')
             (overview?.metadata?.result || "-").replace(/^./, c => c.toUpperCase()),
             stats.kills?.displayValue ?? "-",
             stats.deaths?.displayValue ?? "-",
             stats.totalHeroDamage?.displayValue ?? "-",
+            // Format duration as mm:ss
             stats.timePlayed?.displayValue?.replace("m ", ":").replace("s", "") ?? "-",
             stats.kdRatio?.displayValue ?? "-"
         ];
@@ -49,6 +54,7 @@ function matchesToTable(matches) {
     return [header, ...rows];
 }
 
+// Calculates win rate (%) from the table rows
 function calculateWinRate(matches) {
     const totalMatches = matches.length;
     const wins = matches.filter(match => {
@@ -59,24 +65,30 @@ function calculateWinRate(matches) {
 }
 
 export default function Matches({ rawData }) {
+    // --- State: Table data and sorting ---
+    // Table rows (header + data)
     const [table, setTable] = useState(() => {
         const saved = localStorage.getItem('matches-table')
         return saved ? JSON.parse(saved) : []
     })
+    // Column to sort by
     const [sortCol, setSortCol] = useState(() => {
         const saved = localStorage.getItem('matches-sortCol')
         return saved ? Number(saved) : 0
     })
+    // Sort direction ('asc' or 'desc')
     const [sortDir, setSortDir] = useState(() => {
         return localStorage.getItem('matches-sortDir') || 'asc'
     })
 
+    // Persist table to localStorage when it changes
     useEffect(() => {
         if (table.length > 0) {
             localStorage.setItem('matches-table', JSON.stringify(table))
         }
     }, [table])
 
+    // Persist sortCol and sortDir to localStorage when they change
     useEffect(() => {
         localStorage.setItem('matches-sortCol', sortCol)
     }, [sortCol])
@@ -85,6 +97,7 @@ export default function Matches({ rawData }) {
         localStorage.setItem('matches-sortDir', sortDir)
     }, [sortDir])
 
+    // Parse and process rawData into table rows whenever rawData changes
     useEffect(() => {
         if (!rawData || !rawData.data || !rawData.data.matches) {
             setTable([])
@@ -93,12 +106,14 @@ export default function Matches({ rawData }) {
         setTable(matchesToTable(rawData.data.matches))
     }, [rawData])
 
+    // Memoized sorted table rows (excluding header)
     const sortedRows = React.useMemo(() => {
         if (table.length <= 1) return [];
         const rows = [...table.slice(1)];
         rows.sort((a, b) => {
             const aVal = a[sortCol];
             const bVal = b[sortCol];
+            // Try numeric sort, fallback to string
             const aNum = parseFloat(String(aVal).replace(/[^0-9.-]+/g, ""));
             const bNum = parseFloat(String(bVal).replace(/[^0-9.-]+/g, ""));
             if (!isNaN(aNum) && !isNaN(bNum)) {
@@ -111,10 +126,12 @@ export default function Matches({ rawData }) {
         return rows;
     }, [table, sortCol, sortDir]);
 
+    // Calculate win rate for display
     const winRate = table.length > 1 ? calculateWinRate(table.slice(1)) : "0.00";
 
     return (
         <Box pt={2}>
+            {/* Only show table if there is data */}
             {table.length > 0 && (
                 <>
                     <Typography
@@ -156,6 +173,7 @@ export default function Matches({ rawData }) {
                                             }}
                                             padding="none"
                                             onClick={() => {
+                                                // Toggle sort direction or change sort column
                                                 if (sortCol === i) {
                                                     setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
                                                 } else {
@@ -178,6 +196,7 @@ export default function Matches({ rawData }) {
                             </TableHead>
                             <TableBody>
                                 {sortedRows.map((row, ri) => {
+                                    // Color rows based on match result
                                     const result = (row[3] || "").toLowerCase();
                                     let bgColor;
                                     if (result === "win") bgColor = "rgba(56, 183, 80, 0.18)";
@@ -216,6 +235,7 @@ export default function Matches({ rawData }) {
                     </TableContainer>
                 </>
             )}
+            {/* Show message if no data loaded */}
             {(!rawData || table.length === 0) && (
                 <Box sx={{ color: '#aaa', textAlign: 'center', mt: 4 }}>
                     No match data loaded.

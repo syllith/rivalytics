@@ -10,12 +10,13 @@ import {
 import 'chartjs-adapter-date-fns'
 import { Line } from 'react-chartjs-2'
 
-// Register Chart.js components
+// Register Chart.js components for chart rendering
 ChartJS.register(
     CategoryScale, LinearScale, TimeScale, PointElement, LineElement,
     Title, Tooltip, Legend
 )
 
+// Parses ranked history data into a table (header + rows), including gain/loss calculation
 function parseRankedTable(rawData) {
     if (!rawData || !rawData.data || !rawData.data.history || !rawData.data.history.data) return []
     const entries = rawData.data.history.data
@@ -37,11 +38,12 @@ function parseRankedTable(rawData) {
         const rank = typeof val[0] === 'string' ? val[0] : String(val[0] || '')
         const score = String(val[1] || '')
         const disp = infoRaw.displayValue || infoRaw.DisplayValue || ''
+        // The last row has no gain value
         const gain = index === entries.length - 1 ? '' : null // Placeholder for "Gain" column
         return [`${date} ${time}`, rank, score, disp, gain]
     })
 
-    // Calculate "Gain" values
+    // Calculate gain/loss for each row (difference in score from previous row)
     for (let i = rows.length - 2; i >= 1; i--) {
         const currScore = Number(rows[i][2].replace(/,/g, '')) || 0
         const prevScore = Number(rows[i + 1][2].replace(/,/g, '')) || 0
@@ -52,20 +54,23 @@ function parseRankedTable(rawData) {
 }
 
 export default function Ranked({ rawData }) {
+    // --- State: Table data and time frame filter ---
+    // Table rows (header + data)
     const [table, setTable] = useState(() => {
         const saved = localStorage.getItem('ranked-table')
         return saved ? JSON.parse(saved) : []
     })
+    // Time frame filter for chart/table (all, month, week)
     const [timeFrame, setTimeFrame] = useState('all')
 
-    // Save table to localStorage when it changes
+    // Persist table to localStorage when it changes
     useEffect(() => {
         if (table.length > 0) {
             localStorage.setItem('ranked-table', JSON.stringify(table))
         }
     }, [table])
 
-    // Parse rawData when it changes
+    // Parse and process rawData into table rows whenever rawData changes
     useEffect(() => {
         if (!rawData) {
             setTable([])
@@ -74,7 +79,7 @@ export default function Ranked({ rawData }) {
         setTable(parseRankedTable(rawData))
     }, [rawData])
 
-    // Filter table data based on timeFrame
+    // Filter table data based on selected time frame
     const filteredTable = useMemo(() => {
         if (table.length <= 1) return table
         if (timeFrame === 'all') return table
@@ -99,7 +104,7 @@ export default function Ranked({ rawData }) {
         ]
     }, [table, timeFrame])
 
-    // Process table data for chart
+    // Prepare data for the rank score chart
     const chartData = useMemo(() => {
         if (filteredTable.length <= 1) return { labels: [], datasets: [] }
         const dataPoints = filteredTable.slice(1).map(row => {
@@ -124,7 +129,7 @@ export default function Ranked({ rawData }) {
         }
     }, [filteredTable])
 
-    // Chart options
+    // Chart.js options for the rank score chart
     const chartOptions = useMemo(() => {
         // Extract score values to determine y-axis range
         const scores = table.slice(1).map(row => {
@@ -190,7 +195,7 @@ export default function Ranked({ rawData }) {
 
     return (
         <Box pt={2}>
-            {/* Conditionally render time range buttons */}
+            {/* --- Time range filter buttons --- */}
             {table.length > 0 && (
                 <Box mb={2}>
                     <ToggleButtonGroup
@@ -211,7 +216,7 @@ export default function Ranked({ rawData }) {
                 </Box>
             )}
 
-            {/* Chart above the table */}
+            {/* --- Chart above the table --- */}
             {filteredTable.length > 1 && (
                 <Box
                     sx={{
@@ -230,7 +235,7 @@ export default function Ranked({ rawData }) {
                 </Box>
             )}
 
-            {/* Table rendering */}
+            {/* --- Table rendering --- */}
             {table.length > 0 && (
                 <TableContainer
                     component={Paper}
@@ -265,6 +270,7 @@ export default function Ranked({ rawData }) {
                         </TableHead>
                         <TableBody>
                             {table.slice(1).map((row, ri, arr) => {
+                                // Color rows based on score change (gain/loss)
                                 const currScore = Number(String(row[2]).replace(/,/g, '')) || 0
                                 const nextRow = arr[ri + 1]
                                 const nextScore = nextRow ? Number(String(nextRow[2]).replace(/,/g, '')) || 0 : currScore
@@ -307,7 +313,7 @@ export default function Ranked({ rawData }) {
                                                     }}
                                                     padding="none"
                                                 >
-                                                    {/* Format the Score column (index 2) with commas */}
+                                                    {/* Format the Score and Gain columns with commas */}
                                                     {ci === 2 || ci === 4
                                                         ? (Number(cell).toLocaleString('en-US'))
                                                         : cell}
@@ -321,6 +327,7 @@ export default function Ranked({ rawData }) {
                     </Table>
                 </TableContainer>
             )}
+            {/* Show message if no data loaded */}
             {(!rawData || table.length === 0) && (
                 <Box sx={{ color: '#aaa', textAlign: 'center', mt: 4 }}>
                     No ranked data loaded.

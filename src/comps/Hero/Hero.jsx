@@ -15,6 +15,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 // ——— Helpers (ported from Go) ———
 
+// Computes a custom "effectiveness" score for a hero based on various stats
 function computeEffectiveness(h) {
     if (h.MatchesPlayed <= 0) return 0
     const winPct = h.MatchesWon / h.MatchesPlayed
@@ -32,6 +33,7 @@ function computeEffectiveness(h) {
     const survKillsPM = h.SurvivalKills / Math.max(1, h.MatchesPlayed)
     const dmgTakenPM = h.TotalDamageTaken / Math.max(1, h.MatchesPlayed)
 
+    // Weighted formula for effectiveness
     let eff =
         winPct * 40 +
         kda * 20 +
@@ -47,11 +49,12 @@ function computeEffectiveness(h) {
     return Math.max(0, eff)
 }
 
+// Aggregates hero stats from a segment into the current hero stats object
 function updateHeroStats(cur, seg) {
     const s = seg.stats
     return {
         ...cur,
-        TimePlayed: cur.TimePlayed + s.timePlayed.value / 3600,
+        TimePlayed: cur.TimePlayed + s.timePlayed.value / 3600, // convert seconds to hours
         MatchesPlayed: cur.MatchesPlayed + s.matchesPlayed.value,
         MatchesWon: cur.MatchesWon + s.matchesWon.value,
         Kills: cur.Kills + s.kills.value,
@@ -70,6 +73,7 @@ function updateHeroStats(cur, seg) {
     }
 }
 
+// Parses API response and returns an array of hero stats objects, one per hero+role
 function getHeroesFromResponse(resp) {
     if (!resp || !resp.data) return [];
     const map = {}
@@ -91,6 +95,7 @@ function getHeroesFromResponse(resp) {
                 TotalDamageTaken: 0,
             }, seg)
     })
+    // Add effectiveness score to each hero
     return Object.values(map).map(h => ({
         ...h,
         Effectiveness: computeEffectiveness(h),
@@ -105,26 +110,30 @@ function formatShortNumber(num) {
 }
 
 export default function Hero({ rawData, username, loading }) {
+    // --- State: Table data and sorting ---
+    // Table rows (header + data)
     const [table, setTable] = useState(() => {
         const saved = localStorage.getItem('rivalytics-table')
         return saved ? JSON.parse(saved) : []
     })
+    // Column to sort by
     const [sortCol, setSortCol] = useState(() => {
         const saved = localStorage.getItem('rivalytics-sortCol')
         return saved ? Number(saved) : 0
     })
+    // Sort direction ('asc' or 'desc')
     const [sortDir, setSortDir] = useState(() => {
         return localStorage.getItem('rivalytics-sortDir') || 'desc'
     })
 
-    // Save table to localStorage when it changes
+    // Persist table to localStorage when it changes
     useEffect(() => {
         if (table.length > 0) {
             localStorage.setItem('rivalytics-table', JSON.stringify(table))
         }
     }, [table])
 
-    // Save sortCol and sortDir to localStorage when they change
+    // Persist sortCol and sortDir to localStorage when they change
     useEffect(() => {
         localStorage.setItem('rivalytics-sortCol', sortCol)
     }, [sortCol])
@@ -132,7 +141,7 @@ export default function Hero({ rawData, username, loading }) {
         localStorage.setItem('rivalytics-sortDir', sortDir)
     }, [sortDir])
 
-    // Parse rawData when it changes
+    // Parse and process rawData into table rows whenever rawData changes
     useEffect(() => {
         if (!rawData) {
             setTable([])
@@ -175,7 +184,7 @@ export default function Hero({ rawData, username, loading }) {
         setTable([header, ...rows])
     }, [rawData])
 
-    // Sorting logic for table rows
+    // Memoized sorted table rows (excluding header)
     const sortedRows = React.useMemo(() => {
         if (table.length <= 1) return [];
         const rows = [...table.slice(1)];
@@ -196,7 +205,7 @@ export default function Hero({ rawData, username, loading }) {
         return rows;
     }, [table, sortCol, sortDir]);
 
-    // Role icon map
+    // Map of role names to icon image paths
     const ROLE_ICONS = {
         Vanguard: "/role-icons/Vanguard_Icon.png",
         Duelist: "/role-icons/Duelist_Icon.png",
@@ -235,6 +244,7 @@ export default function Hero({ rawData, username, loading }) {
                                         }}
                                         padding="none"
                                         onClick={() => {
+                                            // Toggle sort direction or change sort column
                                             if (sortCol === i) {
                                                 setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
                                             } else {
