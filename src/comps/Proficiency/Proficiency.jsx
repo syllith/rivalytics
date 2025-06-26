@@ -24,6 +24,13 @@ ChartJS.register(CategoryScale, LinearScale, TimeScale, PointElement, LineElemen
 // Format numbers with locale separators
 const formatNumber = n => n.toLocaleString();
 
+function getMatchesLeftColor(matches) {
+    if (matches === '–' || matches === Infinity) return '#b0b0b0'; // gray
+    if (matches <= 2) return '#4caf50'; // green
+    if (matches <= 5) return '#ffd600'; // yellow
+    return '#f44336'; // red
+}
+
 // Rank data consolidated into a single object
 const RANKS = {
     order: ['Agent', 'Knight', 'Captain', 'Centurion', 'Lord'],
@@ -361,15 +368,15 @@ const FieldRow = React.memo(({ challengeName, currentValue, maxValue, gain, matc
             <TableCell>
                 <Typography
                     sx={{
-                        color: matchesToComplete > 0 ? '#ffd600' : '#b0b0b0',
-                        fontWeight: matchesToComplete > 0 ? 'bold' : 'normal',
+                        color: getMatchesLeftColor(matchesToComplete),
+                        fontWeight: matchesToComplete > 0 && matchesToComplete !== Infinity ? 'bold' : 'normal',
                         minWidth: 36,
                         fontSize: '0.9rem',
                         textAlign: 'left'
                     }}
                 >
                     {matchesToComplete > 0 && matchesToComplete !== Infinity
-                        ? Math.ceil(matchesToComplete)
+                        ? `~${Math.ceil(matchesToComplete)}`
                         : '–'}
                 </Typography>
             </TableCell>
@@ -450,6 +457,107 @@ const ProficiencyStats = React.memo(function ProficiencyStats({ stats, previousS
                 </Table>
             </TableContainer>
         </>
+    );
+});
+
+// New component for rank progression estimates
+const RankProgressionSheet = React.memo(({ currentStats, averageGains, profPerMatch, currentRemainingMatches, currentRemainingHours }) => {
+    const rankProgression = useMemo(() => {
+        if (!averageGains || averageGains.length === 0 || !profPerMatch) return [];
+
+        const progression = [];
+        const typicalMatchDuration = 12; // minutes
+
+        // Use the already calculated proficiency per match from metrics
+        const totalProfPerMatch = parseFloat(profPerMatch);
+
+        if (totalProfPerMatch <= 0) return [];
+
+        let cumulativeMatches = 0;
+        let currentRankIndex = RANKS.order.indexOf(currentStats.status);
+
+        // Only process ranks AFTER the current rank
+        for (let rankIndex = currentRankIndex + 1; rankIndex < RANKS.order.length; rankIndex++) {
+            const rank = RANKS.order[rankIndex];
+            const rankCap = getRankCap(rank);
+
+            let profNeededForThisRank;
+            let matchesForThisRank;
+
+            if (rankIndex === currentRankIndex + 1) {
+                // For the NEXT rank, use the exact same calculation as the top table
+                matchesForThisRank = currentRemainingMatches; // Now using exact unrounded value
+                profNeededForThisRank = currentStats.proficiencyMax - currentStats.proficiencyCurrent;
+            } else {
+                // For ranks beyond next, use the full rank cap
+                profNeededForThisRank = rankCap;
+                matchesForThisRank = profNeededForThisRank / totalProfPerMatch;
+            }
+
+            cumulativeMatches += matchesForThisRank;
+            const cumulativeHours = (cumulativeMatches * typicalMatchDuration) / 60;
+
+            progression.push({
+                rank,
+                profNeeded: Math.round(profNeededForThisRank),
+                cumulativeMatches: Math.ceil(cumulativeMatches),
+                cumulativeHours: cumulativeHours.toFixed(1) // This should now match exactly
+            });
+
+            // Don't continue past Lord rank
+            if (rank === 'Lord') break;
+        }
+
+        return progression;
+    }, [averageGains, currentStats, profPerMatch, currentRemainingMatches, currentRemainingHours]);
+
+    if (rankProgression.length === 0) return null;
+
+    return (
+        <Box sx={{ mb: 2 }}>
+            <Typography variant="h6" sx={{ color: 'white', mb: 1, textAlign: 'center' }}>
+                Rank Progression
+            </Typography>
+            <TableContainer
+                component={Paper}
+                sx={{ bgcolor: 'transparent', boxShadow: 'none' }}
+            >
+                <Table size="small">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={{ color: '#e0e0e0' }}>Rank</TableCell>
+                            <TableCell sx={{ color: '#e0e0e0' }}>Prof. Needed</TableCell>
+                            <TableCell sx={{ color: '#e0e0e0' }}>Total Matches</TableCell>
+                            <TableCell sx={{ color: '#e0e0e0' }}>Total Hours</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rankProgression.map((rank) => (
+                            <TableRow
+                                key={rank.rank}
+                                sx={{
+                                    backgroundColor: 'rgba(255,255,255,0.07)',
+                                    '&:last-child td, &:last-child th': { border: 0 }
+                                }}
+                            >
+                                <TableCell>
+                                    {rank.rank}
+                                </TableCell>
+                                <TableCell>
+                                    {formatNumber(rank.profNeeded)}
+                                </TableCell>
+                                <TableCell>
+                                    ~{rank.cumulativeMatches}
+                                </TableCell>
+                                <TableCell >
+                                    ~{rank.cumulativeHours}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
     );
 });
 
@@ -909,6 +1017,7 @@ export default function ProficiencyTracker() {
 
         // Calculate challenge projections using real game progress rates
         let totalProjectedProfPerMatch = 0;
+        const averageGains = []; // Store for rank progression calculations
         for (let i = 0; i < 4; i++) {
             const fieldKey = `field${i + 1}Current`;
             const maxKey = `field${i + 1}Max`;
@@ -927,6 +1036,7 @@ export default function ProficiencyTracker() {
             }
 
             const avgProgressPerCapture = realMatchCount > 0 ? totalProgress / realMatchCount : 0;
+            averageGains.push(avgProgressPerCapture); // Store for rank progression
             const avgProgressPerFullMatch = usageFraction > 0 ? avgProgressPerCapture / usageFraction : 0;
             const currentMax = last[maxKey];
             const progressFraction = currentMax > 0 ? avgProgressPerFullMatch / currentMax : 0;
@@ -949,9 +1059,50 @@ export default function ProficiencyTracker() {
             }
         }
 
+        // NEW: Calculate "effective" proficiency that includes partial challenge progress
+        let effectiveProficiencyGained = 0;
+        
+        // Start with actual proficiency gained
+        effectiveProficiencyGained = totalProfGained;
+        
+        // Add value of current partial progress in each challenge
+        for (let i = 0; i < 4; i++) {
+            const fieldKey = `field${i + 1}Current`;
+            const maxKey = `field${i + 1}Max`;
+            
+            const currentProgress = last[fieldKey];
+            const maxProgress = last[maxKey];
+            const proficiencyReward = FIELD_REWARDS[i];
+            
+            // Calculate the proficiency value of current partial progress
+            const partialProficiencyValue = (currentProgress / maxProgress) * proficiencyReward;
+            effectiveProficiencyGained += partialProficiencyValue;
+        }
+        
+        // Calculate effective proficiency per match
+        const effectiveProfPerMatch = effectiveProficiencyGained / matchCount;
+        
+        // Calculate remaining proficiency needed (including completing current challenges)
         const remainingPts = last.proficiencyMax - last.proficiencyCurrent;
-        const estMatchesLeft = totalProjectedProfPerMatch > 0
-            ? remainingPts / totalProjectedProfPerMatch
+        
+        // Subtract the value of current partial progress since it's already "earned"
+        let adjustedRemainingPts = remainingPts;
+        for (let i = 0; i < 4; i++) {
+            const fieldKey = `field${i + 1}Current`;
+            const maxKey = `field${i + 1}Max`;
+            
+            const currentProgress = last[fieldKey];
+            const maxProgress = last[maxKey];
+            const proficiencyReward = FIELD_REWARDS[i];
+            
+            // Subtract the proficiency value of current partial progress
+            const partialProficiencyValue = (currentProgress / maxProgress) * proficiencyReward;
+            adjustedRemainingPts -= partialProficiencyValue;
+        }
+        
+        // Use the effective proficiency per match for more accurate estimate
+        const estMatchesLeft = effectiveProfPerMatch > 0
+            ? Math.max(0, adjustedRemainingPts / effectiveProfPerMatch)
             : Infinity;
 
         const estMinutesLeft = isFinite(estMatchesLeft)
@@ -966,8 +1117,44 @@ export default function ProficiencyTracker() {
             hoursLeft: isFinite(estMinutesLeft)
                 ? (estMinutesLeft / 60).toFixed(1)
                 : '–',
+            averageGains, // Add this for rank progression calculations
+            // Add the unrounded values for exact calculations
+            exactMatchesLeft: isFinite(estMatchesLeft) ? estMatchesLeft : 0,
+            exactHoursLeft: isFinite(estMinutesLeft) ? estMinutesLeft / 60 : 0
         };
     }, [currentEntry, realGames, currentGameIndex, history, simMode]);
+
+    // Debounced error dialog close
+    useEffect(() => {
+        if (errorOpen) {
+            const timer = setTimeout(() => {
+                setErrorOpen(false);
+            }, 5000); // 5 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [errorOpen]);
+
+    // Load initial data from localforage
+    useEffect(() => {
+        const loadData = async () => {
+            const saved = await localforage.getItem('pt-characters');
+            if (saved && typeof saved === 'object') {
+                dispatch({ type: 'LOAD', payload: saved });
+            }
+        };
+        loadData();
+    }, []);
+
+    // Save data to localforage on update
+    useEffect(() => {
+        const saveData = async () => {
+            await localforage.setItem('pt-characters', {
+                characters,
+                currentCharacter
+            });
+        };
+        saveData();
+    }, [characters, currentCharacter]);
 
     // Reusable confirmation dialog
     const ConfirmDialog = React.memo(({ open, title, message, onCancel, onConfirm, confirmText = 'Confirm' }) => (
@@ -1253,19 +1440,31 @@ export default function ProficiencyTracker() {
                             >
                                 {/* Left column */}
                                 <Box>
-                                    <Typography>Prof. Per Match: {metrics.ptsPerMatch}</Typography>
+                                    <Typography>Prof. Per Match: ~{metrics.ptsPerMatch}</Typography>
                                     <Typography sx={{ mt: 1 }}>
                                         Total Gained: {formatNumber(metrics.totalGained)}
                                     </Typography>
                                 </Box>
                                 {/* Right column */}
                                 <Box sx={{ textAlign: 'right' }}>
-                                    <Typography>Hours Left: {metrics.hoursLeft}</Typography>
-                                    <Typography>Matches Left: {metrics.matchesLeft}</Typography>
+                                    <Typography>Hours Left: ~{metrics.hoursLeft}</Typography>
+                                    <Typography>Matches Left: ~{metrics.matchesLeft}</Typography>
                                 </Box>
                             </Box>
                         </Box>
                     )}
+
+                    {/* Add rank progression sheet */}
+                    {metrics && metrics.averageGains && (
+                        <RankProgressionSheet
+                            currentStats={currentEntry.stats}
+                            averageGains={metrics.averageGains}
+                            profPerMatch={metrics.ptsPerMatch}
+                            currentRemainingMatches={metrics.exactMatchesLeft || 0}
+                            currentRemainingHours={metrics.exactHoursLeft || 0}
+                        />
+                    )}
+
                     {/* Only show chart if there are at least 2 entries in chartHistory */}
                     {chartHistory.length >= 2 && (
                         <Box sx={{ width: '100%', height: 300 }}>
