@@ -1,1545 +1,1059 @@
 // ProficiencyTracker.jsx
-import React, { useReducer, useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import React, {
+  useReducer, useState, useRef, useCallback, useMemo, useEffect
+} from 'react';
 import {
-    Box, Button, LinearProgress, Typography, Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Paper, Container, Dialog, DialogTitle, DialogContent,
-    DialogContentText, DialogActions, ThemeProvider, Stack, IconButton, FormControl,
-    InputLabel, Select, MenuItem, Avatar
+  Box, Button, LinearProgress, Typography, Table, TableBody,
+  TableCell, TableContainer, TableHead, TableRow, Paper,
+  Dialog, DialogTitle, DialogContent, DialogContentText,
+  DialogActions, Stack, IconButton, FormControl, InputLabel,
+  Select, MenuItem, Avatar
 } from '@mui/material';
 import {
-    Chart as ChartJS, CategoryScale, LinearScale, TimeScale, PointElement, LineElement,
-    Title, Tooltip, Legend
+  Chart as ChartJS, CategoryScale, LinearScale, TimeScale,
+  PointElement, LineElement, Title, Tooltip, Legend
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { Line } from 'react-chartjs-2';
-import * as themes from '../../themes';
 import localforage from 'localforage';
 import characters from '../../characters.json';
-import { AddAPhoto, Delete, Undo, PlayArrow, Stop, ChevronLeft, ChevronRight } from '@mui/icons-material';
+import {
+  AddAPhoto, Delete, Undo, PlayArrow, Stop,
+  ChevronLeft, ChevronRight
+} from '@mui/icons-material';
 
-ChartJS.register(CategoryScale, LinearScale, TimeScale, PointElement, LineElement, Title, Tooltip, Legend);
+import {
+  formatNumber,
+  getMatchesLeftColor,
+  getProgressColor,
+  getRankCap,
+  getNextRank,
+  computeWrappedDelta,
+  applyChallengeGains,
+  cropImage,
+  parseOcrResult,
+  calculatePlaytimeDuration,
+  getFieldRewardsForRank,
+  computeAverageGains,
+  RANKS,
+  FIELD_REWARDS
+} from '../../utils.js';
 
-// --- Constants & Helpers ---
+ChartJS.register(
+  CategoryScale, LinearScale, TimeScale,
+  PointElement, LineElement, Title, Tooltip, Legend
+);
 
-// Format numbers with locale separators
-const formatNumber = n => n.toLocaleString();
-
-function getMatchesLeftColor(matches) {
-    if (matches === '–' || matches === Infinity) return '#b0b0b0'; // gray
-    if (matches <= 2) return '#4caf50'; // green
-    if (matches <= 5) return '#ffd600'; // yellow
-    return '#f44336'; // red
-}
-
-// Rank data consolidated into a single object
-const RANKS = {
-    order: ['Agent', 'Knight', 'Captain', 'Centurion', 'Lord'],
-    caps: { Agent: 500, Knight: 1200, Captain: 2000, Centurion: 2400, Lord: 2400 },
-    multipliers: { Agent: 1.3, Knight: 1.35, Captain: 1.4, Centurion: 1.45, Lord: 1.55 }
-};
-
-// Change this array to the real challenge reward amounts:
-const FIELD_REWARDS = [60, 40, 25, 20];
-
-// Simulation parameters grouped
-const SIM = {
-    JITTER_MIN: 0.85,
-    JITTER_RANGE: 0.3,
-    DEFAULT_RATIO: 0.16,
-    MINUTES_MIN: 5,
-    MINUTES_RANGE: 11
-};
-
-// Simplified helpers
-const getRankCap = rank => RANKS.caps[rank];
-const getNextRank = current => {
-    const idx = RANKS.order.indexOf(current);
-    return idx < RANKS.order.length - 1 ? RANKS.order[idx + 1] : current;
-};
-const computeWrappedDelta = (cur, prev, prevMax) => {
-    // Handles multiple rollovers
-    let diff = cur - prev;
-    if (diff < 0) diff += Math.ceil((prev - cur) / prevMax) * prevMax;
-    return diff;
-};
-
-// Apply challenge gains to a stats snapshot, handling rollover & promotions
-function applyChallengeGains(stats, gains) {
-    gains.forEach((gain, i) => {
-        const curKey = `field${i + 1}Current`;
-        const maxKey = `field${i + 1}Max`;
-        stats[curKey] += gain;
-        while (stats[curKey] >= stats[maxKey]) {
-            stats[curKey] -= stats[maxKey]; // Fixed: use maxKey from stats object
-            stats.proficiencyCurrent += FIELD_REWARDS[i];
-        }
-    });
-
-    // Promote rank as needed
-    while (stats.proficiencyCurrent >= getRankCap(stats.status)) {
-        stats.proficiencyCurrent -= getRankCap(stats.status);
-        stats.status = getNextRank(stats.status);
-    }
-    stats.proficiencyMax = getRankCap(stats.status);
-}
-
-// Crop & grayscale the canvas before sending to OCR
-function cropImage(srcCanvas, sw, sh) {
-    const leftFrac = 950 / 2560;
-    const topFrac = 289 / 1440;
-    const rightFrac = 1704 / 2560;
-    const bottomFrac = 1200 / 1440;
-
-    const x = Math.floor(leftFrac * sw);
-    const y = Math.floor(topFrac * sh);
-    const w = Math.floor((rightFrac - leftFrac) * sw);
-    const h = Math.floor((bottomFrac - topFrac) * sh);
-
-    const tmp = document.createElement('canvas');
-    tmp.width = w;
-    tmp.height = h;
-    const ctx = tmp.getContext('2d');
-    ctx.drawImage(srcCanvas, x, y, w, h, 0, 0, w, h);
-
-    return tmp;
-}
-
-// Parse OCR items into a structured stats object
-function parseOcrResult(items) {
-    const texts = items.map(({ text }) => text.trim());
-    const MAX_FIELDS = 4;
-    const STATUS_REGEX = /\b(Agent|Knight|Captain|Centurion|Lord)\b/i;
-    const NUM_PAIR = /(\d[\d,]*)\s*\/\s*(\d[\d,]*)/;
-
-    // Parse rank
-    const rawStatus = texts.find(t => STATUS_REGEX.test(t))?.match(STATUS_REGEX)?.[1];
-    if (!rawStatus) throw new Error('Failed to parse rank');
-    const status = rawStatus[0].toUpperCase() + rawStatus.slice(1).toLowerCase();
-
-    // Parse proficiency
-    const profText = texts.find(t => /proficiency/i.test(t) && NUM_PAIR.test(t));
-    if (!profText) throw new Error('Failed to parse overall proficiency');
-    const [, curStr, maxStr] = profText.match(NUM_PAIR);
-    const proficiencyCurrent = parseInt(curStr.replace(/,/g, ''), 10);
-    const proficiencyMax = parseInt(maxStr.replace(/,/g, ''), 10);
-    const profIndex = texts.indexOf(profText);
-
-    // Find challenge pairs
-    const nnIndices = texts
-        .map((t, i) => NUM_PAIR.test(t) ? i : -1)
-        .filter(i => i >= 0 && i !== profIndex)
-        .slice(0, MAX_FIELDS);
-
-    if (nnIndices.length < MAX_FIELDS) throw new Error('Failed to pair challenges');
-
-    // Parse challenges
-    const challenges = nnIndices.map(idx => {
-        const [curRaw, maxRaw] = texts[idx].split('/');
-        const cur = parseInt(curRaw.replace(/,/g, ''), 10);
-        const max = parseInt(maxRaw.replace(/,/g, ''), 10);
-        if (isNaN(cur) || isNaN(max)) {
-            throw new Error(`Invalid numeric pair at index ${idx}: ${texts[idx]}`);
-        }
-
-        const name = [texts[idx - 1], texts[idx - 2], texts[idx + 1], texts[idx + 2]]
-            .find(c =>
-                c &&
-                !NUM_PAIR.test(c) &&
-                !STATUS_REGEX.test(c) &&
-                !/proficiency/i.test(c) &&
-                c.length > 2
-            )?.replace(/^CO\s*/i, '').trim() || '';
-
-        return { name, cur, max };
-    });
-
-    // Build stats object
-    const fieldNames = challenges.map(c => c.name);
-    const stats = { status, proficiencyCurrent, proficiencyMax, fieldNames };
-    challenges.forEach(({ cur, max }, i) => {
-        stats[`field${i + 1}Current`] = cur;
-        stats[`field${i + 1}Max`] = max;
-    });
-
-    return stats;
-}
-
-// Character list
 const CHARACTERS = characters;
+const initialCharacterData = { history: [], backupHistory: [] };
 
-// Default empty character data
-const initialCharacterData = {
-    history: [],
-    backupHistory: []
-};
-
-// --- Reducer for history & simulation state ---
 const initialState = {
-    characters: {},
-    currentCharacter: null,
-    simMode: false,
-    simCount: 0
+  characters: {},
+  currentCharacter: null,
+  simMode: false,
+  simCount: 0
 };
 
 function reducer(state, action) {
-    switch (action.type) {
-        case 'LOAD':
-            return {
-                ...state,
-                characters: action.payload.characters || {},
-                currentCharacter: action.payload.currentCharacter
-            };
-        case 'SET_CHARACTER':
-            return {
-                ...state,
-                currentCharacter: action.payload
-            };
-        case 'INIT_CHARACTER':
-            return {
-                ...state,
-                characters: {
-                    ...state.characters,
-                    [action.payload]: state.characters[action.payload] || { ...initialCharacterData }
-                }
-            };
-        case 'CAPTURE': {
-            const character = state.currentCharacter;
-            if (!character) return state;
-
-            return {
-                ...state,
-                characters: {
-                    ...state.characters,
-                    [character]: {
-                        ...state.characters[character],
-                        history: [...state.characters[character].history, action.payload]
-                    }
-                }
-            };
+  const cc = state.currentCharacter;
+  switch (action.type) {
+    case 'LOAD':
+      return {
+        ...state,
+        characters: action.payload.characters || {},
+        currentCharacter: action.payload.currentCharacter
+      };
+    case 'INIT_CHARACTER':
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [action.payload]:
+            state.characters[action.payload] || { ...initialCharacterData }
         }
-        case 'CLEAR': {
-            const character = state.currentCharacter;
-            if (!character) return state;
-
-            return {
-                ...state,
-                characters: {
-                    ...state.characters,
-                    [character]: { ...initialCharacterData }
-                }
-            };
+      };
+    case 'SET_CHARACTER':
+      return { ...state, currentCharacter: action.payload };
+    case 'CAPTURE':
+      if (!cc) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [cc]: {
+            ...state.characters[cc],
+            history: [...state.characters[cc].history, action.payload]
+          }
         }
-        case 'BACKUP': {
-            const character = state.currentCharacter;
-            if (!character) return state;
-
-            return {
-                ...state,
-                characters: {
-                    ...state.characters,
-                    [character]: {
-                        ...state.characters[character],
-                        backupHistory: [...state.characters[character].history]
-                    }
-                },
-                simMode: true,
-                simCount: 0
-            };
+      };
+    case 'BACKUP':
+      if (!cc) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [cc]: {
+            ...state.characters[cc],
+            backupHistory: [...state.characters[cc].history]
+          }
+        },
+        simMode: true,
+        simCount: 0
+      };
+    case 'SIM_STEP':
+      if (!cc) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [cc]: {
+            ...state.characters[cc],
+            history: [
+              ...state.characters[cc].history,
+              action.payload
+            ]
+          }
+        },
+        simCount: state.simCount + 1
+      };
+    case 'RESTORE':
+      if (!cc) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [cc]: {
+            ...state.characters[cc],
+            history: [...state.characters[cc].backupHistory],
+            backupHistory: []
+          }
+        },
+        simMode: false,
+        simCount: 0
+      };
+    case 'UNDO':
+      if (!cc) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [cc]: {
+            ...state.characters[cc],
+            history: state.characters[cc].history.slice(0, -1)
+          }
         }
-        case 'SIM_STEP': {
-            const character = state.currentCharacter;
-            if (!character) return state;
-
-            return {
-                ...state,
-                characters: {
-                    ...state.characters,
-                    [character]: {
-                        ...state.characters[character],
-                        history: [...state.characters[character].history, action.payload]
-                    }
-                },
-                simCount: state.simCount + 1
-            };
+      };
+    case 'CLEAR':
+      if (!cc) return state;
+      return {
+        ...state,
+        characters: {
+          ...state.characters,
+          [cc]: { ...initialCharacterData }
         }
-        case 'RESTORE': {
-            const character = state.currentCharacter;
-            if (!character) return state;
+      };
+    default:
+      return state;
+  }
+}
 
-            return {
-                ...state,
-                characters: {
-                    ...state.characters,
-                    [character]: {
-                        ...state.characters[character],
-                        history: [...state.characters[character].backupHistory],
-                        backupHistory: []
-                    }
-                },
-                simMode: false,
-                simCount: 0
-            };
-        }
-        case 'UNDO': {
-            const character = state.currentCharacter;
-            if (!character) return state;
+const FieldRow = React.memo(({
+  challengeName, currentValue, maxValue, gain, matchesToComplete
+}) => {
+  const pct = (currentValue / maxValue) * 100;
+  const color = getProgressColor(pct);
 
-            return {
-                ...state,
-                characters: {
-                    ...state.characters,
-                    [character]: {
-                        ...state.characters[character],
-                        history: state.characters[character].history.slice(0, -1)
-                    }
-                }
-            };
-        }
-        default:
-            return state;
+  return (
+    <TableRow sx={{ backgroundColor: 'rgba(255,255,255,0.07)',
+      '&:last-child td, &:last-child th': { border: 0 } }}>
+      <TableCell sx={{ color: '#e0e0e0' }}>{challengeName}</TableCell>
+      <TableCell sx={{ color: '#e0e0e0' }}>
+        {formatNumber(currentValue)}
+      </TableCell>
+      <TableCell sx={{ color: '#e0e0e0' }}>
+        {formatNumber(maxValue)}
+      </TableCell>
+      <TableCell sx={{ minWidth: 140, maxWidth: 180, width: '18%' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ flexGrow: 1, mr: 1 }}>
+            <LinearProgress
+              variant="determinate"
+              value={pct}
+              sx={{
+                height: 10,
+                borderRadius: 5,
+                backgroundColor: 'rgba(255,255,255,0.12)',
+                '& .MuiLinearProgress-bar': { backgroundColor: color }
+              }}
+            />
+          </Box>
+          <Typography sx={{
+            color: 'white', minWidth: 32, textAlign: 'right', fontWeight: 'bold'
+          }}>
+            {Math.round(pct)}%
+          </Typography>
+        </Box>
+      </TableCell>
+      <TableCell>
+        <Typography sx={{
+          color: gain > 0 ? '#4caf50' : '#b0b0b0',
+          fontWeight: gain > 0 ? 'bold' : 'normal',
+          minWidth: 36, fontSize: '0.9rem'
+        }}>
+          {gain > 0 ? `+${formatNumber(gain)}` : formatNumber(gain)}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <Typography sx={{
+          color: getMatchesLeftColor(matchesToComplete),
+          fontWeight:
+            matchesToComplete > 0 && matchesToComplete !== Infinity
+              ? 'bold' : 'normal',
+          minWidth: 36, fontSize: '0.9rem'
+        }}>
+          {matchesToComplete > 0 && matchesToComplete !== Infinity
+            ? `~${Math.ceil(matchesToComplete)}`
+            : '–'}
+        </Typography>
+      </TableCell>
+    </TableRow>
+  );
+});
+
+const ProficiencyStats = React.memo(({ stats, previousStats }) => {
+  const overallPct = (stats.proficiencyCurrent / stats.proficiencyMax) * 100;
+  const gains = [];
+  const toComplete = [];
+
+  if (previousStats) {
+    stats.fieldNames.forEach((_, i) => {
+      const cur = stats[`field${i+1}Current`];
+      const prev = previousStats[`field${i+1}Current`];
+      const pmax = previousStats[`field${i+1}Max`];
+      const g = computeWrappedDelta(cur, prev, pmax);
+      gains.push(g);
+      toComplete.push(g > 0
+        ? (stats[`field${i+1}Max`] - cur) / g
+        : Infinity);
+    });
+  }
+
+  return (
+    <>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ flexGrow: 1, mr: 1 }}>
+          <LinearProgress variant="determinate" value={overallPct} />
+        </Box>
+        <Typography sx={{ color: 'white', minWidth: 45, textAlign: 'right' }}>
+          {Math.round(overallPct)}%
+        </Typography>
+      </Box>
+
+      <Typography sx={{ mb: 2, color: 'white' }}>
+        Rank: {stats.status} | Proficiency:{' '}
+        {formatNumber(stats.proficiencyCurrent)} /{' '}
+        {formatNumber(stats.proficiencyMax)}
+      </Typography>
+
+      <TableContainer component={Paper} sx={{
+        mb: 2, bgcolor: 'transparent', boxShadow: 'none'
+      }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Challenge</TableCell>
+              <TableCell>Current</TableCell>
+              <TableCell>Max</TableCell>
+              <TableCell>Progress</TableCell>
+              <TableCell>Gain</TableCell>
+              <TableCell>Matches Left</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {stats.fieldNames.map((name, idx) => (
+              <FieldRow
+                key={idx}
+                challengeName={name}
+                currentValue={stats[`field${idx+1}Current`]}
+                maxValue={stats[`field${idx+1}Max`]}
+                gain={previousStats ? gains[idx] : 0}
+                matchesToComplete={previousStats ? toComplete[idx] : '–'}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
+});
+
+const RankProgressionSheet = React.memo(({
+  currentStats, averageGains, profPerMatch,
+  currentRemainingMatches, currentRemainingHours
+}) => {
+  const progression = useMemo(() => {
+    if (!averageGains?.length || !profPerMatch) return [];
+    const matches = [];
+    let cum = 0;
+    const perMatch = parseFloat(profPerMatch);
+    if (perMatch <= 0) return [];
+
+    let idx = RANKS.order.indexOf(currentStats.status) + 1;
+    const typicalMins = 12;
+
+    for (; idx < RANKS.order.length; idx++) {
+      const rank = RANKS.order[idx];
+      const cap = getRankCap(rank);
+      let need, m;
+      if (idx === RANKS.order.indexOf(currentStats.status) + 1) {
+        need = currentStats.proficiencyMax - currentStats.proficiencyCurrent;
+        m = currentRemainingMatches;
+      } else {
+        need = cap;
+        m = need / perMatch;
+      }
+      cum += m;
+      matches.push({
+        rank,
+        profNeeded: Math.round(need),
+        cumulativeMatches: Math.ceil(cum),
+        cumulativeHours: ((cum * typicalMins) / 60).toFixed(1)
+      });
+      if (rank === 'Lord') break;
     }
-}
+    return matches;
+  }, [
+    averageGains, currentStats, profPerMatch,
+    currentRemainingMatches, currentRemainingHours
+  ]);
 
-// Helper: get color from 0 (red) to 120 (green) based on percent
-function getProgressColor(pct) {
-    // Clamp between 0 and 100
-    const percent = Math.max(0, Math.min(100, pct));
-    // Hue from 0 (red) to 120 (green)
-    const hue = (percent * 1.2); // 0-120
-    return `hsl(${hue}, 100%, 45%)`;
-}
-
-// Renders a single challenge row
-const FieldRow = React.memo(({ challengeName, currentValue, maxValue, gain, matchesToComplete }) => {
-    const pct = (currentValue / maxValue) * 100;
-    const progressColor = getProgressColor(pct);
-
-    return (
-        <TableRow
-            sx={{
+  if (!progression.length) return null;
+  return (
+    <Box sx={{ mb: 2 }}>
+      <Typography variant="h6" sx={{
+        color: 'white', mb: 1, textAlign: 'center'
+      }}>
+        Rank Progression
+      </Typography>
+      <TableContainer component={Paper} sx={{
+        bgcolor: 'transparent', boxShadow: 'none'
+      }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ color: '#e0e0e0' }}>Rank</TableCell>
+              <TableCell sx={{ color: '#e0e0e0' }}>Prof. Needed</TableCell>
+              <TableCell sx={{ color: '#e0e0e0' }}>Total Matches</TableCell>
+              <TableCell sx={{ color: '#e0e0e0' }}>Total Hours</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {progression.map(r => (
+              <TableRow key={r.rank} sx={{
                 backgroundColor: 'rgba(255,255,255,0.07)',
                 '&:last-child td, &:last-child th': { border: 0 }
-            }}
-        >
-            <TableCell sx={{ color: '#e0e0e0' }}>{challengeName}</TableCell>
-            <TableCell sx={{ color: '#e0e0e0' }}>{formatNumber(currentValue)}</TableCell>
-            <TableCell sx={{ color: '#e0e0e0' }}>{formatNumber(maxValue)}</TableCell>
-            <TableCell sx={{ minWidth: 140, maxWidth: 180, width: '18%' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Box sx={{ flexGrow: 1, mr: 1 }}>
-                        <LinearProgress
-                            variant="determinate"
-                            value={pct}
-                            sx={{
-                                height: 10,
-                                borderRadius: 5,
-                                backgroundColor: 'rgba(255,255,255,0.12)',
-                                '& .MuiLinearProgress-bar': {
-                                    backgroundColor: progressColor
-                                }
-                            }}
-                        />
-                    </Box>
-                    <Typography
-                        sx={{
-                            color: 'white', // Always white for the percentage
-                            minWidth: 32,
-                            textAlign: 'right',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        {Math.round(pct)}%
-                    </Typography>
-                </Box>
-            </TableCell>
-            <TableCell>
-                <Typography
-                    sx={{
-                        color: gain > 0 ? '#4caf50' : '#b0b0b0',
-                        fontWeight: gain > 0 ? 'bold' : 'normal',
-                        minWidth: 36,
-                        fontSize: '0.9rem',
-                        textAlign: 'left'
-                    }}
-                >
-                    {gain > 0 ? `+${formatNumber(gain)}` : formatNumber(gain)}
-                </Typography>
-            </TableCell>
-            <TableCell>
-                <Typography
-                    sx={{
-                        color: getMatchesLeftColor(matchesToComplete),
-                        fontWeight: matchesToComplete > 0 && matchesToComplete !== Infinity ? 'bold' : 'normal',
-                        minWidth: 36,
-                        fontSize: '0.9rem',
-                        textAlign: 'left'
-                    }}
-                >
-                    {matchesToComplete > 0 && matchesToComplete !== Infinity
-                        ? `~${Math.ceil(matchesToComplete)}`
-                        : '–'}
-                </Typography>
-            </TableCell>
-        </TableRow>
-    );
-});
-
-// Displays overall & per-challenge proficiency
-const ProficiencyStats = React.memo(function ProficiencyStats({ stats, previousStats }) {
-    const overallPct = (stats.proficiencyCurrent / stats.proficiencyMax) * 100;
-
-    // Calculate gains for each field if previousStats is available
-    const gains = [];
-    const matchesToComplete = [];
-    if (previousStats) {
-        for (let i = 0; i < stats.fieldNames.length; i++) {
-            const currentValue = stats[`field${i + 1}Current`];
-            const previousValue = previousStats[`field${i + 1}Current`];
-            const previousMax = previousStats[`field${i + 1}Max`];
-
-            // Handle values that wrap around during level-up
-            const gain = computeWrappedDelta(currentValue, previousValue, previousMax);
-            gains.push(gain);
-
-            // Predict matches to complete this challenge
-            const remaining = stats[`field${i + 1}Max`] - currentValue;
-            matchesToComplete.push(gain > 0 ? remaining / gain : Infinity);
-        }
-    }
-
-    return (
-        <>
-            {/* Overall proficiency bar */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Box sx={{ flexGrow: 1, mr: 1 }}>
-                    <LinearProgress variant="determinate" value={overallPct} />
-                </Box>
-                <Typography sx={{ color: 'white', minWidth: 45, textAlign: 'right' }}>
-                    {Math.round(overallPct)}%
-                </Typography>
-            </Box>
-
-            {/* Rank & raw proficiency */}
-            <Typography sx={{ mb: 2, color: 'white' }}>
-                Rank: {stats.status} | Proficiency:{' '}
-                {formatNumber(stats.proficiencyCurrent)} /{' '}
-                {formatNumber(stats.proficiencyMax)}
-            </Typography>
-
-            {/* Challenge breakdown */}
-            <TableContainer
-                component={Paper}
-                sx={{ mb: 2, bgcolor: 'transparent', boxShadow: 'none' }}
-            >
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Challenge</TableCell>
-                            <TableCell>Current</TableCell>
-                            <TableCell>Max</TableCell>
-                            <TableCell>Progress</TableCell>
-                            <TableCell>Gain</TableCell>
-                            <TableCell>Matches Left</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {stats.fieldNames.map((name, idx) => (
-                            <FieldRow
-                                key={idx}
-                                challengeName={name}
-                                currentValue={stats[`field${idx + 1}Current`]}
-                                maxValue={stats[`field${idx + 1}Max`]}
-                                gain={previousStats ? gains[idx] : 0}
-                                matchesToComplete={previousStats ? matchesToComplete[idx] : '–'}
-                            />
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </>
-    );
-});
-
-// New component for rank progression estimates
-const RankProgressionSheet = React.memo(({ currentStats, averageGains, profPerMatch, currentRemainingMatches, currentRemainingHours }) => {
-    const rankProgression = useMemo(() => {
-        if (!averageGains || averageGains.length === 0 || !profPerMatch) return [];
-
-        const progression = [];
-        const typicalMatchDuration = 12; // minutes
-
-        // Use the already calculated proficiency per match from metrics
-        const totalProfPerMatch = parseFloat(profPerMatch);
-
-        if (totalProfPerMatch <= 0) return [];
-
-        let cumulativeMatches = 0;
-        let currentRankIndex = RANKS.order.indexOf(currentStats.status);
-
-        // Only process ranks AFTER the current rank
-        for (let rankIndex = currentRankIndex + 1; rankIndex < RANKS.order.length; rankIndex++) {
-            const rank = RANKS.order[rankIndex];
-            const rankCap = getRankCap(rank);
-
-            let profNeededForThisRank;
-            let matchesForThisRank;
-
-            if (rankIndex === currentRankIndex + 1) {
-                // For the NEXT rank, use the exact same calculation as the top table
-                matchesForThisRank = currentRemainingMatches; // Now using exact unrounded value
-                profNeededForThisRank = currentStats.proficiencyMax - currentStats.proficiencyCurrent;
-            } else {
-                // For ranks beyond next, use the full rank cap
-                profNeededForThisRank = rankCap;
-                matchesForThisRank = profNeededForThisRank / totalProfPerMatch;
-            }
-
-            cumulativeMatches += matchesForThisRank;
-            const cumulativeHours = (cumulativeMatches * typicalMatchDuration) / 60;
-
-            progression.push({
-                rank,
-                profNeeded: Math.round(profNeededForThisRank),
-                cumulativeMatches: Math.ceil(cumulativeMatches),
-                cumulativeHours: cumulativeHours.toFixed(1) // This should now match exactly
-            });
-
-            // Don't continue past Lord rank
-            if (rank === 'Lord') break;
-        }
-
-        return progression;
-    }, [averageGains, currentStats, profPerMatch, currentRemainingMatches, currentRemainingHours]);
-
-    if (rankProgression.length === 0) return null;
-
-    return (
-        <Box sx={{ mb: 2 }}>
-            <Typography variant="h6" sx={{ color: 'white', mb: 1, textAlign: 'center' }}>
-                Rank Progression
-            </Typography>
-            <TableContainer
-                component={Paper}
-                sx={{ bgcolor: 'transparent', boxShadow: 'none' }}
-            >
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell sx={{ color: '#e0e0e0' }}>Rank</TableCell>
-                            <TableCell sx={{ color: '#e0e0e0' }}>Prof. Needed</TableCell>
-                            <TableCell sx={{ color: '#e0e0e0' }}>Total Matches</TableCell>
-                            <TableCell sx={{ color: '#e0e0e0' }}>Total Hours</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rankProgression.map((rank) => (
-                            <TableRow
-                                key={rank.rank}
-                                sx={{
-                                    backgroundColor: 'rgba(255,255,255,0.07)',
-                                    '&:last-child td, &:last-child th': { border: 0 }
-                                }}
-                            >
-                                <TableCell>
-                                    {rank.rank}
-                                </TableCell>
-                                <TableCell>
-                                    {formatNumber(rank.profNeeded)}
-                                </TableCell>
-                                <TableCell>
-                                    ~{rank.cumulativeMatches}
-                                </TableCell>
-                                <TableCell >
-                                    ~{rank.cumulativeHours}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Box>
-    );
+              }}>
+                <TableCell>{r.rank}</TableCell>
+                <TableCell>{formatNumber(r.profNeeded)}</TableCell>
+                <TableCell>~{r.cumulativeMatches}</TableCell>
+                <TableCell>~{r.cumulativeHours}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
 });
 
 export default function ProficiencyTracker() {
-    const [state, dispatch] = useReducer(reducer, initialState);
-    const { simMode, simCount, currentCharacter, characters } = state;
-    const [loading, setLoading] = useState(false);
-    const [errorOpen, setErrorOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const canvasRef = useRef(null);
-    const [undoConfirmOpen, setUndoConfirmOpen] = useState(false);
-    const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
-    const [currentGameIndex, setCurrentGameIndex] = useState(-1);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { simMode, simCount, currentCharacter, characters } = state;
+  const [loading, setLoading] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const canvasRef = useRef(null);
+  const [undoOpen, setUndoOpen] = useState(false);
+  const [clearOpen, setClearOpen] = useState(false);
+  const [currentIdx, setCurrentIdx] = useState(-1);
 
-    // Get current character's data
-    const currentCharacterData = useMemo(() =>
-        (currentCharacter && characters[currentCharacter]) || initialCharacterData,
-        [currentCharacter, characters]
-    );
+  const charData = useMemo(() =>
+    (currentCharacter && characters[currentCharacter]) || initialCharacterData,
+    [currentCharacter, characters]
+  );
+  const history = useMemo(() => charData.history || [], [charData]);
+  const realGames = useMemo(
+    () => history.filter(e => !e.isSimulated),
+    [history]
+  );
 
-    // Get current character's history
-    const history = useMemo(() =>
-        currentCharacterData.history || [],
-        [currentCharacterData]
-    );
+  useEffect(() => {
+    setCurrentIdx(realGames.length - 1);
+  }, [realGames.length]);
 
-    // Filter out simulated games
-    const realGames = useMemo(
-        () => history.filter(entry => !entry.isSimulated),
-        [history]
-    );
+  useEffect(() => {
+    if (simMode) setCurrentIdx(realGames.length - 1);
+  }, [simMode, realGames.length]);
 
-    // Handle character selection
-    const handleCharacterChange = (event) => {
-        const character = event.target.value;
-        if (character) {
-            dispatch({ type: 'INIT_CHARACTER', payload: character });
-            dispatch({ type: 'SET_CHARACTER', payload: character });
+  useEffect(() => {
+    localforage.getItem('pt-characters').then(saved => {
+      if (saved?.characters) {
+        dispatch({ type: 'LOAD', payload: saved });
+        const count = saved.characters[saved.currentCharacter]?.history
+          .filter(e => !e.isSimulated).length;
+        setCurrentIdx(count - 1);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    localforage.setItem('pt-characters', {
+      characters, currentCharacter
+    });
+    if (currentIdx >= realGames.length) {
+      setCurrentIdx(realGames.length - 1);
+    }
+  }, [characters, currentCharacter, realGames.length, currentIdx]);
+
+  const handleCharChange = e => {
+    const v = e.target.value;
+    dispatch({ type: 'INIT_CHARACTER', payload: v });
+    dispatch({ type: 'SET_CHARACTER', payload: v });
+  };
+
+  const goPrev = useCallback(() => {
+    if (currentIdx > 0) setCurrentIdx(currentIdx - 1);
+  }, [currentIdx]);
+  const goNext = useCallback(() => {
+    if (currentIdx < realGames.length - 1)
+      setCurrentIdx(currentIdx + 1);
+  }, [currentIdx, realGames.length]);
+
+  const capture = useCallback(async () => {
+    if (!currentCharacter) {
+      setErrorMessage('Select a character');
+      setErrorOpen(true);
+      return;
+    }
+    setErrorOpen(false);
+    setLoading(true);
+    let stream, video;
+    try {
+      stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      video = document.createElement('video');
+      video.style.display = 'none';
+      document.body.appendChild(video);
+      video.srcObject = stream;
+      await video.play();
+      await new Promise(requestAnimationFrame);
+
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const cropped = cropImage(canvas, canvas.width, canvas.height);
+      const blob = await new Promise(res =>
+        cropped.toBlob(res, 'image/png')
+      );
+      const form = new FormData();
+      form.append('file', blob, `ss_${Date.now()}.png`);
+      const resp = await fetch('/api/ocr', {
+        method: 'POST', cache: 'no-store', body: form
+      });
+      if (!resp.ok) throw new Error(`OCR ${resp.status}`);
+      const { result } = await resp.json();
+      const stats = parseOcrResult(result);
+      dispatch({ type: 'CAPTURE', payload: { stats, time: Date.now() } });
+      setCurrentIdx(realGames.length);
+    } catch (err) {
+      setErrorMessage(err.message || 'Error');
+      setErrorOpen(true);
+    } finally {
+      video?.pause();
+      video?.remove();
+      stream?.getTracks().forEach(t => t.stop());
+      setLoading(false);
+    }
+  }, [currentCharacter, realGames.length]);
+
+  const simulate = useCallback(() => {
+    if (!currentCharacter) {
+      setErrorMessage('Select a character');
+      setErrorOpen(true);
+      return;
+    }
+    const realEntries = history.filter(h => !h.isSimulated);
+    if (realEntries.length < 2) {
+      setErrorMessage('Not enough data');
+      setErrorOpen(true);
+      return;
+    }
+    const last = history[history.length - 1];
+    if (last.stats.status === 'Lord') return;
+    if (!simMode) dispatch({ type: 'BACKUP' });
+
+    const snap = { ...last.stats };
+    const gains = realEntries.slice(1).map((_, i) => {
+      const key = `field${i+1}Current`;
+      const mkey = `field${i+1}Max`;
+      let tot = 0;
+      for (let j = 1; j < realEntries.length; j++) {
+        tot += computeWrappedDelta(
+          realEntries[j].stats[key],
+          realEntries[j-1].stats[key],
+          realEntries[j-1].stats[mkey]
+        );
+      }
+      const avg = tot / (realEntries.length - 1);
+      return Math.max(1, Math.round(avg * (0.8 + Math.random() * 0.4)));
+    });
+    applyChallengeGains(snap, gains);
+
+    let play = 0;
+    for (let j = 1; j < realEntries.length; j++) {
+      play += computeWrappedDelta(
+        realEntries[j].stats.field1Current,
+        realEntries[j-1].stats.field1Current,
+        realEntries[j-1].stats.field1Max
+      );
+    }
+    const avg = play / (realEntries.length - 1);
+    const min = Math.round(avg * (0.8 + Math.random() * 0.4));
+    const next = last.time + min * 60000;
+
+    dispatch({
+      type: 'SIM_STEP',
+      payload: { stats: snap, time: next, isSimulated: true }
+    });
+  }, [currentCharacter, history, simMode]);
+
+  const stopSim = useCallback(() => {
+    dispatch({ type: 'RESTORE' });
+  }, []);
+
+  const confirmUndo = useCallback(() => {
+    dispatch({ type: 'UNDO' });
+    setUndoOpen(false);
+  }, []);
+
+  const confirmClear = useCallback(() => {
+    dispatch({ type: 'CLEAR' });
+    setClearOpen(false);
+  }, []);
+
+  const latest = useMemo(
+    () => history[history.length - 1] || null,
+    [history]
+  );
+
+  const currentEntry = useMemo(() => {
+    if (simMode) return history[history.length - 1] || null;
+    return (currentIdx >= 0 && realGames.length)
+      ? realGames[currentIdx]
+      : null;
+  }, [simMode, history, realGames, currentIdx]);
+
+  const chartHistory = useMemo(() => {
+    if (simMode) return history;
+    if (!currentEntry) return [];
+    const idx = history.findIndex(e => e.time === currentEntry.time);
+    return idx >= 0 ? history.slice(0, idx + 1) : [];
+  }, [simMode, history, currentEntry]);
+
+  const chartData = useMemo(() => ({
+    labels: chartHistory.map(e => new Date(e.time)),
+    datasets: [{
+      label: 'Proficiency',
+      data: chartHistory.map(e => e.stats.proficiencyCurrent),
+      borderColor: 'white',
+      backgroundColor: 'white',
+      fill: false,
+      tension: 0.3,
+      pointBackgroundColor: 'white'
+    }]
+  }), [chartHistory]);
+
+  const chartOptions = useMemo(() => {
+    const vals = chartHistory.map(e => e.stats.proficiencyCurrent);
+    const yMin = vals.length ? Math.min(...vals) : 0;
+    const yMax = vals.length ? Math.max(...vals) : 0;
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: 'minute', tooltipFormat: 'h:mm a',
+            displayFormats: { minute: 'h:mm a', hour: 'h:mm a' }},
+          ticks: {
+            color: 'white',
+            callback: v => new Date(v)
+              .toLocaleTimeString([], {
+                hour: 'numeric', minute: '2-digit', hour12: true
+              })
+          },
+          grid: { color: 'rgba(255,255,255,0.2)' }
+        },
+        y: {
+          beginAtZero: false,
+          suggestedMin: Math.floor(yMin * 0.9),
+          suggestedMax: Math.ceil(yMax * 1.1),
+          title: { display: true, text: 'Proficiency', color: 'white' },
+          ticks: { color: 'white' },
+          grid: { color: 'rgba(255,255,255,0.2)' }
         }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { titleColor: 'white', bodyColor: 'white' }
+      }
     };
+  }, [chartHistory]);
 
-    // Update navigation to use realGames
-    useEffect(() => {
-        // When loading, set to latest real game
-        setCurrentGameIndex(realGames.length > 0 ? realGames.length - 1 : -1);
-    }, [realGames.length]);
+  const metrics = useMemo(() => {
+    if (!currentEntry) return null;
 
-    // Keep currentGameIndex at the latest real game during simulation
-    useEffect(() => {
-        if (simMode) {
-            setCurrentGameIndex(realGames.length - 1);
-        }
-    }, [simMode, realGames.length]);
+    const realCalc = simMode
+      ? history.filter(h => !h.isSimulated)
+      : realGames.slice(0, currentIdx + 1);
 
-    // Always keep currentGameIndex at the latest real game while simulating
-    useEffect(() => {
-        if (simMode && currentGameIndex !== realGames.length - 1) {
-            setCurrentGameIndex(realGames.length - 1);
-        }
-    }, [simMode, realGames.length, currentGameIndex]);
+    if (realCalc.length < 2) return null;
+    const first = realCalc[0].stats;
+    const last = realCalc[realCalc.length - 1].stats;
 
-    // Load data from storage
-    useEffect(() => {
-        localforage.getItem('pt-characters').then(saved => {
-            if (saved && typeof saved === 'object') {
-                dispatch({ type: 'LOAD', payload: saved });
+    const realOnly = realCalc.filter(g => !g.isSimulated);
+    let play = 0;
+    for (let j = 1; j < realOnly.length; j++) {
+      play += computeWrappedDelta(
+        realOnly[j].stats.field1Current,
+        realOnly[j-1].stats.field1Current,
+        realOnly[j-1].stats.field1Max
+      );
+    }
+    const realCount = realOnly.length - 1;
+    const avgMins = realCount > 0 ? play / realCount : 12;
+    const usage = Math.min(1, avgMins / 12);
 
-                // Set index to the latest game if a character is selected
-                if (saved.currentCharacter &&
-                    saved.characters[saved.currentCharacter]?.history?.length > 0) {
-                    const realGamesCount = saved.characters[saved.currentCharacter].history
-                        .filter(entry => !entry.isSimulated).length;
-                    setCurrentGameIndex(realGamesCount > 0 ? realGamesCount - 1 : -1);
-                }
-            }
-        });
-    }, []);
-
-    // Save data to storage
-    useEffect(() => {
-        localforage.setItem('pt-characters', {
-            characters: characters,
-            currentCharacter: currentCharacter
-        });
-
-        // Update index if we're beyond bounds
-        if (currentGameIndex >= realGames.length) {
-            setCurrentGameIndex(realGames.length > 0 ? realGames.length - 1 : -1);
-        }
-    }, [characters, currentCharacter, realGames.length, currentGameIndex]);
-
-    // Debounced save to localforage
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            localforage.setItem('pt-characters', {
-                characters: characters,
-                currentCharacter: currentCharacter
-            });
-        }, 300); // 300ms debounce
-        return () => clearTimeout(timeout);
-    }, [characters, currentCharacter]);
-
-    // Navigation handlers
-    const goToPreviousGame = useCallback(() =>
-        currentGameIndex > 0 && setCurrentGameIndex(currentGameIndex - 1),
-        [currentGameIndex]
-    );
-
-    const goToNextGame = useCallback(() =>
-        currentGameIndex < realGames.length - 1 && setCurrentGameIndex(currentGameIndex + 1),
-        [currentGameIndex, realGames.length]
-    );
-
-    // After capturing a new entry, update the index to show the latest
-    const captureProficiency = useCallback(async () => {
-        if (!currentCharacter) {
-            setErrorMessage('Please select a character first');
-            setErrorOpen(true);
-            return;
-        }
-
-        let stream, video;
-        setErrorMessage('');
-        setErrorOpen(false);
-        setLoading(true);
-
-        try {
-            stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-            video = document.createElement('video');
-            video.style.display = 'none';
-            document.body.appendChild(video);
-            video.srcObject = stream;
-            await video.play();
-            await new Promise(requestAnimationFrame);
-
-            // Render to hidden canvas
-            const canvas = canvasRef.current;
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-
-            // Crop & gray before sending
-            const cropped = cropImage(canvas, canvas.width, canvas.height);
-            const blob = await new Promise(res => cropped.toBlob(res, 'image/png'));
-            const form = new FormData();
-            form.append('file', blob, `ss_${Date.now()}.png`);
-
-            const resp = await fetch('/api/ocr', {
-                method: 'POST',
-                cache: 'no-store',
-                body: form
-            });
-            if (!resp.ok) throw new Error(`OCR failed (${resp.status})`);
-            const { result } = await resp.json();
-
-            const stats = parseOcrResult(result);
-            dispatch({ type: 'CAPTURE', payload: { stats, time: Date.now() } });
-            setCurrentGameIndex(realGames.length); // will be the new last index
-        } catch (err) {
-            console.error('Capture error:', err);
-            setErrorMessage(err.message || 'Unknown error');
-            setErrorOpen(true);
-        } finally {
-            // Always cleanup media & DOM nodes
-            if (video) {
-                video.pause();
-                video.srcObject = null;
-                video.remove();
-            }
-            if (stream) {
-                stream.getTracks().forEach(t => t.stop());
-            }
-            setLoading(false);
-        }
-    }, [currentCharacter, realGames.length]);
-
-    // Compute average gains between history entries
-    const computeAverageGains = entries => {
-        if (entries.length < 2) return [];
-        return FIELD_REWARDS.map((_, idx) => {
-            let total = 0;
-            for (let i = 1; i < entries.length; i++) {
-                const prev = entries[i - 1].stats;
-                const curr = entries[i].stats;
-                total += computeWrappedDelta(
-                    curr[`field${idx + 1}Current`],
-                    prev[`field${idx + 1}Current`],
-                    prev[`field${idx + 1}Max`]
-                );
-            }
-            return total / (entries.length - 1);
-        });
-    };
-
-    // New helper function to calculate playtime duration based on playtime points
-    function calculatePlaytimeDuration(playtimePoints) {
-        const pointsPerMinute = 1; // Base playtime points (1 point per minute)
-        return playtimePoints / pointsPerMinute; // Duration in minutes
+    const avgGains = [];
+    let totalProjected = 0;
+    for (let i = 0; i < 4; i++) {
+      let tot = 0;
+      for (let j = 1; j < realOnly.length; j++) {
+        const p = computeWrappedDelta(
+          realOnly[j].stats[`field${i+1}Current`],
+          realOnly[j-1].stats[`field${i+1}Current`],
+          realOnly[j-1].stats[`field${i+1}Max`]
+        );
+        tot += p;
+      }
+      const avgCapture = realCount > 0 ? tot / realCount : 0;
+      avgGains.push(avgCapture);
+      const avgFull = usage > 0 ? avgCapture / usage : 0;
+      const fraction = last[`field${i+1}Max`]
+        ? avgFull / last[`field${i+1}Max`]
+        : 0;
+      totalProjected += fraction * FIELD_REWARDS[i];
     }
 
-    // Simulate one match's worth of gains
-    const getFieldRewardsForRank = (rank) => {
-        // 1st item = playtime always 60; rest scale by rank
-        switch (rank) {
-            case 'Lord':
-            case 'Centurion':
-                return [60, 50, 50, 50];
-            case 'Captain':
-                return [60, 40, 40, 40];
-            case 'Knight':
-                return [60, 25, 25, 25];
-            default: // Agent
-                return [60, 10, 10, 10];
-        }
+    let totalProf = 0;
+    const allCalc = simMode ? history : realCalc;
+    for (let j = 1; j < allCalc.length; j++) {
+      const prev = allCalc[j-1].stats;
+      const curr = allCalc[j].stats;
+      totalProf += curr.status !== prev.status
+        ? (prev.proficiencyMax - prev.proficiencyCurrent) +
+          curr.proficiencyCurrent
+        : curr.proficiencyCurrent - prev.proficiencyCurrent;
     }
 
-    const simulateGame = useCallback(() => {
-        // Only simulate if a character is selected
-        if (!currentCharacter) {
-            setErrorMessage('Please select a character first');
-            setErrorOpen(true);
-            return;
-        }
+    let effective = totalProf;
+    for (let i = 0; i < 4; i++) {
+      const cur = last[`field${i+1}Current`];
+      const max = last[`field${i+1}Max`];
+      const reward = FIELD_REWARDS[i];
+      effective += (cur / max) * reward;
+    }
 
-        // Require at least 2 real entries for a valid average
-        const realEntries = history.filter(h => !h.isSimulated);
-        if (realEntries.length < 2) {
-            setErrorMessage('Not enough real matches to calculate an average for simulation');
-            setErrorOpen(true);
-            return;
-        }
+    const effPerMatch = effective / (allCalc.length - 1);
+    let remaining = last.proficiencyMax - last.proficiencyCurrent;
+    for (let i = 0; i < 4; i++) {
+      const cur = last[`field${i+1}Current`];
+      const max = last[`field${i+1}Max`];
+      const reward = FIELD_REWARDS[i];
+      remaining -= (cur / max) * reward;
+    }
 
-        // Don't simulate if no history or already at Lord
-        if (history.length === 0) return;
-        const last = history[history.length - 1];
-        if (last.stats.status === 'Lord') return;
+    const estMatches = effPerMatch > 0
+      ? Math.max(0, remaining / effPerMatch)
+      : Infinity;
+    const estMins = isFinite(estMatches)
+      ? estMatches * 12
+      : Infinity;
 
-        // Backup once before first sim step
-        if (!simMode) dispatch({ type: 'BACKUP' });
+    return {
+      totalGained: totalProf,
+      ptsPerMatch: totalProjected.toFixed(1),
+      avgMatchDurationMinutes: avgMins.toFixed(1),
+      matchesLeft: isFinite(estMatches) ? Math.ceil(estMatches) : '–',
+      hoursLeft: isFinite(estMins)
+        ? (estMins / 60).toFixed(1)
+        : '–',
+      averageGains: avgGains,
+      exactMatchesLeft: isFinite(estMatches) ? estMatches : 0,
+      exactHoursLeft: isFinite(estMins) ? estMins / 60 : 0
+    };
+  }, [currentEntry, realGames, currentIdx, history, simMode]);
 
-        const snapshot = { ...last.stats };
+  useEffect(() => {
+    if (errorOpen) {
+      const t = setTimeout(() => setErrorOpen(false), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [errorOpen]);
 
-        // Calculate historical average gains per capture (not per full match)
-        const gains = [];
-        for (let i = 0; i < 4; i++) {
-            const fieldKey = `field${i + 1}Current`;
-            const maxKey = `field${i + 1}Max`;
+  const ConfirmDialog = React.memo(({
+    open, title, message, onCancel, onConfirm, confirmText = 'Confirm'
+  }) => (
+    <Dialog open={open} onClose={onCancel}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{message}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onCancel}>Cancel</Button>
+        <Button color="error" onClick={onConfirm}>{confirmText}</Button>
+      </DialogActions>
+    </Dialog>
+  ));
 
-            // Calculate total progress made across all real captures
-            let totalProgress = 0;
-            for (let j = 1; j < realEntries.length; j++) {
-                const prev = realEntries[j - 1].stats;
-                const curr = realEntries[j].stats;
-                const progress = computeWrappedDelta(
-                    curr[fieldKey],
-                    prev[fieldKey],
-                    prev[maxKey]
-                );
-                totalProgress += progress;
-            }
+  const renderChar = useCallback(sel => {
+    const c = CHARACTERS.find(ch => ch.name === sel);
+    return c ? (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar
+          src={c.icon}
+          alt={c.name}
+          sx={{ width: 24, height: 24, mr: 1 }}
+        />
+        {c.name}
+      </Box>
+    ) : '';
+  }, []);
 
-            const matchCount = realEntries.length - 1;
-            const avgProgressPerCapture = totalProgress / matchCount;
+  const prevEntry = useMemo(() => {
+    if (!currentEntry) return null;
+    if (simMode) {
+      const idx = history.findIndex(e => e.time === currentEntry.time);
+      return idx > 0 ? history[idx - 1] : null;
+    }
+    return currentIdx > 0 ? realGames[currentIdx - 1] : null;
+  }, [currentEntry, history, realGames, currentIdx, simMode]);
 
-            // Add realistic variation (±20%) but use capture-level gains, not full match
-            const jitter = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
-            const simulatedGain = Math.max(1, Math.round(avgProgressPerCapture * jitter));
-
-            gains.push(simulatedGain);
-        }
-
-        // Apply gains and handle challenge completions
-        applyChallengeGains(snapshot, gains);
-
-        // Calculate realistic match duration based on historical playtime gains
-        let totalPlaytimeMinutes = 0;
-        for (let j = 1; j < realEntries.length; j++) {
-            const prev = realEntries[j - 1].stats;
-            const curr = realEntries[j].stats;
-            const playtimeProgress = computeWrappedDelta(
-                curr.field1Current,
-                prev.field1Current,
-                prev.field1Max
-            );
-            totalPlaytimeMinutes += playtimeProgress;
-        }
-        const avgMatchMins = totalPlaytimeMinutes / (realEntries.length - 1);
-        const simulatedMatchMinutes = Math.round(avgMatchMins * (0.8 + Math.random() * 0.4));
-        const nextTime = last.time + simulatedMatchMinutes * 60_000;
-
-        dispatch({ type: 'SIM_STEP', payload: { stats: snapshot, time: nextTime, isSimulated: true } });
-    }, [currentCharacter, history, simMode]);
-
-
-    // Restore pre-simulation history
-    const stopSimulation = useCallback(() => {
-        dispatch({ type: 'RESTORE' });
-    }, []);
-
-    // Undo last capture
-    const handleUndo = useCallback(() => {
-        if (!currentCharacter) {
-            setErrorMessage('Please select a character first');
-            setErrorOpen(true);
-            return;
-        }
-        setUndoConfirmOpen(true);
-    }, [currentCharacter]);
-
-    const confirmUndo = useCallback(() => {
-        dispatch({ type: 'UNDO' });
-        setUndoConfirmOpen(false);
-    }, []);
-
-    // Clear all data (with confirmation)
-    const handleClear = useCallback(() => {
-        if (!currentCharacter) {
-            setErrorMessage('Please select a character first');
-            setErrorOpen(true);
-            return;
-        }
-        setClearConfirmOpen(true);
-    }, [currentCharacter]);
-
-    const confirmClear = useCallback(() => {
-        dispatch({ type: 'CLEAR' });
-        setClearConfirmOpen(false);
-    }, []);
-
-    const latestEntry = useMemo(() => history[history.length - 1] || null, [history]);
-
-    // The entry to display
-    const currentEntry = useMemo(() => {
-        if (!currentCharacter) return null;
-
-        if (simMode) {
-            // Show the latest (simulated) entry during simulation
-            return history.length > 0 ? history[history.length - 1] : null;
-        }
-        // Otherwise, show the selected real game
-        return realGames.length > 0 && currentGameIndex >= 0 ? realGames[currentGameIndex] : null;
-    }, [simMode, history, realGames, currentGameIndex, currentCharacter]);
-
-    // The chart should show all history during simulation, or up to the selected real game otherwise
-    const chartHistory = useMemo(() => {
-        if (!currentCharacter) return [];
-
-        if (simMode) {
-            return history;
-        }
-        if (!currentEntry) return [];
-        // Find the index of the currentEntry in the full history (by timestamp)
-        const idx = history.findIndex(e => e.time === currentEntry.time);
-        return idx >= 0 ? history.slice(0, idx + 1) : [];
-    }, [simMode, history, currentEntry, currentCharacter]);
-
-    // Chart data
-    const chartData = useMemo(() => ({
-        labels: chartHistory.map(e => new Date(e.time)),
-        datasets: [{
-            label: 'Proficiency',
-            data: chartHistory.map(e => e.stats.proficiencyCurrent),
-            borderColor: 'white',
-            backgroundColor: 'white',
-            fill: false,
-            tension: 0.3,
-            pointBackgroundColor: 'white'
-        }]
-    }), [chartHistory]);
-
-    // Chart options
-    const chartOptions = useMemo(() => {
-        const vals = chartHistory.map(e => e.stats.proficiencyCurrent);
-        const ymin = vals.length ? Math.min(...vals) : 0;
-        const ymax = vals.length ? Math.max(...vals) : 0;
-        return {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'minute',
-                        tooltipFormat: 'h:mm a',
-                        displayFormats: { minute: 'h:mm a', hour: 'h:mm a' }
-                    },
-                    ticks: {
-                        color: 'white',
-                        callback: val => {
-                            // Format tick label as "h:mm a"
-                            const date = new Date(val);
-                            return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
-                        }
-                    },
-                    grid: { color: 'rgba(255,255,255,0.2)' }
-                },
-                y: {
-                    beginAtZero: false,
-                    suggestedMin: Math.floor(ymin * 0.9),
-                    suggestedMax: Math.ceil(ymax * 1.1),
-                    title: { display: true, text: 'Proficiency', color: 'white' },
-                    ticks: { color: 'white' },
-                    grid: { color: 'rgba(255,255,255,0.2)' }
-                }
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: { titleColor: 'white', bodyColor: 'white' }
-            }
-        };
-    }, [chartHistory]);
-
-    // Metrics for the currently selected real game
-    const metrics = useMemo(() => {
-        if (!currentEntry) return null;
-
-        let gamesForCalculation, minIndex;
-
-        if (simMode) {
-            // During simulation, use all history (real + simulated) but need at least 2 real games
-            const realCount = history.filter(h => !h.isSimulated).length;
-            if (realCount < 2) return null;
-
-            gamesForCalculation = history;
-            minIndex = 1; // Need at least 2 entries total
-        } else {
-            // Not simulating, use only real games up to current index
-            if (currentGameIndex < 1) return null;
-            gamesForCalculation = realGames.slice(0, currentGameIndex + 1);
-            minIndex = 1; // Need at least 2 real games
-        }
-
-        const matchCount = gamesForCalculation.length - 1;
-        if (matchCount < minIndex) return null;
-
-        const first = gamesForCalculation[0].stats;
-        const last = gamesForCalculation[gamesForCalculation.length - 1].stats;
-
-        // Calculate playtime using only real games for usage fraction
-        const realGamesForCalc = gamesForCalculation.filter(g => !g.isSimulated);
-        let totalPlaytimeMinutes = 0;
-        for (let j = 1; j < realGamesForCalc.length; j++) {
-            const prev = realGamesForCalc[j - 1].stats;
-            const curr = realGamesForCalc[j].stats;
-            const playtimeProgress = computeWrappedDelta(
-                curr.field1Current,
-                prev.field1Current,
-                prev.field1Max
-            );
-            totalPlaytimeMinutes += playtimeProgress;
-        }
-
-        const realMatchCount = realGamesForCalc.length - 1;
-        const avgMatchMins = realMatchCount > 0 ? totalPlaytimeMinutes / realMatchCount : 12;
-        const typicalMatchDuration = 12;
-        const usageFraction = Math.min(1, avgMatchMins / typicalMatchDuration);
-
-        // Calculate challenge projections using real game progress rates
-        let totalProjectedProfPerMatch = 0;
-        const averageGains = []; // Store for rank progression calculations
-        for (let i = 0; i < 4; i++) {
-            const fieldKey = `field${i + 1}Current`;
-            const maxKey = `field${i + 1}Max`;
-
-            // Only use real games for calculating progress rates
-            let totalProgress = 0;
-            for (let j = 1; j < realGamesForCalc.length; j++) {
-                const prev = realGamesForCalc[j - 1].stats;
-                const curr = realGamesForCalc[j].stats;
-                const progress = computeWrappedDelta(
-                    curr[fieldKey],
-                    prev[fieldKey],
-                    prev[maxKey]
-                );
-                totalProgress += progress;
-            }
-
-            const avgProgressPerCapture = realMatchCount > 0 ? totalProgress / realMatchCount : 0;
-            averageGains.push(avgProgressPerCapture); // Store for rank progression
-            const avgProgressPerFullMatch = usageFraction > 0 ? avgProgressPerCapture / usageFraction : 0;
-            const currentMax = last[maxKey];
-            const progressFraction = currentMax > 0 ? avgProgressPerFullMatch / currentMax : 0;
-            const proficiencyReward = FIELD_REWARDS[i];
-            const projectedProfFromChallenge = progressFraction * proficiencyReward;
-
-            totalProjectedProfPerMatch += projectedProfFromChallenge;
-        }
-
-        // Calculate proficiency gained using all games in the calculation
-        let totalProfGained = 0;
-        for (let j = 1; j < gamesForCalculation.length; j++) {
-            const prev = gamesForCalculation[j - 1].stats;
-            const curr = gamesForCalculation[j].stats;
-
-            if (curr.status !== prev.status) {
-                totalProfGained += (prev.proficiencyMax - prev.proficiencyCurrent) + curr.proficiencyCurrent;
-            } else {
-                totalProfGained += curr.proficiencyCurrent - prev.proficiencyCurrent;
-            }
-        }
-
-        // NEW: Calculate "effective" proficiency that includes partial challenge progress
-        let effectiveProficiencyGained = 0;
-        
-        // Start with actual proficiency gained
-        effectiveProficiencyGained = totalProfGained;
-        
-        // Add value of current partial progress in each challenge
-        for (let i = 0; i < 4; i++) {
-            const fieldKey = `field${i + 1}Current`;
-            const maxKey = `field${i + 1}Max`;
-            
-            const currentProgress = last[fieldKey];
-            const maxProgress = last[maxKey];
-            const proficiencyReward = FIELD_REWARDS[i];
-            
-            // Calculate the proficiency value of current partial progress
-            const partialProficiencyValue = (currentProgress / maxProgress) * proficiencyReward;
-            effectiveProficiencyGained += partialProficiencyValue;
-        }
-        
-        // Calculate effective proficiency per match
-        const effectiveProfPerMatch = effectiveProficiencyGained / matchCount;
-        
-        // Calculate remaining proficiency needed (including completing current challenges)
-        const remainingPts = last.proficiencyMax - last.proficiencyCurrent;
-        
-        // Subtract the value of current partial progress since it's already "earned"
-        let adjustedRemainingPts = remainingPts;
-        for (let i = 0; i < 4; i++) {
-            const fieldKey = `field${i + 1}Current`;
-            const maxKey = `field${i + 1}Max`;
-            
-            const currentProgress = last[fieldKey];
-            const maxProgress = last[maxKey];
-            const proficiencyReward = FIELD_REWARDS[i];
-            
-            // Subtract the proficiency value of current partial progress
-            const partialProficiencyValue = (currentProgress / maxProgress) * proficiencyReward;
-            adjustedRemainingPts -= partialProficiencyValue;
-        }
-        
-        // Use the effective proficiency per match for more accurate estimate
-        const estMatchesLeft = effectiveProfPerMatch > 0
-            ? Math.max(0, adjustedRemainingPts / effectiveProfPerMatch)
-            : Infinity;
-
-        const estMinutesLeft = isFinite(estMatchesLeft)
-            ? estMatchesLeft * typicalMatchDuration
-            : Infinity;
-
-        return {
-            totalGained: totalProfGained,
-            ptsPerMatch: totalProjectedProfPerMatch.toFixed(1),
-            avgMatchDurationMinutes: avgMatchMins.toFixed(1),
-            matchesLeft: isFinite(estMatchesLeft) ? Math.ceil(estMatchesLeft) : '–',
-            hoursLeft: isFinite(estMinutesLeft)
-                ? (estMinutesLeft / 60).toFixed(1)
-                : '–',
-            averageGains, // Add this for rank progression calculations
-            // Add the unrounded values for exact calculations
-            exactMatchesLeft: isFinite(estMatchesLeft) ? estMatchesLeft : 0,
-            exactHoursLeft: isFinite(estMinutesLeft) ? estMinutesLeft / 60 : 0
-        };
-    }, [currentEntry, realGames, currentGameIndex, history, simMode]);
-
-    // Debounced error dialog close
-    useEffect(() => {
-        if (errorOpen) {
-            const timer = setTimeout(() => {
-                setErrorOpen(false);
-            }, 5000); // 5 seconds
-            return () => clearTimeout(timer);
-        }
-    }, [errorOpen]);
-
-    // Load initial data from localforage
-    useEffect(() => {
-        const loadData = async () => {
-            const saved = await localforage.getItem('pt-characters');
-            if (saved && typeof saved === 'object') {
-                dispatch({ type: 'LOAD', payload: saved });
-            }
-        };
-        loadData();
-    }, []);
-
-    // Save data to localforage on update
-    useEffect(() => {
-        const saveData = async () => {
-            await localforage.setItem('pt-characters', {
-                characters,
-                currentCharacter
-            });
-        };
-        saveData();
-    }, [characters, currentCharacter]);
-
-    // Reusable confirmation dialog
-    const ConfirmDialog = React.memo(({ open, title, message, onCancel, onConfirm, confirmText = 'Confirm' }) => (
-        <Dialog open={open} onClose={onCancel}>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogContent><DialogContentText>{message}</DialogContentText></DialogContent>
-            <DialogActions>
-                <Button onClick={onCancel}>Cancel</Button>
-                <Button color="error" onClick={onConfirm}>{confirmText}</Button>
-            </DialogActions>
-        </Dialog>
-    ));
-
-    const renderCharacterValue = useCallback((selected) => {
-        const character = CHARACTERS.find(char => char.name === selected);
-        return character ? (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar src={character.icon} alt={character.name} sx={{ width: 24, height: 24, mr: 1 }} />
-                {character.name}
-            </Box>
-        ) : '';
-    }, []);
-
-    // Previous entry for comparison
-    const previousEntry = useMemo(() => {
-        if (!currentEntry) return null;
-
-        // Find the previous entry depending on mode
-        if (simMode) {
-            const currentIndex = history.findIndex(e => e.time === currentEntry.time);
-            return currentIndex > 0 ? history[currentIndex - 1] : null;
-        } else {
-            return currentGameIndex > 0 ? realGames[currentGameIndex - 1] : null;
-        }
-    }, [currentEntry, history, realGames, currentGameIndex, simMode]);
-
-    return (
-        <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
-            {/* Character Selector + Clear button row */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 1 }}>
-                <FormControl fullWidth>
-                    <InputLabel id="character-select-label" sx={{ color: 'white' }}>Character</InputLabel>
-                    <Select
-                        labelId="character-select-label"
-                        id="character-select"
-                        value={currentCharacter || ''}
-                        label="Character"
-                        onChange={handleCharacterChange}
-                        sx={{
-                            color: 'white',
-                            '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255, 255, 255, 0.5)' },
-                            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-                            '.MuiSvgIcon-root': { color: 'white' }
-                        }}
-                        MenuProps={{
-                            PaperProps: {
-                                style: {
-                                    maxHeight: 300
-                                }
-                            }
-                        }}
-                        renderValue={renderCharacterValue}
-                    >
-                        {CHARACTERS.map(char => (
-                            <MenuItem key={char.name} value={char.name}>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <Avatar
-                                        src={char.icon}
-                                        alt={char.name}
-                                        sx={{ width: 24, height: 24, mr: 1 }}
-                                    />
-                                    {char.name}
-                                </Box>
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={handleClear}
-                    disabled={!currentCharacter || !history.length}
-                    startIcon={<Delete />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 100,
-                        maxWidth: 120,
-                        px: 1.5,
-                        py: 1,
-                        ml: 2, // margin-left for spacing
-                        height: '56px', // match dropdown height
-                        alignSelf: 'stretch'
-                    }}
-                >
-                    Clear
-                </Button>
-            </Box>
-
-            {/* Controls */}
-            <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
-                sx={{
-                    mb: 3,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    width: '100%',
-                    gap: 2,
-                    px: 1,
-                }}
-            >
-                {/* Capture Proficiency button */}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={captureProficiency}
-                    disabled={
-                        loading ||
-                        simMode ||
-                        !currentCharacter ||
-                        currentGameIndex !== realGames.length - 1
-                    }
-                    startIcon={<AddAPhoto />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2,
-                        py: 1.2,
-                    }}
-                >
-                    {loading ? 'Capturing…' : 'Capture Proficiency'}
-                </Button>
-                {/* Undo Last button */}
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleUndo}
-                    disabled={!currentCharacter || history.length < 1 || simMode}
-                    startIcon={<Undo />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2,
-                        py: 1.2,
-                    }}
-                >
-                    Undo Last
-                </Button>
-                {/* Simulate Game button */}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={simulateGame}
-                    disabled={
-                        !currentCharacter ||
-                        !history.length ||
-                        latestEntry?.stats.status === 'Lord' ||
-                        (!simMode && currentGameIndex !== realGames.length - 1)
-                    }
-                    startIcon={<PlayArrow />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2,
-                        py: 1.2,
-                    }}
-                >
-                    Simulate Game{simMode ? ` (${simCount})` : ''}
-                </Button>
-                {/* Stop Simulation button */}
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={stopSimulation}
-                    disabled={!simMode}
-                    startIcon={<Stop />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2,
-                        py: 1.2,
-                    }}
-                >
-                    Stop Simulation
-                </Button>
-            </Stack>
-
-            {/* Game navigation controls */}
-            {currentCharacter && realGames.length > 0 && (
-                <Stack
-                    className="noselect"
-                    direction="row"
-                    spacing={2}
-                    sx={{
-                        mb: 0.5, // Reduced bottom margin
-                        mt: 0.5, // Add a small top margin (or remove for even less space)
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '100%',
-                        px: 1, // Add horizontal padding to match action buttons
-                        minHeight: 0, // Prevent extra height
-                    }}
-                >
-                    <IconButton
-                        onClick={goToPreviousGame}
-                        disabled={simMode || currentGameIndex <= 0}
-                        sx={{ color: 'white', p: 0.5 }} // Reduce padding
-                    >
-                        <ChevronLeft />
-                    </IconButton>
-
-                    <Typography sx={{ color: 'white', minWidth: '80px', textAlign: 'center', fontSize: '1.1rem' }}>
-                        {currentGameIndex + 1} / {realGames.length}
-                    </Typography>
-
-                    <IconButton
-                        onClick={goToNextGame}
-                        disabled={simMode || currentGameIndex >= realGames.length - 1}
-                        sx={{ color: 'white', p: 0.5 }} // Reduce padding
-                    >
-                        <ChevronRight />
-                    </IconButton>
-                </Stack>
-            )}
-
-            {/* Character title display */}
-            {/* Removed character name under arrows */}
-
-            {/* Error dialog */}
-            <Dialog open={errorOpen} onClose={() => setErrorOpen(false)}>
-                <DialogTitle>Error</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>{errorMessage}</DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setErrorOpen(false)}>Close</Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* Undo confirmation dialog */}
-            <ConfirmDialog
-                open={undoConfirmOpen}
-                title="Undo Last Capture"
-                message="Are you sure you want to undo the last capture? This cannot be undone."
-                onCancel={() => setUndoConfirmOpen(false)}
-                onConfirm={confirmUndo}
-                confirmText="Undo"
-            />
-
-            {/* Clear confirmation dialog */}
-            <ConfirmDialog
-                open={clearConfirmOpen}
-                title={`Clear ${currentCharacter} Data`}
-                message={`Are you sure you want to clear all history for ${currentCharacter || 'this character'}? This cannot be undone.`}
-                onCancel={() => setClearConfirmOpen(false)}
-                onConfirm={confirmClear}
-                confirmText="Clear"
-            />
-
-            {/* Hidden canvas for capture */}
-            <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-            {/* Stats & chart */}
-            {currentEntry && (
-                <>
-                    <ProficiencyStats
-                        stats={currentEntry.stats}
-                        previousStats={previousEntry?.stats}
-                    />
-                    {metrics && (
-                        <Box sx={{ mb: 2, color: 'white' }}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'flex-start',
-                                    gap: 2,
-                                    mb: 1
-                                }}
-                            >
-                                {/* Left column */}
-                                <Box>
-                                    <Typography>Prof. Per Match: ~{metrics.ptsPerMatch}</Typography>
-                                    <Typography sx={{ mt: 1 }}>
-                                        Total Gained: {formatNumber(metrics.totalGained)}
-                                    </Typography>
-                                </Box>
-                                {/* Right column */}
-                                <Box sx={{ textAlign: 'right' }}>
-                                    <Typography>Hours Left: ~{metrics.hoursLeft}</Typography>
-                                    <Typography>Matches Left: ~{metrics.matchesLeft}</Typography>
-                                </Box>
-                            </Box>
-                        </Box>
-                    )}
-
-                    {/* Add rank progression sheet */}
-                    {metrics && metrics.averageGains && (
-                        <RankProgressionSheet
-                            currentStats={currentEntry.stats}
-                            averageGains={metrics.averageGains}
-                            profPerMatch={metrics.ptsPerMatch}
-                            currentRemainingMatches={metrics.exactMatchesLeft || 0}
-                            currentRemainingHours={metrics.exactHoursLeft || 0}
-                        />
-                    )}
-
-                    {/* Only show chart if there are at least 2 entries in chartHistory */}
-                    {chartHistory.length >= 2 && (
-                        <Box sx={{ width: '100%', height: 300 }}>
-                            <Line data={chartData} options={chartOptions} />
-                        </Box>
-                    )}
-                </>
-            )}
-
-            {/* Show instructions if no captures yet */}
-            {currentCharacter && history.length === 0 && (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: 'rgba(30, 32, 40, 0.92)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        borderRadius: 3,
-                        color: 'white',
-                        mb: 3,
-                        minHeight: 180,
-                        maxWidth: 500,
-                        mx: 'auto',
-                        px: 3,
-                        py: 3,
-                        boxShadow: '0 2px 12px 0 rgba(0,0,0,0.25)'
-                    }}
-                >
-                    <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: 'bold' }}>
-                        How to Track Proficiency
-                    </Typography>
-                    <Typography variant="body2" align="center" sx={{ mb: 2, color: '#b0b8c1' }}>
-                        For accurate results, follow these steps after every game:
-                    </Typography>
-                    <Box component="ol" sx={{
-                        pl: 3,
-                        textAlign: 'left',
-                        width: '100%',
-                        color: '#e0e0e0',
-                        '& li': {
-                            mb: 1.2,
-                            fontSize: '1.05rem',
-                            lineHeight: 1.7,
-                        },
-                        '& b': { color: '#ffd600' }
-                    }}>
-                        <li>
-                            Navigate to the hero's proficiency screen in Marvel Rivals.
-                        </li>
-                        <li>
-                            Make sure your game is running in <b>fullscreen mode</b>.
-                        </li>
-                        <li>
-                            Click <b>Capture Proficiency</b> and select the screen where your game is running. Allow your browser to share the <b>entire screen</b>.
-                        </li>
-                        <li>
-                            Wait for the browser to capture and display your proficiency info.
-                        </li>
-                        <li>
-                            Repeat these steps after each game for best tracking accuracy.
-                        </li>
-                    </Box>
+  return (
+    <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 1 }}>
+        <FormControl fullWidth>
+          <InputLabel
+            id="character-select-label"
+            sx={{ color: 'white' }}
+          >
+            Character
+          </InputLabel>
+          <Select
+            labelId="character-select-label"
+            id="character-select"
+            value={currentCharacter || ''}
+            label="Character"
+            onChange={handleCharChange}
+            sx={{
+              color: 'white',
+              '.MuiOutlinedInput-notchedOutline': {
+                borderColor: 'rgba(255,255,255,0.5)'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'white'
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'white'
+              },
+              '.MuiSvgIcon-root': { color: 'white' }
+            }}
+            MenuProps={{
+              PaperProps: { style: { maxHeight: 300 } }
+            }}
+            renderValue={renderChar}
+          >
+            {CHARACTERS.map(c => (
+              <MenuItem key={c.name} value={c.name}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar
+                    src={c.icon}
+                    alt={c.name}
+                    sx={{ width: 24, height: 24, mr: 1 }}
+                  />
+                  {c.name}
                 </Box>
-            )}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => setClearOpen(true)}
+          disabled={!currentCharacter || !history.length}
+          startIcon={<Delete />}
+          sx={{
+            textTransform: 'none',
+            minWidth: 100,
+            maxWidth: 120,
+            px: 1.5, py: 1,
+            ml: 2,
+            height: '56px',
+            alignSelf: 'stretch'
+          }}
+        >
+          Clear
+        </Button>
+      </Box>
 
-            {/* No character selected message */}
-            {!currentCharacter && (
-                <Box sx={{ textAlign: 'center', color: 'white', mt: 4 }}>
-                    <Typography variant="h6">
-                        Please select a character to begin tracking
-                    </Typography>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        sx={{
+          mb: 3,
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          width: '100%',
+          gap: 2,
+          px: 1
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={capture}
+          disabled={
+            loading || simMode ||
+            !currentCharacter ||
+            currentIdx !== realGames.length - 1
+          }
+          startIcon={<AddAPhoto />}
+          sx={{
+            textTransform: 'none',
+            minWidth: 170,
+            px: 2, py: 1.2
+          }}
+        >
+          {loading ? 'Capturing…' : 'Capture Proficiency'}
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => setUndoOpen(true)}
+          disabled={!currentCharacter || !history.length || simMode}
+          startIcon={<Undo />}
+          sx={{
+            textTransform: 'none',
+            minWidth: 170,
+            px: 2, py: 1.2
+          }}
+        >
+          Undo Last
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={simulate}
+          disabled={
+            !currentCharacter ||
+            !history.length ||
+            latest?.stats.status === 'Lord' ||
+            (!simMode && currentIdx !== realGames.length - 1)
+          }
+          startIcon={<PlayArrow />}
+          sx={{
+            textTransform: 'none',
+            minWidth: 170,
+            px: 2, py: 1.2
+          }}
+        >
+          Simulate Game{simMode ? ` (${simCount})` : ''}
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={stopSim}
+          disabled={!simMode}
+          startIcon={<Stop />}
+          sx={{
+            textTransform: 'none',
+            minWidth: 170,
+            px: 2, py: 1.2
+          }}
+        >
+          Stop Simulation
+        </Button>
+      </Stack>
+
+      {currentCharacter && realGames.length > 0 && (
+        <Stack
+          className="noselect"
+          direction="row"
+          spacing={2}
+          sx={{
+            mb: 0.5, mt: 0.5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            px: 1
+          }}
+        >
+          <IconButton
+            onClick={goPrev}
+            disabled={simMode || currentIdx <= 0}
+            sx={{ color: 'white', p: 0.5 }}
+          >
+            <ChevronLeft />
+          </IconButton>
+          <Typography sx={{
+            color: 'white',
+            minWidth: '80px',
+            textAlign: 'center',
+            fontSize: '1.1rem'
+          }}>
+            {currentIdx + 1} / {realGames.length}
+          </Typography>
+          <IconButton
+            onClick={goNext}
+            disabled={simMode || currentIdx >= realGames.length - 1}
+            sx={{ color: 'white', p: 0.5 }}
+          >
+            <ChevronRight />
+          </IconButton>
+        </Stack>
+      )}
+
+      <Dialog open={errorOpen} onClose={() => setErrorOpen(false)}>
+        <DialogTitle>Error</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{errorMessage}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <ConfirmDialog
+        open={undoOpen}
+        title="Undo Last Capture"
+        message="Are you sure? This cannot be undone."
+        onCancel={() => setUndoOpen(false)}
+        onConfirm={confirmUndo}
+        confirmText="Undo"
+      />
+
+      <ConfirmDialog
+        open={clearOpen}
+        title={`Clear ${currentCharacter} Data`}
+        message={`All history will be lost. Confirm?`}
+        onCancel={() => setClearOpen(false)}
+        onConfirm={confirmClear}
+        confirmText="Clear"
+      />
+
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+      {currentEntry && (
+        <>
+          <ProficiencyStats
+            stats={currentEntry.stats}
+            previousStats={prevEntry?.stats}
+          />
+          {metrics && (
+            <Box sx={{ mb: 2, color: 'white' }}>
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mb: 1,
+                gap: 2
+              }}>
+                <Box>
+                  <Typography>
+                    Prof. Per Match: ~{metrics.ptsPerMatch}
+                  </Typography>
+                  <Typography sx={{ mt: 1 }}>
+                    Total Gained: {formatNumber(metrics.totalGained)}
+                  </Typography>
                 </Box>
-            )}
+                <Box sx={{ textAlign: 'right' }}>
+                  <Typography>
+                    Hours Left: ~{metrics.hoursLeft}
+                  </Typography>
+                  <Typography>
+                    Matches Left: ~{metrics.matchesLeft}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          )}
+
+          {metrics?.averageGains && (
+            <RankProgressionSheet
+              currentStats={currentEntry.stats}
+              averageGains={metrics.averageGains}
+              profPerMatch={metrics.ptsPerMatch}
+              currentRemainingMatches={metrics.exactMatchesLeft}
+              currentRemainingHours={metrics.exactHoursLeft}
+            />
+          )}
+
+          {chartHistory.length >= 2 && (
+            <Box sx={{ width: '100%', height: 300 }}>
+              <Line data={chartData} options={chartOptions} />
+            </Box>
+          )}
+        </>
+      )}
+
+      {currentCharacter && !history.length && (
+        <Box sx={{
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(30,32,40,0.92)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 3, color: 'white', mb: 3,
+          minHeight: 180, maxWidth: 500, mx: 'auto',
+          px: 3, py: 3, boxShadow: '0 2px 12px rgba(0,0,0,0.25)'
+        }}>
+          <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: 'bold' }}>
+            How to Track Proficiency
+          </Typography>
+          <Typography variant="body2" align="center" sx={{ mb: 2, color: '#b0b8c1' }}>
+            After each game:
+          </Typography>
+          <Box component="ol" sx={{
+            pl: 3, textAlign: 'left', width: '100%',
+            color: '#e0e0e0', '& li': { mb: 1.2, fontSize: '1.05rem' },
+            '& b': { color: '#ffd600' }
+          }}>
+            <li>Go to your hero's proficiency screen.</li>
+            <li>Ensure <b>fullscreen</b> mode.</li>
+            <li>Click <b>Capture Proficiency</b> and share entire screen.</li>
+            <li>Wait for capture to complete.</li>
+            <li>Repeat after every match.</li>
+          </Box>
         </Box>
-    );
+      )}
+
+      {!currentCharacter && (
+        <Box sx={{ textAlign: 'center', color: 'white', mt: 4 }}>
+          <Typography variant="h6">
+            Please select a character to begin tracking
+          </Typography>
+        </Box>
+      )}
+    </Box>
+  );
 }
