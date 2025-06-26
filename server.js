@@ -6,8 +6,15 @@ import path from 'path'
 import { spawn } from 'child_process'
 import { v4 as uuid } from 'uuid'
 import puppeteer from 'puppeteer'
+import dotenv from 'dotenv'
 
-const IMAGES_DIR = '/hdd/docker/paddleocr/images'
+dotenv.config()
+
+const IMAGES_DIR = process.env.IMAGES_DIR || '/hdd/docker/paddleocr/images'
+const API_LOG_PATH = process.env.API_LOG_PATH || '/hdd/webroot/rivalytics/api-access.log'
+const CHROMIUM_PATH = process.env.CHROMIUM_PATH || '/usr/bin/chromium'
+const DOCKER_CWD = process.env.DOCKER_CWD || '/hdd/docker'
+
 const app = express()
 app.use(express.json())
 
@@ -23,6 +30,15 @@ const upload = multer({
 })
 
 app.get('/', (_req, res) => res.send('OK'))
+
+// API access logging middleware
+app.use((req, res, next) => {
+    const logLine = `[${new Date().toISOString()}] ${req.ip} ${req.method} ${req.originalUrl}\n`;
+    fs.appendFile(API_LOG_PATH, logLine, err => {
+        if (err) console.error('API log error:', err);
+    });
+    next();
+});
 
 // OCR endpoint (unchanged)
 app.post('/api/ocr', upload.single('file'), (req, res) => {
@@ -52,7 +68,7 @@ print(json.dumps(out))
             'python',
             '-',
         ],
-        { cwd: '/hdd/docker', stdio: ['pipe', 'pipe', 'pipe'] }
+        { cwd: DOCKER_CWD, stdio: ['pipe', 'pipe', 'pipe'] }
     )
 
     let stdout = Buffer.alloc(0), stderr = Buffer.alloc(0)
@@ -95,99 +111,64 @@ w.chrome={runtime:{},app:{isInstalled:false},csi:function(){},loadTimes:function
 const o=wn.permissions.query;wn.permissions.query=function(p){return p.name==='notifications'?Promise.resolve({state:Notification.permission}):o(p)};
 })(window,navigator,window.navigator);`;
 
+// Shared Puppeteer launch options and helper
+const puppeteerOptions = {
+  headless: true,
+  executablePath: CHROMIUM_PATH,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-blink-features=AutomationControlled'
+  ],
+};
+
+async function scrapeJson(url) {
+  const browser = await puppeteer.launch(puppeteerOptions);
+  try {
+    const page = await browser.newPage();
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+    );
+    await page.evaluateOnNewDocument(bypassScript);
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    const text = await page.evaluate(() => document.body.innerText || '');
+    return JSON.parse(text);
+  } finally {
+    await browser.close();
+  }
+}
+
 // ── RAW career segments ──
 app.get('/api/rivals/:username/career', async (req, res) => {
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${req.params.username}/segments/career?mode=all`;
-    let browser;
-    try {
-        browser = await puppeteer.launch({
-            headless: true,
-            executablePath: '/usr/bin/chromium',
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-blink-features=AutomationControlled'
-            ],
-        });
-
-        const page = await browser.newPage();
-        await page.setUserAgent(
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-        );
-        await page.evaluateOnNewDocument(bypassScript);
-
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-
-        const raw = await page.evaluate(() => document.body.innerText || '');
-        let json;
-        try { json = JSON.parse(raw); } catch { throw new Error('Blocked or invalid JSON'); }
-
-        res.json(json);
-    } catch (err) {
-        res.status(502).json({ error: err.message });
-    } finally {
-        if (browser) await browser.close();
-    }
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${req.params.username}/segments/career?mode=all`;
+  try {
+    const json = await scrapeJson(url);
+    res.json(json);
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
 });
 
 // ── RAW match history ──
 app.get('/api/rivals/:username/matches', async (req, res) => {
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${req.params.username}?season=3`
-    let browser
-    try {
-        browser = await puppeteer.launch({
-            headless: true,
-            executablePath: '/usr/bin/chromium',
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-blink-features=AutomationControlled'
-            ],
-        })
-        const page = await browser.newPage()
-        await page.setUserAgent(
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-        )
-        await page.evaluateOnNewDocument(bypassScript)
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 })
-        const text = await page.evaluate(() => document.body.innerText || '')
-        const json = JSON.parse(text)
-        res.json(json)
-    } catch (err) {
-        res.status(502).json({ error: err.message })
-    } finally {
-        if (browser) await browser.close()
-    }
-})
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${req.params.username}?season=3`;
+  try {
+    const json = await scrapeJson(url);
+    res.json(json);
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
 
 // ── RAW ranked history ──
 app.get('/api/rivals/:username/ranked', async (req, res) => {
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${req.params.username}/stats/overview/ranked`
-    let browser
-    try {
-        browser = await puppeteer.launch({
-            headless: true,
-            executablePath: '/usr/bin/chromium',
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-blink-features=AutomationControlled'
-            ],
-        })
-        const page = await browser.newPage()
-        await page.setUserAgent(
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-        )
-        await page.evaluateOnNewDocument(bypassScript)
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 })
-        const text = await page.evaluate(() => document.body.innerText || '')
-        const json = JSON.parse(text)
-        res.json(json)
-    } catch (err) {
-        res.status(502).json({ error: err.message })
-    } finally {
-        if (browser) await browser.close()
-    }
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${req.params.username}/stats/overview/ranked`;
+  try {
+    const json = await scrapeJson(url);
+    res.json(json);
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
 })
 
 app.listen(8099, () =>

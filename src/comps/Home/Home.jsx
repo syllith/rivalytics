@@ -70,6 +70,11 @@ export default function Home() {
     const [error, setError] = useState('');
     // Flag for username not found (for error display)
     const [usernameNotFound, setUsernameNotFound] = useState(false);
+    // Last fetch time for the current username
+    const [lastFetchTime, setLastFetchTime] = useState(() => {
+        if (!username) return null;
+        return localStorage.getItem(`rivalytics-lastfetch:${username}`);
+    });
 
     // --- Effects: Persist username to localStorage whenever it changes ---
     useEffect(() => {
@@ -86,6 +91,8 @@ export default function Home() {
             setMatchesData(parsed.matchesData);
             setRankedData(parsed.rankedData);
         }
+        // Update last fetch time from localStorage
+        setLastFetchTime(localStorage.getItem(`rivalytics-lastfetch:${username}`));
     }, [username]);
 
     // --- Add a username to the recent usernames list and persist ---
@@ -161,6 +168,8 @@ export default function Home() {
                 setUsernameNotFound(true);
                 // Remove any previously cached data for this username
                 localStorage.removeItem(`rivalytics-data:${currentUsername}`);
+                localStorage.removeItem(`rivalytics-lastfetch:${currentUsername}`);
+                setLastFetchTime(null);
                 return;
             }
 
@@ -169,6 +178,10 @@ export default function Home() {
                 `rivalytics-data:${currentUsername}`,
                 JSON.stringify({ heroData: heroJson, matchesData: matchesJson, rankedData: rankedJson })
             );
+            // Store the fetch time
+            const now = new Date().toISOString();
+            localStorage.setItem(`rivalytics-lastfetch:${currentUsername}` , now);
+            setLastFetchTime(now);
 
             setHeroData(heroJson);
             setMatchesData(matchesJson);
@@ -263,7 +276,7 @@ export default function Home() {
 
                         {/* --- Username Autocomplete (hidden on proficiency tab) --- */}
                         {tab !== 'proficiency' && (
-                            <Box display="flex" mb={2} alignItems="center" justifyContent="center">
+                            <Box display="flex" mb={2} alignItems="center" justifyContent="center" flexDirection="column">
                                 <Autocomplete
                                     freeSolo
                                     options={autocompleteOptions}
@@ -343,6 +356,23 @@ export default function Home() {
                                         />
                                     )}
                                 />
+                                {/* Last fetch time label */}
+                                {lastFetchTime && (
+                                    <Box mt={1} sx={{ color: '#aaa', fontSize: 13, textAlign: 'center' }}>
+                                        {(() => {
+                                            const d = new Date(lastFetchTime);
+                                            let hours = d.getHours();
+                                            const minutes = d.getMinutes();
+                                            const ampm = hours >= 12 ? 'PM' : 'AM';
+                                            hours = hours % 12;
+                                            hours = hours ? hours : 12; // the hour '0' should be '12'
+                                            const month = d.getMonth() + 1;
+                                            const day = d.getDate();
+                                            const year = d.getFullYear();
+                                            return `Last Updated: ${month}/${day}/${year} ${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+                                        })()}
+                                    </Box>
+                                )}
                             </Box>
                         )}
                         {/* --- End Username Autocomplete --- */}

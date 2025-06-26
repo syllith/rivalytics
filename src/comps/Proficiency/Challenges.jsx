@@ -52,7 +52,7 @@ export default function Challenges({ stats, previousStats, metrics }) {
                 }}>
                     <Box>
                         <Typography>
-                            Prof. Per Match: ~{metrics.ptsPerMatch}
+                            Prof. Per Match: {metrics.ptsPerMatch}
                         </Typography>
                         <Typography sx={{ mt: 1 }}>
                             Total Gained: {formatNumber(metrics.totalGained)}
