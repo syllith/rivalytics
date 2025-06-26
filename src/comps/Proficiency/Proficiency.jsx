@@ -17,7 +17,7 @@ import localforage from 'localforage';
 import characters from '../../characters.json';
 import {
     AddAPhoto, Delete, Undo, PlayArrow, Stop,
-    ChevronLeft, ChevronRight
+    ChevronLeft, ChevronRight, FileUpload, FileDownload
 } from '@mui/icons-material';
 
 import {
@@ -59,12 +59,14 @@ const ConfirmDialog = React.memo(({
     </Dialog>
 ));
 
-// Dialog for displaying error messages
-const ErrorDialog = ({ open, message, onClose }) => (
+// Dialog for displaying messages (both success and error)
+const MessageDialog = ({ open, message, isSuccess, onClose }) => (
     <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Error</DialogTitle>
+        <DialogTitle>{isSuccess ? 'Success' : 'Error'}</DialogTitle>
         <DialogContent>
-            <DialogContentText>{message}</DialogContentText>
+            <DialogContentText>
+                {message}
+            </DialogContentText>
         </DialogContent>
         <DialogActions>
             <Button onClick={onClose}>Close</Button>
@@ -77,12 +79,69 @@ export default function ProficiencyTracker() {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { simMode, simCount, currentCharacter, characters } = state;
     const [loading, setLoading] = useState(false); // For capture button
-    const [errorOpen, setErrorOpen] = useState(false); // Error dialog visibility
-    const [errorMessage, setErrorMessage] = useState(''); // Error dialog message
+    const [messageOpen, setMessageOpen] = useState(false); // Message dialog visibility
+    const [message, setMessage] = useState(''); // Message dialog content
+    const [isSuccess, setIsSuccess] = useState(false); // Whether message is success or error
     const canvasRef = useRef(null); // Ref for hidden canvas
     const [undoOpen, setUndoOpen] = useState(false); // Undo confirmation dialog
     const [clearOpen, setClearOpen] = useState(false); // Clear confirmation dialog
     const [currentIdx, setCurrentIdx] = useState(-1); // Index of current real game
+    // --- Import/Export handlers ---
+    const fileInputRef = useRef(null);
+    // Export proficiency data as JSON (real data only, no sim)
+    const handleExport = () => {
+        // Deep copy and filter out simulated entries from all characters
+        const filteredCharacters = Object.fromEntries(
+            Object.entries(characters).map(([char, data]) => [
+                char,
+                {
+                    ...data,
+                    history: Array.isArray(data.history)
+                        ? data.history.filter(e => !e.isSimulated)
+                        : [],
+                    backupHistory: [] // Don't export backup/sim data
+                }
+            ])
+        );
+        const data = { characters: filteredCharacters, currentCharacter };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'rivalytics-backup.json';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 0);
+    };
+    // Import proficiency data from JSON
+    const handleImport = e => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = evt => {
+            try {
+                const data = JSON.parse(evt.target.result);
+                if (data.characters && typeof data.characters === 'object') {
+                    dispatch({ type: 'LOAD', payload: data });
+                    setMessage('Import successful!');
+                    setIsSuccess(true);
+                    setMessageOpen(true);
+                } else {
+                    throw new Error('Invalid data format');
+                }
+            } catch (err) {
+                setMessage('Import failed: ' + (err.message || 'Invalid file'));
+                setIsSuccess(false);
+                setMessageOpen(true);
+            }
+        };
+        reader.readAsText(file);
+        // Reset input so same file can be re-imported if needed
+        e.target.value = '';
+    };
 
     // --- Memoized derived data: history, realGames, latest entry ---
     const {
@@ -164,15 +223,16 @@ export default function ProficiencyTracker() {
 
     // --- Handler: Capture proficiency from canvas and add to history ---
     const capture = async () => {
-        setErrorOpen(false);
+        setMessageOpen(false);
         setLoading(true);
         try {
             const stats = await captureProficiency(canvasRef);
             dispatch({ type: 'CAPTURE', payload: { stats, time: Date.now() } });
             setCurrentIdx(realGames.length);
         } catch (err) {
-            setErrorMessage(err.message || 'Error');
-            setErrorOpen(true);
+            setMessage(err.message || 'Error');
+            setIsSuccess(false);
+            setMessageOpen(true);
         } finally {
             setLoading(false);
         }
@@ -182,8 +242,9 @@ export default function ProficiencyTracker() {
     const simulate = () => {
         const realStats = getRealChallengeAverages(history);
         if (!realStats) {
-            setErrorMessage('Not enough data');
-            setErrorOpen(true);
+            setMessage('Not enough data');
+            setIsSuccess(false);
+            setMessageOpen(true);
             return;
         }
         const last = history.at(-1);
@@ -252,13 +313,13 @@ export default function ProficiencyTracker() {
         [currentEntry, currentIdx, history, simMode]
     );
 
-    // --- Effect: Auto-close error dialog after 5 seconds ---
+    // --- Effect: Auto-close message dialog after 5 seconds ---
     useEffect(() => {
-        if (errorOpen) {
-            const t = setTimeout(() => setErrorOpen(false), 5000);
+        if (messageOpen) {
+            const t = setTimeout(() => setMessageOpen(false), 5000);
             return () => clearTimeout(t);
         }
-    }, [errorOpen]);
+    }, [messageOpen]);
 
     // --- Render: Character select dropdown item ---
     function renderChar(sel) {
@@ -435,6 +496,49 @@ export default function ProficiencyTracker() {
                 >
                     Clear
                 </Button>
+                {/* Export button */}
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleExport}
+                    startIcon={<FileDownload />}
+                    sx={{
+                        textTransform: 'none',
+                        minWidth: 100,
+                        maxWidth: 120,
+                        px: 1.5, py: 1,
+                        ml: 2,
+                        height: '56px',
+                        alignSelf: 'stretch'
+                    }}
+                >
+                    Export
+                </Button>
+                {/* Import button */}
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    component="label"
+                    startIcon={<FileUpload />}
+                    sx={{
+                        textTransform: 'none',
+                        minWidth: 100,
+                        maxWidth: 120,
+                        px: 1.5, py: 1,
+                        ml: 2,
+                        height: '56px',
+                        alignSelf: 'stretch'
+                    }}
+                >
+                    Import
+                    <input
+                        type="file"
+                        accept="application/json"
+                        hidden
+                        ref={fileInputRef}
+                        onChange={handleImport}
+                    />
+                </Button>
             </Box>
 
             {/* Main action buttons */}
@@ -480,7 +584,12 @@ export default function ProficiencyTracker() {
             )}
 
             {/* Error dialog for user feedback */}
-            <ErrorDialog open={errorOpen} message={errorMessage} onClose={() => setErrorOpen(false)} />
+            <MessageDialog
+                open={messageOpen}
+                message={message}
+                isSuccess={isSuccess}
+                onClose={() => setMessageOpen(false)}
+            />
 
             {/* Undo confirmation dialog */}
             <ConfirmDialog
