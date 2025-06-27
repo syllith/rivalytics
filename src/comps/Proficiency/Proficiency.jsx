@@ -20,6 +20,9 @@ import {
     ChevronLeft, ChevronRight, FileUpload, FileDownload
 } from '@mui/icons-material';
 import { alpha } from '@mui/material';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale-subtle.css';
 
 import {
     applyChallengeGains,
@@ -353,71 +356,115 @@ export default function ProficiencyTracker() {
                     px: 1
                 }}
             >
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={capture}
-                    disabled={
-                        loading || simMode ||
-                        !currentCharacter ||
-                        currentIdx !== realGames.length - 1
-                    }
-                    startIcon={<AddAPhoto />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2, py: 1.2
-                    }}
+                {/* Capture Proficiency button with Tippy tooltip */}
+                <Tippy
+                    content="Captures a screenshot of the game. be sure to share the entire screen Rivals is running on"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
                 >
-                    {loading ? 'Capturing…' : 'Capture Proficiency'}
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => setUndoOpen(true)}
-                    disabled={!currentCharacter || !history.length || simMode}
-                    startIcon={<Undo />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2, py: 1.2
-                    }}
+                    <span>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={capture}
+                            disabled={
+                                loading || simMode ||
+                                !currentCharacter ||
+                                currentIdx !== realGames.length - 1
+                            }
+                            startIcon={<AddAPhoto />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            {loading ? 'Capturing…' : 'Capture Proficiency'}
+                        </Button>
+                    </span>
+                </Tippy>
+                {/* Undo Last button with Tippy tooltip */}
+                <Tippy
+                    content="Deletes only the last capture Useful if you took one by mistake"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
                 >
-                    Undo Last
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={simulate}
-                    disabled={
-                        !currentCharacter ||
-                        !history.length ||
-                        latest?.stats.status === 'Lord' ||
-                        (!simMode && currentIdx !== realGames.length - 1)
-                    }
-                    startIcon={<PlayArrow />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2, py: 1.2
-                    }}
+                    <span>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => setUndoOpen(true)}
+                            disabled={!currentCharacter || !history.length || simMode}
+                            startIcon={<Undo />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            Undo Last
+                        </Button>
+                    </span>
+                </Tippy>
+                {/* Simulate Game button with Tippy tooltip */}
+                <Tippy
+                    content="Uses your average stats to simulate a game. Continously clicking simulates more games"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
                 >
-                    Simulate Game{simMode ? ` (${simCount})` : ''}
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={stopSim}
-                    disabled={!simMode}
-                    startIcon={<Stop />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 170,
-                        px: 2, py: 1.2
-                    }}
+                    <span>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={simulate}
+                            disabled={
+                                !currentCharacter ||
+                                !history.length ||
+                                latest?.stats.status === 'Lord' ||
+                                (!simMode && currentIdx !== realGames.length - 1)
+                            }
+                            startIcon={<PlayArrow />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            Simulate Game{simMode ? ` (${simCount})` : ''}
+                        </Button>
+                    </span>
+                </Tippy>
+                {/* Stop Simulation button with Tippy tooltip */}
+                <Tippy
+                    content="Ends simulation mode, only showing you real stats you captured yourself"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
                 >
-                    Stop Simulation
-                </Button>
+                    <span>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={stopSim}
+                            disabled={!simMode}
+                            startIcon={<Stop />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            Stop Simulation
+                        </Button>
+                    </span>
+                </Tippy>
             </Stack>
         );
     }
@@ -480,78 +527,231 @@ export default function ProficiencyTracker() {
                     </Select>
                 </FormControl>
 
-                <Button
-                    variant="outlined"
-                    onClick={() => setClearOpen(true)}
-                    disabled={!currentCharacter || !history.length}
-                    startIcon={<Delete />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 100,
-                        maxWidth: 120,
-                        px: 1.5, py: 1,
-                        ml: 2,
-                        height: '56px',
-                        alignSelf: 'stretch',
-                        borderColor: theme => theme.palette.error.light,
-                        color: theme => theme.palette.error.light,
-                        '&:hover': {
-                            borderColor: theme => theme.palette.error.main,
-                            backgroundColor: theme =>
-                                alpha(theme.palette.error.main, 0.08)
-                        }
-                    }}
+                {/* Clear button with Tippy tooltip */}
+                <Tippy
+                    content="Clears all the proficiency data for currently selected character"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
                 >
-                    Clear
-                </Button>
+                    <span>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setClearOpen(true)}
+                            disabled={!currentCharacter || !history.length}
+                            startIcon={<Delete />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 100,
+                                maxWidth: 120,
+                                px: 1.5, py: 1,
+                                ml: 2,
+                                height: '56px',
+                                alignSelf: 'stretch',
+                                borderColor: theme => theme.palette.error.light,
+                                color: theme => theme.palette.error.light,
+                                '&:hover': {
+                                    borderColor: theme => theme.palette.error.main,
+                                    backgroundColor: theme =>
+                                        alpha(theme.palette.error.main, 0.08)
+                                }
+                            }}
+                        >
+                            Clear
+                        </Button>
+                    </span>
+                </Tippy>
 
-                {/* Export button */}
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleExport}
-                    startIcon={<FileDownload />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 100,
-                        maxWidth: 120,
-                        px: 1.5, py: 1,
-                        ml: 2,
-                        height: '56px',
-                        alignSelf: 'stretch'
-                    }}
+                {/* Export button with Tippy tooltip */}
+                <Tippy
+                    content="Downloads a copy of all proficiency data, useful for importing into other browsers or computers"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
                 >
-                    Export
-                </Button>
-                {/* Import button */}
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    component="label"
-                    startIcon={<FileUpload />}
-                    sx={{
-                        textTransform: 'none',
-                        minWidth: 100,
-                        maxWidth: 120,
-                        px: 1.5, py: 1,
-                        ml: 2,
-                        height: '56px',
-                        alignSelf: 'stretch'
-                    }}
+                    <span>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={handleExport}
+                            startIcon={<FileDownload />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 100,
+                                maxWidth: 120,
+                                px: 1.5, py: 1,
+                                ml: 2,
+                                height: '56px',
+                                alignSelf: 'stretch'
+                            }}
+                        >
+                            Export
+                        </Button>
+                    </span>
+                </Tippy>
+                {/* Import button with Tippy tooltip */}
+                <Tippy
+                    content="Imports a Rivalytics backup file, exported from another browser or PC"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
                 >
-                    Import
-                    <input
-                        type="file"
-                        accept="application/json"
-                        hidden
-                        ref={fileInputRef}
-                        onChange={handleImport}
-                    />
-                </Button>
+                    <span>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            component="label"
+                            startIcon={<FileUpload />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 100,
+                                maxWidth: 120,
+                                px: 1.5, py: 1,
+                                ml: 2,
+                                height: '56px',
+                                alignSelf: 'stretch'
+                            }}
+                        >
+                            Import
+                            <input
+                                type="file"
+                                accept="application/json"
+                                hidden
+                                ref={fileInputRef}
+                                onChange={handleImport}
+                            />
+                        </Button>
+                    </span>
+                </Tippy>
             </Box>
 
             {/* Main action buttons */}
-            {renderButtons()}
+            <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                sx={{
+                    mb: 3,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    width: '100%',
+                    gap: 2,
+                    px: 1
+                }}
+            >
+                {/* Capture Proficiency button with Tippy tooltip */}
+                <Tippy
+                    content="Captures a screenshot of the game. be sure to share the entire screen Rivals is running on"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
+                >
+                    <span>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={capture}
+                            disabled={
+                                loading || simMode ||
+                                !currentCharacter ||
+                                currentIdx !== realGames.length - 1
+                            }
+                            startIcon={<AddAPhoto />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            {loading ? 'Capturing…' : 'Capture Proficiency'}
+                        </Button>
+                    </span>
+                </Tippy>
+                {/* Undo Last button with Tippy tooltip */}
+                <Tippy
+                    content="Deletes only the last capture Useful if you took one by mistake"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
+                >
+                    <span>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => setUndoOpen(true)}
+                            disabled={!currentCharacter || !history.length || simMode}
+                            startIcon={<Undo />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            Undo Last
+                        </Button>
+                    </span>
+                </Tippy>
+                {/* Simulate Game button with Tippy tooltip */}
+                <Tippy
+                    content="Uses your average stats to simulate a game. Continously clicking simulates more games"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
+                >
+                    <span>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={simulate}
+                            disabled={
+                                !currentCharacter ||
+                                !history.length ||
+                                latest?.stats.status === 'Lord' ||
+                                (!simMode && currentIdx !== realGames.length - 1)
+                            }
+                            startIcon={<PlayArrow />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            Simulate Game{simMode ? ` (${simCount})` : ''}
+                        </Button>
+                    </span>
+                </Tippy>
+                {/* Stop Simulation button with Tippy tooltip */}
+                <Tippy
+                    content="Ends simulation mode, only showing you real stats you captured yourself"
+                    animation="scale-subtle"
+                    theme="material"
+                    delay={[1000, 0]}
+                    placement="top"
+                >
+                    <span>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={stopSim}
+                            disabled={!simMode}
+                            startIcon={<Stop />}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 170,
+                                px: 2, py: 1.2
+                            }}
+                        >
+                            Stop Simulation
+                        </Button>
+                    </span>
+                </Tippy>
+            </Stack>
 
             {/* Navigation for real games (not in sim mode) */}
             {currentCharacter && realGames.length > 0 && (
@@ -567,13 +767,24 @@ export default function ProficiencyTracker() {
                         px: 1
                     }}
                 >
-                    <IconButton
-                        onClick={goPrev}
-                        disabled={simMode || currentIdx <= 0}
-                        sx={{ color: 'white', p: 0.5 }}
+                    {/* Left arrow navigation with Tippy tooltip */}
+                    <Tippy
+                        content="Navigates back in your capture history"
+                        animation="scale-subtle"
+                        theme="material"
+                        delay={[1000, 0]}
+                        placement="top"
                     >
-                        <ChevronLeft />
-                    </IconButton>
+                        <span>
+                            <IconButton
+                                onClick={goPrev}
+                                disabled={simMode || currentIdx <= 0}
+                                sx={{ color: 'white', p: 0.5 }}
+                            >
+                                <ChevronLeft />
+                            </IconButton>
+                        </span>
+                    </Tippy>
                     <Typography sx={{
                         color: 'white',
                         minWidth: '80px',
@@ -582,13 +793,24 @@ export default function ProficiencyTracker() {
                     }}>
                         {currentIdx + 1} / {realGames.length}
                     </Typography>
-                    <IconButton
-                        onClick={goNext}
-                        disabled={simMode || currentIdx >= realGames.length - 1}
-                        sx={{ color: 'white', p: 0.5 }}
+                    {/* Right arrow navigation with Tippy tooltip */}
+                    <Tippy
+                        content="Navigates forward in your capture history"
+                        animation="scale-subtle"
+                        theme="material"
+                        delay={[1000, 0]}
+                        placement="top"
                     >
-                        <ChevronRight />
-                    </IconButton>
+                        <span>
+                            <IconButton
+                                onClick={goNext}
+                                disabled={simMode || currentIdx >= realGames.length - 1}
+                                sx={{ color: 'white', p: 0.5 }}
+                            >
+                                <ChevronRight />
+                            </IconButton>
+                        </span>
+                    </Tippy>
                 </Stack>
             )}
 
