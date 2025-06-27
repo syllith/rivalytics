@@ -19,6 +19,7 @@ import {
     AddAPhoto, Delete, Undo, PlayArrow, Stop,
     ChevronLeft, ChevronRight, FileUpload, FileDownload
 } from '@mui/icons-material';
+import { alpha } from '@mui/material';
 
 import {
     applyChallengeGains,
@@ -446,23 +447,23 @@ export default function ProficiencyTracker() {
                         value={currentCharacter || ''}
                         label="Character"
                         onChange={handleCharacterChange}
-                        sx={{
-                            color: 'white',
-                            '.MuiOutlinedInput-notchedOutline': {
-                                borderColor: 'rgba(255,255,255,0.5)'
-                            },
-                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                                borderColor: 'white'
-                            },
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                borderColor: 'white'
-                            },
-                            '.MuiSvgIcon-root': { color: 'white' }
-                        }}
                         MenuProps={{
                             PaperProps: { style: { maxHeight: 300 } }
                         }}
                         renderValue={renderChar}
+                        sx={{
+                            color: 'white',
+                            '.MuiOutlinedInput-notchedOutline': {
+                                borderColor: theme => theme.palette.primary.main
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: theme => theme.palette.primary.dark
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                borderColor: theme => theme.palette.primary.main
+                            },
+                            '.MuiSvgIcon-root': { color: 'white' }
+                        }}
                     >
                         {CHARACTERS.map(c => (
                             <MenuItem key={c.name} value={c.name}>
@@ -478,9 +479,9 @@ export default function ProficiencyTracker() {
                         ))}
                     </Select>
                 </FormControl>
+
                 <Button
                     variant="outlined"
-                    color="error"
                     onClick={() => setClearOpen(true)}
                     disabled={!currentCharacter || !history.length}
                     startIcon={<Delete />}
@@ -491,11 +492,19 @@ export default function ProficiencyTracker() {
                         px: 1.5, py: 1,
                         ml: 2,
                         height: '56px',
-                        alignSelf: 'stretch'
+                        alignSelf: 'stretch',
+                        borderColor: theme => theme.palette.error.light,
+                        color: theme => theme.palette.error.light,
+                        '&:hover': {
+                            borderColor: theme => theme.palette.error.main,
+                            backgroundColor: theme =>
+                                alpha(theme.palette.error.main, 0.08)
+                        }
                     }}
                 >
                     Clear
                 </Button>
+
                 {/* Export button */}
                 <Button
                     variant="outlined"

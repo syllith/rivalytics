@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, LinearProgress } from '@mui/material';
-import { formatNumber, getMatchesLeftColor, getProgressColor, computeWrappedDelta } from '../../utils.js';
+import { formatNumber, getMatchesLeftColor, getProgressColor, computeWrappedDelta, FIELD_REWARDS } from '../../utils.js';
 
 /**
  * Challenges component for displaying challenge progress and summary stats.
@@ -33,7 +33,7 @@ export default function Challenges({ stats, previousStats, metrics }) {
                 <Box sx={{ flexGrow: 1, mr: 1 }}>
                     <LinearProgress variant="determinate" value={overallPct} />
                 </Box>
-                <Typography sx={{ color: 'white', minWidth: 45, textAlign: 'right' }}>
+                <Typography sx={{ color: 'white', minWidth: 45, textAlign: 'right', fontWeight: 'normal' }}>
                     {Math.round(overallPct)}%
                 </Typography>
             </Box>
@@ -84,7 +84,8 @@ export default function Challenges({ stats, previousStats, metrics }) {
                             <TableCell>Max</TableCell>
                             <TableCell>Progress</TableCell>
                             <TableCell>Gain</TableCell>
-                            <TableCell>Matches Left</TableCell>
+                            <TableCell >Avg Gain</TableCell>
+                            <TableCell >Matches</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -95,6 +96,13 @@ export default function Challenges({ stats, previousStats, metrics }) {
                             const matchesToComplete = previousStats ? toComplete[idx] : '–';
                             const pct = (currentValue / maxValue) * 100;
                             const color = getProgressColor(pct);
+
+                            // Calculate average challenge points per game for this field
+                            // Use raw averageGains to show actual average gain per match
+                            let avgPointsPerGame = 0;
+                            if (metrics?.averageGains) {
+                                avgPointsPerGame = metrics.averageGains[idx];
+                            }
 
                             return (
                                 <TableRow key={idx}>
@@ -125,7 +133,7 @@ export default function Challenges({ stats, previousStats, metrics }) {
                                     <TableCell>
                                         <Typography sx={{
                                             color: gain > 0 ? '#4caf50' : '#b0b0b0',
-                                            fontWeight: gain > 0 ? 'bold' : 'normal',
+                                            fontWeight: 'normal', // Remove bold
                                             minWidth: 36, fontSize: '0.9rem'
                                         }}>
                                             {gain > 0 ? `+${formatNumber(gain)}` : formatNumber(gain)}
@@ -133,11 +141,18 @@ export default function Challenges({ stats, previousStats, metrics }) {
                                     </TableCell>
                                     <TableCell>
                                         <Typography sx={{
+                                            color: avgPointsPerGame > 0 ? '#4caf50' : '#b0b0b0',
+                                            fontWeight: 'normal',
+                                            minWidth: 60, fontSize: '0.9rem'
+                                        }}>
+                                            {avgPointsPerGame > 0 ? formatNumber(Math.round(avgPointsPerGame)) : '–'}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography sx={{
                                             color: getMatchesLeftColor(matchesToComplete),
-                                            fontWeight:
-                                                matchesToComplete > 0 && matchesToComplete !== Infinity
-                                                    ? 'bold' : 'normal',
-                                            minWidth: 36, fontSize: '0.9rem'
+                                            fontWeight: 'normal',
+                                            minWidth: 60, fontSize: '0.9rem'
                                         }}>
                                             {matchesToComplete > 0 && matchesToComplete !== Infinity
                                                 ? `~${Math.ceil(matchesToComplete)}`

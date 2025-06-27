@@ -13,7 +13,7 @@ export const custom = createTheme({
         },
     },
     typography: {
-        fontFamily: 'Lexend, Open Sans, Arial',
+        fontFamily: 'Lexend, Open Sans, Bebas, Montserrat, Muli, Kolker, Arial',
     },
     components: {
         MuiDrawer: {

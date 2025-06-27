@@ -267,10 +267,10 @@ export default function Home() {
                                 exclusive
                                 onChange={(_, v) => v && setTab(v)}
                             >
-                                <ToggleButton value="proficiency">Proficiency</ToggleButton>
-                                <ToggleButton value="hero">Heros</ToggleButton>
-                                <ToggleButton value="matches">Matches</ToggleButton>
-                                <ToggleButton value="ranked">Ranked</ToggleButton>
+                                <ToggleButton value="proficiency" sx={{ textTransform: 'none' }}>Proficiency</ToggleButton>
+                                <ToggleButton value="hero" sx={{ textTransform: 'none' }}>Heros</ToggleButton>
+                                <ToggleButton value="matches" sx={{ textTransform: 'none' }}>Matches</ToggleButton>
+                                <ToggleButton value="ranked" sx={{ textTransform: 'none' }}>Ranked</ToggleButton>
                             </ToggleButtonGroup>
                         </Box>
 
