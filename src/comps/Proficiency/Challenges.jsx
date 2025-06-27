@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, LinearProgress } from '@mui/material';
+import { Box, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, LinearProgress, Grid } from '@mui/material';
 import { formatNumber, getMatchesLeftColor, getProgressColor, computeWrappedDelta, FIELD_REWARDS } from '../../utils.js';
 
 /**
@@ -37,8 +37,10 @@ export default function Challenges({ stats, previousStats, metrics }) {
                     {Math.round(overallPct)}%
                 </Typography>
             </Box>
-            <Typography sx={{ mb: 2, color: 'white' }}>
-                Rank: {stats.status} | Proficiency: {formatNumber(stats.proficiencyCurrent)} / {formatNumber(stats.proficiencyMax)}
+            <Typography sx={{ mb: 2, color: '#b0b0b0', display: 'flex', alignItems: 'center', gap: 1 }}>
+                Rank: <span style={{ color: 'white' }}>{stats.status}</span>
+                <span style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#b0b0b0' }}>•</span>
+                Proficiency: <span style={{ color: 'white' }}>{formatNumber(stats.proficiencyCurrent)} / {formatNumber(stats.proficiencyMax)}</span>
             </Typography>
 
             {/* Summary metrics below progress bar */}
@@ -47,23 +49,46 @@ export default function Challenges({ stats, previousStats, metrics }) {
                     display: 'flex',
                     justifyContent: 'space-between',
                     mb: 2,
-                    gap: 2,
-                    color: 'white'
+                    color: '#b0b0b0',
+                    alignItems: 'flex-start'
                 }}>
-                    <Box>
-                        <Typography>
-                            Prof. Per Match: {metrics.ptsPerMatch}
+                    <Box sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'auto auto',
+                        gap: '0.5rem 1rem',
+                        alignItems: 'center'
+                    }}>
+                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
+                            Hours Left:
                         </Typography>
-                        <Typography sx={{ mt: 1 }}>
-                            Total Gained: {formatNumber(metrics.totalGained)}
+                        <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
+                            ~{metrics.hoursLeft}
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
+                            Matches Left:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
+                            ~{metrics.matchesLeft}
                         </Typography>
                     </Box>
-                    <Box sx={{ textAlign: 'right' }}>
-                        <Typography>
-                            Hours Left: ~{metrics.hoursLeft}
+                    
+                    <Box sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'auto auto',
+                        gap: '0.5rem 1rem',
+                        alignItems: 'center'
+                    }}>
+                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
+                            Prof. Per Match:
                         </Typography>
-                        <Typography>
-                            Matches Left: ~{metrics.matchesLeft}
+                        <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
+                            {metrics.ptsPerMatch}
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
+                            Total Gained:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
+                            {formatNumber(metrics.totalGained)}
                         </Typography>
                     </Box>
                 </Box>
