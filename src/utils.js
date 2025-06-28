@@ -194,7 +194,7 @@ function getPartialFieldProgress(stats) {
 }
 
 // calculateProficiencyMetrics: Computes match averages, projected gains, and time-to-complete for proficiency
-export function calculateProficiencyMetrics({ history, currentEntry, currentIdx, simMode }) {
+export function calculateProficiencyMetrics({ history, currentEntry, currentIdx, simMode, FIELD_REWARDS, now }) {
     if (!currentEntry) return null;
 
     // Only use real (non-simulated) games for calculations
@@ -244,6 +244,40 @@ export function calculateProficiencyMetrics({ history, currentEntry, currentIdx,
     const estMatches = effPerMatch > 0 ? Math.max(0, remaining / effPerMatch) : Infinity;
     const estMins = isFinite(estMatches) ? estMatches * 12 : Infinity;
 
+    // Calculate proficiency gained in the last 24 hours
+    const currentTime = now || Date.now();
+    const last24Hours = currentTime - (24 * 60 * 60 * 1000); // 24 hours ago
+    let prof24Hours = 0;
+    
+    // Find entries within the last 24 hours
+    const recent24hEntries = realCalc.filter(entry => entry.time >= last24Hours);
+    if (recent24hEntries.length >= 2) {
+        // Calculate proficiency gained in last 24 hours
+        const earliest24h = recent24hEntries[0];
+        const latest24h = recent24hEntries[recent24hEntries.length - 1];
+        
+        // Calculate raw proficiency difference
+        let prof24hRaw = latest24h.stats.proficiencyCurrent - earliest24h.stats.proficiencyCurrent;
+        
+        // Account for rank-ups within 24 hours
+        for (let k = 1; k < recent24hEntries.length; k++) {
+            const prevEntry = recent24hEntries[k - 1];
+            const currEntry = recent24hEntries[k];
+            if (currEntry.stats.status !== prevEntry.stats.status) {
+                // Rank up occurred - add the proficiency from completing previous rank
+                prof24hRaw += (prevEntry.stats.proficiencyMax - prevEntry.stats.proficiencyCurrent);
+            }
+        }
+        prof24Hours = prof24hRaw;
+    }
+
+    // Calculate projected completion date
+    let projectedDate = null;
+    if (isFinite(estMins) && estMins > 0) {
+        const completionTime = currentTime + (estMins * 60 * 1000); // Convert minutes to milliseconds
+        projectedDate = new Date(completionTime);
+    }
+
     return {
         totalGained: totalProf, // Total proficiency gained
         ptsPerMatch: totalProjected.toFixed(1), // Projected proficiency per match
@@ -252,7 +286,9 @@ export function calculateProficiencyMetrics({ history, currentEntry, currentIdx,
         hoursLeft: isFinite(estMins) ? (estMins / 60).toFixed(1) : '–', // Estimated hours left
         averageGains: avgGains, // Average gain per field
         exactMatchesLeft: estMatches, // Exact matches left (float)
-        exactHoursLeft: estMins / 60 // Exact hours left (float)
+        exactHoursLeft: estMins / 60, // Exact hours left (float)
+        prof24Hours: prof24Hours, // Proficiency gained in last 24 hours
+        projectedCompletionDate: projectedDate // Projected completion date for next rank
     };
 }
 

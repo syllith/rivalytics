@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, LinearProgress, Grid } from '@mui/material';
 import { formatNumber, getMatchesLeftColor, getProgressColor, computeWrappedDelta, FIELD_REWARDS } from '../../utils.js';
+import Tooltip from '../Tooltip.jsx';
 
 /**
  * Challenges component for displaying challenge progress and summary stats.
@@ -58,17 +59,35 @@ export default function Challenges({ stats, previousStats, metrics }) {
                         gap: '0.5rem 1rem',
                         alignItems: 'center'
                     }}>
-                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
-                            Hours Left:
-                        </Typography>
+                        <Tooltip content="Estimated time remaining to complete the current rank based on your recent performance" placement="top">
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400, cursor: 'default', userSelect: 'text' }}>
+                                Hours Left:
+                            </Typography>
+                        </Tooltip>
                         <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
                             ~{metrics.hoursLeft}
                         </Typography>
-                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
-                            Matches Left:
-                        </Typography>
+                        <Tooltip content="Estimated number of matches needed to complete the current rank based on your average proficiency gains" placement="top">
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400, cursor: 'default', userSelect: 'text' }}>
+                                Matches Left:
+                            </Typography>
+                        </Tooltip>
                         <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
                             ~{metrics.matchesLeft}
+                        </Typography>
+                        <Tooltip content="Estimated date and time when you will complete the current rank based on your recent play pattern" placement="top">
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400, cursor: 'default', userSelect: 'text' }}>
+                                Projected Date:
+                            </Typography>
+                        </Tooltip>
+                        <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
+                            {metrics.projectedCompletionDate 
+                                ? metrics.projectedCompletionDate.toLocaleDateString('en-US', {
+                                    month: 'short', day: 'numeric', 
+                                    hour: 'numeric', minute: '2-digit', hour12: true
+                                })
+                                : '–'
+                            }
                         </Typography>
                     </Box>
                     
@@ -78,17 +97,32 @@ export default function Challenges({ stats, previousStats, metrics }) {
                         gap: '0.5rem 1rem',
                         alignItems: 'center'
                     }}>
-                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
-                            Prof. Per Match:
-                        </Typography>
+                        <Tooltip content="Average proficiency points gained per match based on your recent performance" placement="top">
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400, cursor: 'default', userSelect: 'text' }}>
+                                Prof. Per Match:
+                            </Typography>
+                        </Tooltip>
                         <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
                             {metrics.ptsPerMatch}
                         </Typography>
-                        <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400 }}>
-                            Total Gained:
-                        </Typography>
+                        <Tooltip content="Total proficiency points gained since you started tracking progress for this character" placement="top">
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400, cursor: 'default', userSelect: 'text' }}>
+                                Total Gained:
+                            </Typography>
+                        </Tooltip>
                         <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
                             {formatNumber(metrics.totalGained)}
+                        </Typography>
+                        <Tooltip content="Proficiency points gained in the last 24 hours, including any rank completions" placement="top">
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400, cursor: 'default', userSelect: 'text' }}>
+                                Last 24 Hours:
+                            </Typography>
+                        </Tooltip>
+                        <Typography variant="body1" sx={{ 
+                            color: 'white', 
+                            fontWeight: 400 
+                        }}>
+                            {formatNumber(metrics.prof24Hours)}
                         </Typography>
                     </Box>
                 </Box>

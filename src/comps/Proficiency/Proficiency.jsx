@@ -88,6 +88,9 @@ export default function ProficiencyTracker() {
     const [undoOpen, setUndoOpen] = useState(false); // Undo confirmation dialog
     const [clearOpen, setClearOpen] = useState(false); // Clear confirmation dialog
     const [currentIdx, setCurrentIdx] = useState(-1); // Index of current real game
+    // --- Real-time update for projected date ---
+    const [now, setNow] = useState(Date.now());
+    
     // --- Import/Export handlers ---
     const fileInputRef = useRef(null);
     // Export proficiency data as JSON (real data only, no sim)
@@ -165,6 +168,14 @@ export default function ProficiencyTracker() {
     useEffect(() => {
         if (simMode) setCurrentIdx(realGames.length - 1);
     }, [simMode, realGames.length]);
+
+    // --- Effect: Update projected date every minute ---
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setNow(Date.now());
+        }, 60000); // Update every minute
+        return () => clearInterval(interval);
+    }, []);
 
     // --- Effect: On mount, load saved data from localforage and set currentIdx ---
     useEffect(() => {
@@ -310,9 +321,9 @@ export default function ProficiencyTracker() {
     // --- Memoized: Calculate proficiency metrics for current view ---
     const metrics = useMemo(() =>
         calculateProficiencyMetrics({
-            history, currentEntry, currentIdx, simMode, FIELD_REWARDS
+            history, currentEntry, currentIdx, simMode, FIELD_REWARDS, now
         }),
-        [currentEntry, currentIdx, history, simMode]
+        [currentEntry, currentIdx, history, simMode, now]
     );
 
     // --- Effect: Auto-close message dialog after 5 seconds ---
@@ -350,10 +361,13 @@ export default function ProficiencyTracker() {
         <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
             {/* Character selection and clear button */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 1 }}>
-                <FormControl fullWidth>
+                <FormControl fullWidth sx={{ height: '48px' }}>
                     <InputLabel
                         id="character-select-label"
-                        sx={{ color: 'white' }}
+                        sx={{
+                            color: 'white',
+                            fontSize: '1rem'
+                        }}
                     >
                         Character
                     </InputLabel>
@@ -369,6 +383,9 @@ export default function ProficiencyTracker() {
                         renderValue={renderChar}
                         sx={{
                             color: 'white',
+                            height: '48px',
+                            display: 'flex',
+                            alignItems: 'center',
                             '.MuiOutlinedInput-notchedOutline': {
                                 borderColor: theme => theme.palette.primary.main
                             },
@@ -382,7 +399,7 @@ export default function ProficiencyTracker() {
                         }}
                     >
                         {CHARACTERS.map(c => (
-                            <MenuItem key={c.name} value={c.name}>
+                            <MenuItem key={c.name} value={c.name} sx={{ height: '48px' }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <Avatar
                                         src={c.icon}
@@ -413,7 +430,7 @@ export default function ProficiencyTracker() {
                             maxWidth: 120,
                             px: 1.5, py: 1,
                             ml: 2,
-                            height: '56px',
+                            height: '48px',
                             alignSelf: 'stretch',
                             borderColor: theme => theme.palette.error.light,
                             color: theme => theme.palette.error.light,
@@ -445,7 +462,7 @@ export default function ProficiencyTracker() {
                             maxWidth: 120,
                             px: 1.5, py: 1,
                             ml: 2,
-                            height: '56px',
+                            height: '48px',
                             alignSelf: 'stretch'
                         }}
                     >
@@ -469,7 +486,7 @@ export default function ProficiencyTracker() {
                             maxWidth: 120,
                             px: 1.5, py: 1,
                             ml: 2,
-                            height: '56px',
+                            height: '48px',
                             alignSelf: 'stretch'
                         }}
                     >
@@ -518,7 +535,8 @@ export default function ProficiencyTracker() {
                         sx={{
                             textTransform: 'none',
                             minWidth: 170,
-                            px: 2, py: 1.2
+                            px: 2, py: 1.2,
+                            height: '48px'
                         }}
                     >
                         {loading ? 'Capturing…' : 'Capture Proficiency'}
@@ -539,7 +557,8 @@ export default function ProficiencyTracker() {
                         sx={{
                             textTransform: 'none',
                             minWidth: 170,
-                            px: 2, py: 1.2
+                            px: 2, py: 1.2,
+                            height: '48px'
                         }}
                     >
                         Undo Last
@@ -565,7 +584,8 @@ export default function ProficiencyTracker() {
                         sx={{
                             textTransform: 'none',
                             minWidth: 170,
-                            px: 2, py: 1.2
+                            px: 2, py: 1.2,
+                            height: '48px'
                         }}
                     >
                         Simulate Game{simMode ? ` (${simCount})` : ''}
@@ -586,7 +606,8 @@ export default function ProficiencyTracker() {
                         sx={{
                             textTransform: 'none',
                             minWidth: 170,
-                            px: 2, py: 1.2
+                            px: 2, py: 1.2,
+                            height: '48px'
                         }}
                     >
                         Stop Simulation
