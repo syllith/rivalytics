@@ -17,7 +17,7 @@ import localforage from 'localforage';
 import characters from '../../characters.json';
 import {
     AddAPhoto, Delete, Undo, PlayArrow, Stop,
-    ChevronLeft, ChevronRight, FileUpload, FileDownload
+    ChevronLeft, ChevronRight, FileUpload, FileDownload, Settings
 } from '@mui/icons-material';
 import { alpha } from '@mui/material';
 import CustomTooltip from '../Tooltip.jsx';
@@ -30,12 +30,14 @@ import {
     proficiencyReducer as reducer,
     initialState,
     initialCharacterData,
-    captureProficiency
+    captureProficiency,
+    getVisibleCharacters
 } from '../../utils.js';
 import Chart from './Chart.jsx';
 import RankProgression from './RankProgression.jsx';
 import Challenges from './Challenges.jsx';
 import Instructions from './Instructions.jsx';
+import CharacterVisibilityManager from './CharacterVisibilityManager.jsx';
 
 // Register Chart.js components for chart rendering
 ChartJS.register(
@@ -88,6 +90,8 @@ export default function ProficiencyTracker() {
     const [undoOpen, setUndoOpen] = useState(false); // Undo confirmation dialog
     const [clearOpen, setClearOpen] = useState(false); // Clear confirmation dialog
     const [currentIdx, setCurrentIdx] = useState(-1); // Index of current real game
+    const [visibilityManagerOpen, setVisibilityManagerOpen] = useState(false); // Character visibility manager dialog
+    const [visibleCharacters, setVisibleCharacters] = useState(CHARACTERS); // Filtered characters list
     // --- Real-time update for projected date ---
     const [now, setNow] = useState(Date.now());
     
@@ -163,6 +167,26 @@ export default function ProficiencyTracker() {
         const latest = history[history.length - 1] || null;
         return { charData, history, realGames, latest };
     }, [currentCharacter, characters]);
+
+    // --- Effect: Load visible characters on mount ---
+    useEffect(() => {
+        const loadVisibleCharacters = async () => {
+            const visible = await getVisibleCharacters(CHARACTERS);
+            setVisibleCharacters(visible);
+        };
+        loadVisibleCharacters();
+    }, []);
+
+    // --- Effect: Update visible characters when visibility manager closes ---
+    useEffect(() => {
+        if (!visibilityManagerOpen) {
+            const loadVisibleCharacters = async () => {
+                const visible = await getVisibleCharacters(CHARACTERS);
+                setVisibleCharacters(visible);
+            };
+            loadVisibleCharacters();
+        }
+    }, [visibilityManagerOpen]);
 
     // --- Effect: When sim mode is enabled, always show the latest entry ---
     useEffect(() => {
@@ -336,7 +360,7 @@ export default function ProficiencyTracker() {
 
     // --- Render: Character select dropdown item ---
     function renderChar(sel) {
-        const c = CHARACTERS.find(ch => ch.name === sel);
+        const c = visibleCharacters.find(ch => ch.name === sel);
         return c ? (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar
@@ -398,7 +422,7 @@ export default function ProficiencyTracker() {
                             '.MuiSvgIcon-root': { color: 'white' }
                         }}
                     >
-                        {CHARACTERS.map(c => (
+                        {visibleCharacters.map(c => (
                             <MenuItem key={c.name} value={c.name} sx={{ height: '48px' }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <Avatar
@@ -412,6 +436,32 @@ export default function ProficiencyTracker() {
                         ))}
                     </Select>
                 </FormControl>
+
+                {/* Character visibility settings button */}
+                <CustomTooltip
+                    content="Manage which characters appear in the dropdown list"
+                    delay={[1000, 0]}
+                    placement="top"
+                >
+                    <IconButton
+                        onClick={() => setVisibilityManagerOpen(true)}
+                        sx={{
+                            color: 'white',
+                            ml: 1,
+                            height: '48px',
+                            width: '48px',
+                            border: 'none', // Remove border
+                            background: 'none', // Remove background
+                            boxShadow: 'none', // Remove any shadow
+                            '&:hover': {
+                                backgroundColor: 'transparent', // No hover background
+                                border: 'none'
+                            }
+                        }}
+                    >
+                        <Settings />
+                    </IconButton>
+                </CustomTooltip>
 
                 {/* Clear button with CustomTooltip */}
                 <CustomTooltip
@@ -733,6 +783,11 @@ export default function ProficiencyTracker() {
                     </Typography>
                 </Box>
             )}
+            {/* Character Visibility Manager */}
+            <CharacterVisibilityManager
+                open={visibilityManagerOpen}
+                onClose={() => setVisibilityManagerOpen(false)}
+            />
         </Box>
     );
 }

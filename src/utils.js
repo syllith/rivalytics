@@ -1,4 +1,5 @@
 // src/utils.js
+import localforage from 'localforage';
 
 // RANKS: Defines the order, proficiency caps, and multipliers for each rank.
 export const RANKS = {
@@ -40,6 +41,25 @@ export function getProgressColor(pct) {
 // getRankCap: Returns the proficiency cap for a given rank
 export const getRankCap = rank =>
     RANKS.caps[rank];
+
+// getVisibleCharacters: Returns characters that are not hidden, with fallback to all characters
+export const getVisibleCharacters = async (allCharacters) => {
+    try {
+        const hiddenCharacters = await localforage.getItem('pt-hidden-characters');
+        if (!hiddenCharacters || !Array.isArray(hiddenCharacters)) {
+            return allCharacters;
+        }
+        
+        const hiddenSet = new Set(hiddenCharacters);
+        const visible = allCharacters.filter(char => !hiddenSet.has(char.name));
+        
+        // Always return at least one character to prevent empty dropdown
+        return visible.length > 0 ? visible : [allCharacters[0]];
+    } catch (error) {
+        console.error('Failed to load hidden characters:', error);
+        return allCharacters;
+    }
+};
 
 // RANK_INDEX: Precomputed map for fast rank index lookup
 const RANK_INDEX = RANKS.order.reduce((acc, rank, idx) => {
@@ -121,9 +141,23 @@ function findNearbyLabel(texts, idx, PAIR_RX, STATUS_RX) {
         ?.replace(/^CO\s*/i, '').trim() || '';
 }
 
+// Helper: Clean OCR text by fixing common misreadings
+function cleanOcrText(text) {
+    return text
+        // Common OCR errors: O -> 0, l/I -> 1, S -> 5, etc.
+        .replace(/\bO\b/g, '0')              // Standalone O becomes 0
+        .replace(/(?<=\s|^)O(?=\/|\d)/g, '0') // O before slash or digit becomes 0
+        .replace(/(?<=\/|^\d*)O(?=\s|$)/g, '0') // O after slash or digits becomes 0
+        .replace(/\bl\b/g, '1')              // Standalone l becomes 1
+        .replace(/\bI\b/g, '1')              // Standalone I becomes 1
+        .replace(/\bS\b(?=\d)/g, '5')        // S before digit becomes 5
+        .replace(/\bZ\b/g, '2')              // Standalone Z becomes 2
+        .trim();
+}
+
 // parseOcrResult: Parses OCR results into a stats object with rank, proficiency, and challenge fields
 export function parseOcrResult(items) {
-    const texts = items.map(({ text }) => text.trim());
+    const texts = items.map(({ text }) => cleanOcrText(text.trim()));
     const STATUS_RX = /\b(Agent|Knight|Captain|Centurion|Lord)\b/i;
     const PAIR_RX = /(\d[\d,]*)\s*\/\s*(\d[\d,]*)/;
 
@@ -134,7 +168,14 @@ export function parseOcrResult(items) {
 
     // Extract overall proficiency (current/max)
     const profText = texts.find(t => /proficiency/i.test(t) && PAIR_RX.test(t));
-    if (!profText) throw new Error('Failed to parse overall proficiency');
+    if (!profText) {
+        // If standard parsing fails, try to find proficiency text and apply additional cleaning
+        const proficiencyText = texts.find(t => /proficiency/i.test(t));
+        if (proficiencyText) {
+            throw new Error(`Failed to parse overall proficiency. Found: "${proficiencyText}"`);
+        }
+        throw new Error('Failed to parse overall proficiency');
+    }
     const [, curStr, maxStr] = profText.match(PAIR_RX);
     const proficiencyCurrent = parseInt(curStr.replace(/,/g, ''), 10);
     const proficiencyMax = parseInt(maxStr.replace(/,/g, ''), 10);
@@ -233,15 +274,25 @@ export function calculateProficiencyMetrics({ history, currentEntry, currentIdx,
             : curr.proficiencyCurrent - prev.proficiencyCurrent;
     }
 
+    // Calculate proficiency gained from real matches only (for accurate per-match calculation)
+    let realTotalProf = 0;
+    for (let j = 1; j < realCalc.length; j++) {
+        const prev = realCalc[j - 1].stats;
+        const curr = realCalc[j].stats;
+        realTotalProf += curr.status !== prev.status
+            ? (prev.proficiencyMax - prev.proficiencyCurrent) + curr.proficiencyCurrent
+            : curr.proficiencyCurrent - prev.proficiencyCurrent;
+    }
+
     // Calculate effective proficiency (including partial field progress)
-    let effective = totalProf + getPartialFieldProgress(last);
-    // Calculate average proficiency per match
-    const effPerMatch = effective / realCount;
-    // Calculate remaining proficiency needed (subtract partial field progress)
-    let remaining = last.proficiencyMax - last.proficiencyCurrent - getPartialFieldProgress(last);
+    let effective = totalProf + getPartialFieldProgress(currentEntry.stats);
+    // Calculate average proficiency per match using only real proficiency gained
+    const actualProfPerMatch = realTotalProf / realCount;
+    // Calculate remaining proficiency needed (use current entry for accurate sim calculations)
+    let remaining = currentEntry.stats.proficiencyMax - currentEntry.stats.proficiencyCurrent;
 
     // Estimate matches and hours left to complete current rank
-    const estMatches = effPerMatch > 0 ? Math.max(0, remaining / effPerMatch) : Infinity;
+    const estMatches = actualProfPerMatch > 0 ? Math.max(0, remaining / actualProfPerMatch) : Infinity;
     const estMins = isFinite(estMatches) ? estMatches * 12 : Infinity;
 
     // Calculate proficiency gained in the last 24 hours
@@ -280,7 +331,7 @@ export function calculateProficiencyMetrics({ history, currentEntry, currentIdx,
 
     return {
         totalGained: totalProf, // Total proficiency gained
-        ptsPerMatch: totalProjected.toFixed(1), // Projected proficiency per match
+        ptsPerMatch: actualProfPerMatch.toFixed(1), // Actual proficiency per match (based on real gains)
         avgMatchDurationMinutes: avgMins.toFixed(1), // Average match duration
         matchesLeft: isFinite(estMatches) ? Math.ceil(estMatches) : '–', // Estimated matches left
         hoursLeft: isFinite(estMins) ? (estMins / 60).toFixed(1) : '–', // Estimated hours left
