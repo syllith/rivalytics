@@ -21,23 +21,31 @@ export default function RankProgression({
         if (!perMatch || perMatch <= 0) return [];
         const matches = [];
         let cumMatches = 0;
+        let totalProfNeeded = 0; // Track total proficiency needed from current position
         const startIdx = RANKS.order.indexOf(currentStats.status) + 1;
         const typicalMins = 12;
+        
         for (let idx = startIdx; idx < RANKS.order.length; idx++) {
             const rank = RANKS.order[idx];
             const cap = getRankCap(rank);
             let need, m;
+            
             if (idx === startIdx) {
+                // For the next rank, we need the remaining proficiency for current rank
                 need = currentStats.proficiencyMax - currentStats.proficiencyCurrent;
                 m = currentRemainingMatches;
             } else {
+                // For subsequent ranks, we need the full cap for that rank
                 need = cap;
                 m = need / perMatch;
             }
+            
+            totalProfNeeded += need;
             cumMatches += m;
+            
             matches.push({
                 rank,
-                profNeeded: Math.round(need),
+                profNeeded: Math.round(totalProfNeeded),
                 cumulativeMatches: Math.ceil(cumMatches),
                 cumulativeHours: ((cumMatches * typicalMins) / 60).toFixed(1)
             });

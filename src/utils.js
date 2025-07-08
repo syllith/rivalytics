@@ -167,14 +167,28 @@ export function parseOcrResult(items) {
     const status = rawStatus[0].toUpperCase() + rawStatus.slice(1).toLowerCase();
 
     // Extract overall proficiency (current/max)
-    const profText = texts.find(t => /proficiency/i.test(t) && PAIR_RX.test(t));
+    let profText = texts.find(t => /proficiency/i.test(t) && PAIR_RX.test(t));
+    
+    // If proficiency text and numbers are in separate items, find them separately
     if (!profText) {
-        // If standard parsing fails, try to find proficiency text and apply additional cleaning
-        const proficiencyText = texts.find(t => /proficiency/i.test(t));
-        if (proficiencyText) {
-            throw new Error(`Failed to parse overall proficiency. Found: "${proficiencyText}"`);
+        const proficiencyIndex = texts.findIndex(t => /proficiency/i.test(t));
+        if (proficiencyIndex >= 0) {
+            // Look for a number pair in nearby text items (within 2 positions)
+            for (let i = Math.max(0, proficiencyIndex - 2); i < Math.min(texts.length, proficiencyIndex + 3); i++) {
+                if (i !== proficiencyIndex && PAIR_RX.test(texts[i])) {
+                    profText = texts[i];
+                    break;
+                }
+            }
         }
-        throw new Error('Failed to parse overall proficiency');
+        
+        if (!profText) {
+            const proficiencyText = texts.find(t => /proficiency/i.test(t));
+            if (proficiencyText) {
+                throw new Error(`Failed to parse overall proficiency. Found: "${proficiencyText}"`);
+            }
+            throw new Error('Failed to parse overall proficiency');
+        }
     }
     const [, curStr, maxStr] = profText.match(PAIR_RX);
     const proficiencyCurrent = parseInt(curStr.replace(/,/g, ''), 10);
@@ -182,9 +196,17 @@ export function parseOcrResult(items) {
 
     // Extract challenge field pairs (current/max for each field)
     const profIndex = texts.indexOf(profText);
+    const proficiencyLabelIndex = texts.findIndex(t => /proficiency/i.test(t));
+    
+    // Exclude both the proficiency numbers and label from challenge parsing
+    const excludeIndices = new Set([profIndex]);
+    if (proficiencyLabelIndex >= 0 && proficiencyLabelIndex !== profIndex) {
+        excludeIndices.add(proficiencyLabelIndex);
+    }
+    
     const nnIndices = texts
         .map((t, i) => PAIR_RX.test(t) ? i : -1)
-        .filter(i => i >= 0 && i !== profIndex)
+        .filter(i => i >= 0 && !excludeIndices.has(i))
         .slice(0, 4);
     if (nnIndices.length < 4) throw new Error('Failed to parse challenges');
 

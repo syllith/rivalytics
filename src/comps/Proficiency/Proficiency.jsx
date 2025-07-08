@@ -401,6 +401,7 @@ export default function ProficiencyTracker() {
                         value={currentCharacter || ''}
                         label="Character"
                         onChange={handleCharacterChange}
+                        disabled={loading}
                         MenuProps={{
                             PaperProps: { style: { maxHeight: 300 } }
                         }}
@@ -445,6 +446,7 @@ export default function ProficiencyTracker() {
                 >
                     <IconButton
                         onClick={() => setVisibilityManagerOpen(true)}
+                        disabled={loading}
                         sx={{
                             color: 'white',
                             ml: 1,
@@ -472,7 +474,7 @@ export default function ProficiencyTracker() {
                     <Button
                         variant="outlined"
                         onClick={() => setClearOpen(true)}
-                        disabled={!currentCharacter || !history.length}
+                        disabled={loading || !currentCharacter || !history.length}
                         startIcon={<Delete />}
                         sx={{
                             textTransform: 'none',
@@ -505,6 +507,7 @@ export default function ProficiencyTracker() {
                         variant="outlined"
                         color="primary"
                         onClick={handleExport}
+                        disabled={loading}
                         startIcon={<FileDownload />}
                         sx={{
                             textTransform: 'none',
@@ -529,6 +532,7 @@ export default function ProficiencyTracker() {
                         variant="outlined"
                         color="primary"
                         component="label"
+                        disabled={loading}
                         startIcon={<FileUpload />}
                         sx={{
                             textTransform: 'none',
@@ -602,7 +606,7 @@ export default function ProficiencyTracker() {
                         variant="outlined"
                         color="primary"
                         onClick={() => setUndoOpen(true)}
-                        disabled={!currentCharacter || !history.length || simMode}
+                        disabled={loading || !currentCharacter || !history.length || simMode}
                         startIcon={<Undo />}
                         sx={{
                             textTransform: 'none',
@@ -625,6 +629,7 @@ export default function ProficiencyTracker() {
                         color="primary"
                         onClick={simulate}
                         disabled={
+                            loading ||
                             !currentCharacter ||
                             !history.length ||
                             latest?.stats.status === 'Lord' ||
@@ -651,7 +656,7 @@ export default function ProficiencyTracker() {
                         variant="outlined"
                         color="primary"
                         onClick={stopSim}
-                        disabled={!simMode}
+                        disabled={loading || !simMode}
                         startIcon={<Stop />}
                         sx={{
                             textTransform: 'none',
@@ -687,7 +692,7 @@ export default function ProficiencyTracker() {
                     >
                         <IconButton
                             onClick={goPrev}
-                            disabled={simMode || currentIdx <= 0}
+                            disabled={loading || simMode || currentIdx <= 0}
                             sx={{ color: 'white', p: 0.5 }}
                         >
                             <ChevronLeft />
@@ -709,7 +714,7 @@ export default function ProficiencyTracker() {
                     >
                         <IconButton
                             onClick={goNext}
-                            disabled={simMode || currentIdx >= realGames.length - 1}
+                            disabled={loading || simMode || currentIdx >= realGames.length - 1}
                             sx={{ color: 'white', p: 0.5 }}
                         >
                             <ChevronRight />
