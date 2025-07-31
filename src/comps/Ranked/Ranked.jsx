@@ -92,6 +92,15 @@ export default function Ranked({ rawData }) {
         } else if (timeFrame === 'week') {
             cutoff = new Date(now)
             cutoff.setDate(now.getDate() - 7)
+        } else if (timeFrame === '3days') {
+            cutoff = new Date(now)
+            cutoff.setDate(now.getDate() - 3)
+        } else if (timeFrame === '2days') {
+            cutoff = new Date(now)
+            cutoff.setDate(now.getDate() - 2)
+        } else if (timeFrame === '1day') {
+            cutoff = new Date(now)
+            cutoff.setDate(now.getDate() - 1)
         }
 
         // Keep header + rows newer than cutoff
@@ -212,6 +221,9 @@ export default function Ranked({ rawData }) {
                         <ToggleButton value="all" sx={{ color: 'white', fontWeight: 'bold' }}>All</ToggleButton>
                         <ToggleButton value="month" sx={{ color: 'white', fontWeight: 'bold' }}>Last Month</ToggleButton>
                         <ToggleButton value="week" sx={{ color: 'white', fontWeight: 'bold' }}>Last Week</ToggleButton>
+                        <ToggleButton value="3days" sx={{ color: 'white', fontWeight: 'bold' }}>3 Days</ToggleButton>
+                        <ToggleButton value="2days" sx={{ color: 'white', fontWeight: 'bold' }}>2 Days</ToggleButton>
+                        <ToggleButton value="1day" sx={{ color: 'white', fontWeight: 'bold' }}>1 Day</ToggleButton>
                     </ToggleButtonGroup>
                 </Box>
             )}
