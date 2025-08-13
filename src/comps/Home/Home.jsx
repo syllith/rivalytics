@@ -18,6 +18,7 @@ import Proficiency from '../Proficiency/Proficiency';
 import Hero from '../Hero/Hero';
 import Matches from '../Matches/Matches';
 import Ranked from '../Ranked/Ranked';
+import Composition from '../Composition/Composition';
 
 // Capitalizes the first letter of a string (for display purposes)
 function capitalizeFirst(str) {
@@ -31,6 +32,7 @@ function renderTabContent({ tab, heroData, matchesData, rankedData, username, lo
     if (tab === 'hero' && heroData) return <Hero rawData={heroData} username={capitalizeFirst(username)} loading={loading} />;
     if (tab === 'matches' && matchesData) return <Matches rawData={matchesData} username={capitalizeFirst(username)} loading={loading} />;
     if (tab === 'ranked' && rankedData) return <Ranked rawData={rankedData} username={capitalizeFirst(username)} loading={loading} />;
+    if (tab === 'composition') return <Composition />;
     // Show a message if no data is loaded and not loading or error
     if (tab !== 'proficiency' && !loading && !error && !heroData && !matchesData && !rankedData) {
         return <Box sx={{ color: '#aaa', textAlign: 'center', mt: 4 }}>No data loaded.</Box>;
@@ -271,11 +273,12 @@ export default function Home() {
                                 <ToggleButton value="hero" sx={{ textTransform: 'none' }}>Heros</ToggleButton>
                                 <ToggleButton value="matches" sx={{ textTransform: 'none' }}>Matches</ToggleButton>
                                 <ToggleButton value="ranked" sx={{ textTransform: 'none' }}>Ranked</ToggleButton>
+                                <ToggleButton value="composition" sx={{ textTransform: 'none' }}>Composition</ToggleButton>
                             </ToggleButtonGroup>
                         </Box>
 
-                        {/* --- Username Autocomplete (hidden on proficiency tab) --- */}
-                        {tab !== 'proficiency' && (
+                        {/* --- Username Autocomplete (hidden on proficiency and composition tabs) --- */}
+                        {tab !== 'proficiency' && tab !== 'composition' && (
                             <Box display="flex" mb={2} alignItems="center" justifyContent="center" flexDirection="column">
                                 <Autocomplete
                                     freeSolo

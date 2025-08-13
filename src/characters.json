@@ -12,6 +12,10 @@
         "icon": "/assets/images/avatars/black-widow_avatar.webp"
     },
     {
+        "name": "Blade",
+        "icon": "/assets/images/avatars/blade_avatar.webp"
+    },
+    {
         "name": "Captain America",
         "icon": "/assets/images/avatars/captain-america_avatar.webp"
     },

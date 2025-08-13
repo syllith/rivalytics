@@ -2,7 +2,7 @@
 
 **Rivalytics** is a proficiency and stat tracking tool for Marvel Rivals. It provides insights into your game performance, helping you track progress, analyze hero effectiveness, review match history, and monitor ranked performance—all through a clean interface.
 
-Try it here: https://rivalytics.digi-safe.co/
+Try it here: https://rivalytics.oblivonix.com/
 
 ## Features
 
@@ -16,7 +16,7 @@ Try it here: https://rivalytics.digi-safe.co/
 
 > **Privacy**: Rivalytics asks for user consent before capturing the screen, captures only necessary information, and never stores personal or sensitive data. See /src/comps/Proficiency/Proficiency.jsx for more information.
 
-![Proficiency Tracker](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/proficiency.jpg)
+![Proficiency Tracker](https://skydrive.oblivonix.com/files/Marvel%20Rivals/rivalytics/proficiency.jpg)
 
 ---
 
@@ -31,7 +31,7 @@ Effectiveness = (Win% × 40) + (KDA × 20) + (Damage per Match / 1000 × 6) + (H
 
 * **Sortable Table**: Easily sort your hero data to quickly compare performances across your roster.
 
-![Hero Stats](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/heros.jpg)
+![Hero Stats](https://skydrive.oblivonix.com/files/Marvel%20Rivals/rivalytics/heros.jpg)
 
 ---
 
@@ -41,7 +41,7 @@ Effectiveness = (Win% × 40) + (KDA × 20) + (Damage per Match / 1000 × 6) + (H
 * **Color-coded Results**: Quickly identify wins, losses, and disconnects through intuitive color-coding.
 * **Sortable Entries**: Effortlessly sort match data to find patterns in your gameplay.
 
-![Match History](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/matches.jpg)
+![Match History](https://skydrive.oblivonix.com/files/Marvel%20Rivals/rivalytics/matches.jpg)
 
 ---
 
@@ -51,7 +51,7 @@ Effectiveness = (Win% × 40) + (KDA × 20) + (Damage per Match / 1000 × 6) + (H
 * **Time-range Filters**: Use filters such as "All," "Last Month," and "Last Week" to review performance trends.
 * **Visual Gains/Losses**: Clearly highlighted gains and drops make tracking rank changes straightforward.
 
-![Ranked Progress](https://skydrive.digi-safe.co/files/Marvel%20Rivals/rivalytics/ranked.jpg)
+![Ranked Progress](https://skydrive.oblivonix.com/files/Marvel%20Rivals/rivalytics/ranked.jpg)
 
 ---
 

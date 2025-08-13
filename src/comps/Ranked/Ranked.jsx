@@ -132,7 +132,8 @@ export default function Ranked({ rawData }) {
                 borderColor: 'white',
                 backgroundColor: 'white',
                 fill: false,
-                tension: 0.3,
+                tension: 0, // remove curve smoothing
+                stepped: 'before', // step style aligned with point, keeps right edge flush
                 pointBackgroundColor: 'white'
             }]
         }
@@ -140,15 +141,21 @@ export default function Ranked({ rawData }) {
 
     // Chart.js options for the rank score chart
     const chartOptions = useMemo(() => {
-        // Extract score values to determine y-axis range
-        const scores = table.slice(1).map(row => {
+        // Extract score values from currently filtered table (so axis zooms with timeframe)
+        const scores = filteredTable.slice(1).map(row => {
             const scoreStr = row[2]
             return parseInt(scoreStr.replace(/,/g, ''), 10) || 0
         })
-        
         const ymin = scores.length ? Math.min(...scores) : 0
         const ymax = scores.length ? Math.max(...scores) : 0
-        
+        let range = ymax - ymin
+        // If all scores equal (range 0), fabricate a tiny range to show a flat line meaningfully
+        if (range === 0) range = Math.max(50, Math.round(ymax * 0.01) || 25)
+        // Tighter padding than before: 2% of range or minimum 10
+        const pad = Math.max(range * 0.02, 10)
+        const suggestedMin = Math.max(0, ymin - pad)
+        const suggestedMax = ymax + pad
+
         return {
             responsive: true,
             maintainAspectRatio: false,
@@ -172,8 +179,8 @@ export default function Ranked({ rawData }) {
                 },
                 y: {
                     beginAtZero: false,
-                    suggestedMin: Math.max(0, Math.floor(ymin * 0.9)),
-                    suggestedMax: Math.ceil(ymax * 1.1),
+                    suggestedMin,
+                    suggestedMax,
                     title: { display: true, text: 'Rank Score', color: 'white' },
                     ticks: { color: 'white' },
                     grid: { color: 'rgba(255,255,255,0.2)' }
@@ -200,7 +207,7 @@ export default function Ranked({ rawData }) {
                 }
             }
         }
-    }, [table])
+    }, [filteredTable])
 
     return (
         <Box pt={2}>
