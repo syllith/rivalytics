@@ -321,6 +321,7 @@ export function calculateProficiencyMetrics({ history, currentEntry, currentIdx,
     const currentTime = now || Date.now();
     const last24Hours = currentTime - (24 * 60 * 60 * 1000); // 24 hours ago
     let prof24Hours = 0;
+    let pointsPerHour24h = '–';
     
     // Find entries within the last 24 hours
     const recent24hEntries = realCalc.filter(entry => entry.time >= last24Hours);
@@ -342,6 +343,11 @@ export function calculateProficiencyMetrics({ history, currentEntry, currentIdx,
             }
         }
         prof24Hours = prof24hRaw;
+        // Compute points per hour over the actual span within the last 24h window
+        const hoursSpan = (latest24h.time - earliest24h.time) / (60 * 60 * 1000);
+        if (hoursSpan > 0) {
+            pointsPerHour24h = (prof24hRaw / hoursSpan).toFixed(1);
+        }
     }
 
     // Calculate projected completion date
@@ -361,6 +367,7 @@ export function calculateProficiencyMetrics({ history, currentEntry, currentIdx,
         exactMatchesLeft: estMatches, // Exact matches left (float)
         exactHoursLeft: estMins / 60, // Exact hours left (float)
         prof24Hours: prof24Hours, // Proficiency gained in last 24 hours
+    pointsPerHour24h, // Average points per hour over the last 24 hours window
         projectedCompletionDate: projectedDate // Projected completion date for next rank
     };
 }

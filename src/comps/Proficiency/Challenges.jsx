@@ -124,6 +124,16 @@ export default function Challenges({ stats, previousStats, metrics }) {
                         }}>
                             {formatNumber(metrics.prof24Hours)}
                         </Typography>
+                        <Tooltip content="Average points earned per hour over your activity span within the last 24 hours" placement="top">
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', fontWeight: 400, cursor: 'default', userSelect: 'text' }}>
+                                Prof. Per Hour:
+                            </Typography>
+                        </Tooltip>
+                        <Typography variant="body1" sx={{ color: 'white', fontWeight: 400 }}>
+                            {typeof metrics.pointsPerHour24h === 'number' || /^(?:\d+)(?:\.\d+)?$/.test(metrics.pointsPerHour24h)
+                                ? metrics.pointsPerHour24h
+                                : '–'}
+                        </Typography>
                     </Box>
                 </Box>
             )}

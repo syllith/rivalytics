@@ -277,8 +277,8 @@ export default function Home() {
                             </ToggleButtonGroup>
                         </Box>
 
-                        {/* --- Username Autocomplete (hidden on proficiency and composition tabs) --- */}
-                        {tab !== 'proficiency' && tab !== 'composition' && (
+            {/* --- Username Autocomplete (hidden on proficiency and composition tabs) --- */}
+            {tab !== 'proficiency' && tab !== 'composition' && (
                             <Box display="flex" mb={2} alignItems="center" justifyContent="center" flexDirection="column">
                                 <Autocomplete
                                     freeSolo
