@@ -28,8 +28,15 @@
     src: url("../assets/fonts/Kolker.ttf") format("opentype");
 }
 
+/* Global background and base text styles */
+html,
+body,
+#root {
+    height: 100%;
+}
+
 html {
-    background-color: #1a1a1a;
+    background-color: #0e0e0e; /* Ensure base behind transparency isn't white */
     color: white;
     font-family: "Lexend", "Open Sans";
     font-size: 14px;
@@ -37,8 +44,53 @@ html {
 }
 
 body {
-    height: 100%;
     margin: 0;
+    background-color: #0f0f0f; /* Fallback behind the blur */
+}
+
+/* Blurry, colorful background layer */
+body::before {
+    content: "";
+    position: fixed;
+    /* Scale blob sizes relative to generator's 1200x700 canvas */
+    --bg-w: 1200; /* px */
+    --bg-h: 700;  /* px */
+    --scale: min(calc(100vw / var(--bg-w)), calc(100vh / var(--bg-h)));
+    inset: -10%; /* overscan like the generator */
+    pointer-events: none;
+    z-index: 0; /* content sits above via #root */
+    background:
+        /* Main gradients */
+        radial-gradient(40vmin 40vmin at 89% 74%, hsla(112, 100%, 56%, 0.54) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 97% 31%, hsla(321, 100%, 56%, 0.54) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 38% 55%, hsla(11, 100%, 56%, 0.70) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 38% 55%, hsla(11, 100%, 56%, 0.36) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 38% 8%, hsla(268, 100%, 56%, 0.81) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 1% 94%, hsla(46, 100%, 56%, 0.52) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 89% 52%, hsla(288, 100%, 56%, 0.46) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 41% 89%, hsla(38, 100%, 56%, 0.42) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 63% 86%, hsla(334, 100%, 56%, 0.46) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 24% 8%, hsla(273, 100%, 56%, 0.38) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 43% 10%, hsla(217, 100%, 56%, 0.65) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 80% 35%, hsla(204, 100%, 56%, 0.86) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 45% 48%, hsla(236, 100%, 56%, 0.52) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 49% 8%, hsla(188, 100%, 56%, 0.52) 0%, transparent 85%),
+        radial-gradient(40vmin 40vmin at 28% 4%, hsla(75, 100%, 56%, 0.68) 0%, transparent 85%),
+        /* Secondary gradients for smoothness */
+        radial-gradient(46vmin 46vmin at 80% 80%, hsla(200, 100%, 56%, 0.15) 0%, transparent 88%),
+        radial-gradient(34vmin 34vmin at 20% 20%, hsla(320, 100%, 56%, 0.12) 0%, transparent 88%),
+        radial-gradient(50vmin 50vmin at 60% 30%, hsla(120, 100%, 56%, 0.1) 0%, transparent 88%),
+        radial-gradient(54vmin 54vmin at 40% 70%, hsla(40, 100%, 56%, 0.1) 0%, transparent 88%),
+        radial-gradient(40vmin 40vmin at 70% 50%, hsla(260, 100%, 56%, 0.1) 0%, transparent 88%),
+        /* Base gradients for blending */
+        linear-gradient(120deg, #181a2a 0%, #1a1c2e 100%),
+        linear-gradient(#0e0e0e, #0e0e0e);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-blend-mode: screen;
+    filter: blur(140px);
+    mix-blend-mode: lighten;
+    opacity: 1;
 }
 
 a {
@@ -60,6 +112,8 @@ select option {
 }
 
 #root {
+    position: relative; /* Ensure it layers above body::before */
+    z-index: 1;
     min-height: 100vh;
     height: 100vh;
 }

@@ -154,6 +154,11 @@ export default function Challenges({ stats, previousStats, metrics }) {
                             <TableCell>Progress</TableCell>
                             <TableCell>Gain</TableCell>
                             <TableCell >Avg Gain</TableCell>
+                            <TableCell sx={{ minWidth: 70, width: 80, whiteSpace: 'nowrap', textAlign: 'center' }}>
+                                <Tooltip content="Effectiveness vs. time: (field%/min%) relative to 60-min time field" placement="top">
+                                    <span>Eff.</span>
+                                </Tooltip>
+                            </TableCell>
                             <TableCell >Matches</TableCell>
                         </TableRow>
                     </TableHead>
@@ -171,6 +176,24 @@ export default function Challenges({ stats, previousStats, metrics }) {
                             let avgPointsPerGame = 0;
                             if (metrics?.averageGains) {
                                 avgPointsPerGame = metrics.averageGains[idx];
+                            }
+
+                            // Effectiveness relative to time played (field 1)
+                            // Normalize by each field's max so we're comparing fractional progress per time.
+                            // effectiveness = ((avgGain_i / max_i) / (avgMinutes / timeMax)) * 100
+                            let effectivenessPct = null;
+                            const timeAvg = metrics?.averageGains?.[0]; // avg minutes per match
+                            const timeMax = stats?.field1Max || 60; // default fallback
+                            if (typeof timeAvg === 'number' && timeAvg > 0 && maxValue > 0) {
+                                if (idx === 0) {
+                                    effectivenessPct = 100;
+                                } else {
+                                    const fracPerMatch = metrics.averageGains[idx] / maxValue;
+                                    const timeFracPerMatch = timeAvg / timeMax;
+                                    effectivenessPct = timeFracPerMatch > 0
+                                        ? (fracPerMatch / timeFracPerMatch) * 100
+                                        : null;
+                                }
                             }
 
                             return (
@@ -215,6 +238,17 @@ export default function Challenges({ stats, previousStats, metrics }) {
                                             minWidth: 60, fontSize: '0.9rem'
                                         }}>
                                             {avgPointsPerGame > 0 ? formatNumber(Math.round(avgPointsPerGame)) : '–'}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell sx={{ minWidth: 70, width: 80, whiteSpace: 'nowrap', textAlign: 'center' }}>
+                                        <Typography sx={{
+                                            color: 'white',
+                                            fontWeight: 'normal',
+                                            fontSize: '0.9rem'
+                                        }}>
+                                            {typeof effectivenessPct === 'number'
+                                                ? `${Math.round(effectivenessPct)}%`
+                                                : '–'}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>

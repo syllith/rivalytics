@@ -11,6 +11,7 @@ import {
     ListItemButton,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import Autocomplete from '@mui/material/Autocomplete';
 import CloseIcon from '@mui/icons-material/Close';
 import * as themes from '../../themes';
@@ -223,6 +224,7 @@ export default function Home() {
     // --- Main Render ---
     return (
         <ThemeProvider theme={themes.custom}>
+            <CssBaseline />
             <Container
                 maxWidth="lg"
                 disableGutters
@@ -235,11 +237,8 @@ export default function Home() {
                             width: '100%',
                             maxWidth: 1200,
                             mx: 'auto',
-                            bgcolor: 'rgba(28,30,34,0.98)',
                             borderRadius: 4,
-                            boxShadow: '0 8px 32px 0 rgba(0,0,0,0.28)',
                             minHeight: '80vh',
-                            border: '1.5px solid rgba(255,255,255,0.07)',
                             overflowY: 'auto',
                             overflowX: 'hidden',
                             display: 'flex',

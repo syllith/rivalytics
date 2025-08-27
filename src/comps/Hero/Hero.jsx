@@ -218,13 +218,7 @@ export default function Hero({ rawData, username, loading }) {
             {!loading && table.length > 0 && (
                 <TableContainer
                     component={Paper}
-                    sx={{
-                        mb: 2,
-                        bgcolor: 'rgba(30,30,40,0.92)',
-                        boxShadow: 'none',
-                        borderRadius: 2,
-                        border: '1px solid rgba(255,255,255,0.07)'
-                    }}
+                    sx={{ mb: 2, borderRadius: 2 }}
                 >
                     <Table size="small">
                         <TableHead>

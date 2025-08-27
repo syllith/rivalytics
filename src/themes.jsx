@@ -4,9 +4,11 @@ export const custom = createTheme({
     palette: {
         mode: 'dark',
         background: {
-            default: '#373737',
-            paper: '#121212',
-            card: '#121212',
+            // Let the global CSS gradient show through
+            default: 'transparent',
+            // Slightly translucent surfaces
+            paper: 'rgba(18, 18, 18, 0.55)',
+            card: 'rgba(18, 18, 18, 0.55)',
         },
         text: {
             primary: '#e0e0e0',
@@ -14,13 +16,66 @@ export const custom = createTheme({
     },
     typography: {
         fontFamily: 'Lexend, Open Sans, Bebas, Montserrat, Muli, Kolker, Arial',
+        button: {
+            textTransform: 'none',
+        },
     },
     components: {
+        // Remove automatic uppercase from buttons and tabs
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                },
+            },
+        },
+        MuiTab: {
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                },
+            },
+        },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    backgroundImage: 'none',
+                    backgroundColor: 'rgba(18, 18, 18, 0.55)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)'
+                },
+            },
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    backgroundImage: 'none',
+                    backgroundColor: 'rgba(18, 18, 18, 0.5)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)'
+                },
+            },
+        },
         MuiDrawer: {
             styleOverrides: {
                 paper: {
                     width: 230,
-                    backgroundColor: '#212121',
+                    backgroundColor: 'rgba(18, 18, 18, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    borderRight: '1px solid rgba(255, 255, 255, 0.08)'
+                },
+            },
+        },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: 'rgba(18, 18, 18, 0.6)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
                 },
             },
         },
@@ -28,19 +83,18 @@ export const custom = createTheme({
             styleOverrides: {
                 root: {
                     '&.Mui-selected': {
-                        backgroundColor: '#373737',
+                        backgroundColor: 'rgba(255,255,255,0.06)',
                     },
                 },
             },
         },
-        // Only keep these if you want a custom look:
+        // Keep existing table tweaks
         MuiTableCell: {
             styleOverrides: {
                 head: {
                     fontWeight: 600,
                     backgroundColor: 'rgba(255,255,255,0.04)',
                 },
-                // Remove 'root: { color: ... }' as palette.text.primary handles it
             },
         },
         MuiTableRow: {

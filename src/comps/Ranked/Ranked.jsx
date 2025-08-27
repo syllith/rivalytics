@@ -38,16 +38,17 @@ function parseRankedTable(rawData) {
         const rank = typeof val[0] === 'string' ? val[0] : String(val[0] || '')
         const score = String(val[1] || '')
         const disp = infoRaw.displayValue || infoRaw.DisplayValue || ''
-        // The last row has no gain value
-        const gain = index === entries.length - 1 ? '' : null // Placeholder for "Gain" column
+        // The last (oldest) row has no gain value since there is no previous entry to compare
+        const gain = index === entries.length - 1 ? '' : 0 // Placeholder for "Gain" column
         return [`${date} ${time}`, rank, score, disp, gain]
     })
 
-    // Calculate gain/loss for each row (difference in score from previous row)
-    for (let i = rows.length - 2; i >= 1; i--) {
-        const currScore = Number(rows[i][2].replace(/,/g, '')) || 0
-        const prevScore = Number(rows[i + 1][2].replace(/,/g, '')) || 0
-        rows[i][4] = currScore - prevScore // Calculate gain/loss
+    // Calculate gain/loss for each row (difference in score from the next/older row)
+    // Data from API is in reverse chronological order (newest first)
+    for (let i = 0; i < rows.length - 1; i++) {
+        const currScore = Number(String(rows[i][2]).replace(/,/g, '')) || 0
+        const nextScore = Number(String(rows[i + 1][2]).replace(/,/g, '')) || 0
+        rows[i][4] = currScore - nextScore
     }
 
     return [header, ...rows]
@@ -244,10 +245,7 @@ export default function Ranked({ rawData }) {
                         mt: 3,
                         mb: 2,
                         p: 2,
-                        bgcolor: 'rgba(30,30,40,0.92)',
-                        boxShadow: 'none',
                         borderRadius: 2,
-                        border: '1px solid rgba(255,255,255,0.07)'
                     }}
                 >
                     <Line data={chartData} options={chartOptions} />
@@ -258,13 +256,7 @@ export default function Ranked({ rawData }) {
             {table.length > 0 && (
                 <TableContainer
                     component={Paper}
-                    sx={{
-                        mb: 2,
-                        bgcolor: 'rgba(30,30,40,0.92)',
-                        boxShadow: 'none',
-                        borderRadius: 2,
-                        border: '1px solid rgba(255,255,255,0.07)'
-                    }}
+                    sx={{ mb: 2, borderRadius: 2 }}
                 >
                     <Table size="small">
                         <TableHead>
@@ -332,10 +324,14 @@ export default function Ranked({ rawData }) {
                                                     }}
                                                     padding="none"
                                                 >
-                                                    {/* Format the Score and Gain columns with commas */}
-                                                    {ci === 2 || ci === 4
-                                                        ? (Number(cell).toLocaleString('en-US'))
-                                                        : cell}
+                                                    {/* Format Score with commas; for Gain, leave blank cell empty instead of 0 */}
+                                                    {ci === 2
+                                                        ? Number(cell).toLocaleString('en-US')
+                                                        : ci === 4
+                                                            ? (cell === '' || cell === null || cell === undefined
+                                                                ? ''
+                                                                : Number(cell).toLocaleString('en-US'))
+                                                            : cell}
                                                 </TableCell>
                                             )
                                         })}
