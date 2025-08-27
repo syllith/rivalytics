@@ -15,7 +15,7 @@ export default function Chart({ chartHistory }) {
             borderColor: 'white',
             backgroundColor: 'white',
             fill: false,
-            tension: 0.3,
+            tension: 0,
             pointBackgroundColor: 'white'
         }]
     }), [chartHistory]);
