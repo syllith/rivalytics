@@ -590,12 +590,15 @@ export default function ProficiencyTracker() {
                         startIcon={<AddAPhoto />}
                         sx={{
                             textTransform: 'none',
-                            minWidth: 170,
-                            px: 2, py: 1.2,
-                            height: '48px'
+                            minWidth: 160,
+                            maxWidth: 160,
+                            px: 1.5, py: 0.75,
+                            height: 40,
+                            fontSize: '0.9rem',
+                            whiteSpace: 'nowrap'
                         }}
                     >
-                        {loading ? 'Capturing…' : 'Capture Proficiency'}
+                        {loading ? 'Capturing…' : 'Capture'}
                     </Button>
                 </CustomTooltip>
                 {/* Undo Last button with CustomTooltip */}
@@ -612,9 +615,12 @@ export default function ProficiencyTracker() {
                         startIcon={<Undo />}
                         sx={{
                             textTransform: 'none',
-                            minWidth: 170,
-                            px: 2, py: 1.2,
-                            height: '48px'
+                            minWidth: 160,
+                            maxWidth: 160,
+                            px: 1.5, py: 0.75,
+                            height: 40,
+                            fontSize: '0.9rem',
+                            whiteSpace: 'nowrap'
                         }}
                     >
                         Undo Last
@@ -640,9 +646,12 @@ export default function ProficiencyTracker() {
                         startIcon={<PlayArrow />}
                         sx={{
                             textTransform: 'none',
-                            minWidth: 170,
-                            px: 2, py: 1.2,
-                            height: '48px'
+                            minWidth: 160,
+                            maxWidth: 160,
+                            px: 1.5, py: 0.75,
+                            height: 40,
+                            fontSize: '0.9rem',
+                            whiteSpace: 'nowrap'
                         }}
                     >
                         Simulate Game{simMode ? ` (${simCount})` : ''}
@@ -662,9 +671,12 @@ export default function ProficiencyTracker() {
                         startIcon={<Stop />}
                         sx={{
                             textTransform: 'none',
-                            minWidth: 170,
-                            px: 2, py: 1.2,
-                            height: '48px'
+                            minWidth: 160,
+                            maxWidth: 160,
+                            px: 1.5, py: 0.75,
+                            height: 40,
+                            fontSize: '0.9rem',
+                            whiteSpace: 'nowrap'
                         }}
                     >
                         Stop Simulation

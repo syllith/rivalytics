@@ -31,7 +31,13 @@ export default function Challenges({ stats, previousStats, metrics }) {
         <Box sx={{ mb: 2 }}>
             {/* Narrow header within Challenges: progress, rank, summary */}
             <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%', mb: 1 }}>
-                {/* Progress bar and rank info */}
+                {/* Rank and proficiency info above progress bar */}
+                <Typography sx={{ mb: 1, color: '#b0b0b0', display: 'flex', alignItems: 'center', gap: 1 }}>
+                    Rank: <span style={{ color: 'white' }}>{stats.status}</span>
+                    <span style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#b0b0b0' }}>•</span>
+                    Proficiency: <span style={{ color: 'white' }}>{formatNumber(stats.proficiencyCurrent)} / {formatNumber(stats.proficiencyMax)}</span>
+                </Typography>
+                {/* Progress bar below rank */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <Box sx={{ flexGrow: 1, mr: 1 }}>
                         <LinearProgress variant="determinate" value={overallPct} />
@@ -40,11 +46,6 @@ export default function Challenges({ stats, previousStats, metrics }) {
                         {Math.round(overallPct)}%
                     </Typography>
                 </Box>
-                <Typography sx={{ mb: 1, color: '#b0b0b0', display: 'flex', alignItems: 'center', gap: 1 }}>
-                    Rank: <span style={{ color: 'white' }}>{stats.status}</span>
-                    <span style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#b0b0b0' }}>•</span>
-                    Proficiency: <span style={{ color: 'white' }}>{formatNumber(stats.proficiencyCurrent)} / {formatNumber(stats.proficiencyMax)}</span>
-                </Typography>
 
                 {/* Summary metrics below progress bar */}
                 {metrics && (
