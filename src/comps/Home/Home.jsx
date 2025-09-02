@@ -233,9 +233,11 @@ export default function Home() {
                 <Box sx={{ height: '100%', maxHeight: '100vh', overflowY: 'auto' }}>
                     <Paper
                         sx={{
-                            p: { xs: 2, sm: 2 },
+                            pt: 1.5,
+                            px: { xs: 2, sm: 2 },
+                            pb: { xs: 2, sm: 2 },
                             width: '100%',
-                            maxWidth: 1200,
+                            maxWidth: 1320,
                             mx: 'auto',
                             borderRadius: 4,
                             minHeight: '80vh',
@@ -247,13 +249,15 @@ export default function Home() {
                         }}
                     >
                         {/* --- App Logo --- */}
-                        <Box
+            <Box
                             sx={{
                                 fontFamily: '"Kolker", sans-serif',
                                 fontSize: { xs: 50, sm: 65 },
                                 textAlign: 'center',
-                                mb: 2,
-                                mt: 1,
+                                mt: 0.5,
+                                mb: 0.5,
+                                py: 0,
+                                lineHeight: 1,
                                 color: 'white',
                                 userSelect: 'none',
                                 textShadow: '0 2px 8px #000a',

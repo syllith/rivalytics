@@ -382,7 +382,9 @@ export default function ProficiencyTracker() {
 
     // --- Main render ---
     return (
-        <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
+        <Box sx={{ maxWidth: 1000, mx: 'auto', width: '100%' }}>
+            {/* Narrow header/content area */}
+            <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
             {/* Character selection and clear button */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 1 }}>
                 <FormControl fullWidth sx={{ height: '48px' }}>
@@ -672,6 +674,10 @@ export default function ProficiencyTracker() {
 
             {/* Navigation for real games (not in sim mode) */}
             {currentCharacter && realGames.length > 0 && (
+                <>
+                <Typography variant="h6" sx={{ color: 'white', mb: 1, textAlign: 'center' }}>
+                    Match
+                </Typography>
                 <Stack
                     className="noselect"
                     direction="row"
@@ -721,6 +727,7 @@ export default function ProficiencyTracker() {
                         </IconButton>
                     </CustomTooltip>
                 </Stack>
+                </>
             )}
 
             {/* Error dialog for user feedback */}
@@ -753,10 +760,11 @@ export default function ProficiencyTracker() {
 
             {/* Hidden canvas for proficiency capture */}
             <canvas ref={canvasRef} style={{ display: 'none' }} />
+            </Box>
 
             {/* Main content: challenges, progression, chart */}
             {currentEntry && (
-                <>
+                <Box sx={{ maxWidth: 1000, mx: 'auto', width: '100%' }}>
                     <Challenges
                         stats={currentEntry.stats}
                         previousStats={prevEntry?.stats}
@@ -772,17 +780,19 @@ export default function ProficiencyTracker() {
                         />
                     )}
                     <Chart chartHistory={chartHistory} />
-                </>
+                </Box>
             )}
 
             {/* Show instructions if no data for selected character */}
             {currentCharacter && !history.length && (
-                <Instructions />
+                <Box sx={{ maxWidth: 800, mx: 'auto', width: '100%' }}>
+                    <Instructions />
+                </Box>
             )}
 
             {/* Prompt to select a character if none selected */}
             {!currentCharacter && (
-                <Box sx={{ textAlign: 'center', mt: 4 }}>
+                <Box sx={{ textAlign: 'center', mt: 4, maxWidth: 800, mx: 'auto', width: '100%' }}>
                     <Typography variant="h6">
                         Please select a character to begin tracking
                     </Typography>
