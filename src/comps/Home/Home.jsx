@@ -228,21 +228,26 @@ export default function Home() {
             <Container
                 maxWidth="lg"
                 disableGutters
-                sx={{ p: 4, height: '100vh', boxSizing: 'border-box' }}
+                sx={{
+                    px: { xs: 1.5, sm: 2 },
+                    py: { xs: 1, sm: 1.5 },
+                    height: '100vh',
+                    boxSizing: 'border-box'
+                }}
             >
-                <Box sx={{ height: '100%', maxHeight: '100vh', overflowY: 'auto' }}>
+                <Box sx={{ height: '100%' }}>
                     <Paper
                         sx={{
-                            pt: 1.5,
+                            pt: 1,
                             px: { xs: 2, sm: 2 },
-                            pb: { xs: 2, sm: 2 },
+                            pb: { xs: 1.5, sm: 1.5 },
                             width: '100%',
                             maxWidth: 1320,
                             mx: 'auto',
                             borderRadius: 4,
                             minHeight: '80vh',
-                            overflowY: 'auto',
-                            overflowX: 'hidden',
+                            maxHeight: '100%',
+                            overflow: 'hidden',
                             display: 'flex',
                             flexDirection: 'column',
                             boxSizing: 'border-box',
@@ -384,7 +389,14 @@ export default function Home() {
                         {/* --- End Username Autocomplete --- */}
 
                         {/* --- Main Tab Content --- */}
-                        <Box sx={{ flex: 1, minWidth: 0, width: '100%', overflow: 'hidden' }}>
+                        <Box sx={{
+                            flex: 1,
+                            minWidth: 0,
+                            minHeight: 0,
+                            width: '100%',
+                            overflowY: 'auto',
+                            overflowX: 'hidden'
+                        }}>
                             {renderTabContent({ tab, heroData, matchesData, rankedData, username, loading, error })}
                         </Box>
                     </Paper>
