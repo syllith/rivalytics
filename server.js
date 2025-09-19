@@ -22,29 +22,29 @@ app.use(express.json())
 fs.mkdirSync(IMAGES_DIR, { recursive: true })
 
 const upload = multer({
-    storage: multer.diskStorage({
-        destination: (_req, _file, cb) => cb(null, IMAGES_DIR),
-        filename: (_req, file, cb) =>
-            cb(null, `${uuid()}${path.extname(file.originalname)}`),
-    }),
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, IMAGES_DIR),
+    filename: (_req, file, cb) =>
+      cb(null, `${uuid()}${path.extname(file.originalname)}`),
+  }),
 })
 
 app.get('/', (_req, res) => res.send('OK'))
 
 // API access logging middleware
 app.use((req, res, next) => {
-    const logLine = `[${new Date().toISOString()}] ${req.ip} ${req.method} ${req.originalUrl}\n`;
-    fs.appendFile(API_LOG_PATH, logLine, err => {
-        if (err) console.error('API log error:', err);
-    });
-    next();
+  const logLine = `[${new Date().toISOString()}] ${req.ip} ${req.method} ${req.originalUrl}\n`;
+  fs.appendFile(API_LOG_PATH, logLine, err => {
+    if (err) console.error('API log error:', err);
+  });
+  next();
 });
 
 // OCR endpoint (unchanged)
 app.post('/api/ocr', upload.single('file'), (req, res) => {
-    const filename = req.file.filename
-    const containerPath = `/data/images/${filename}`
-    const pythonScript = `
+  const filename = req.file.filename
+  const containerPath = `/data/images/${filename}`
+  const pythonScript = `
 import json
 from paddleocr import PaddleOCR
 ocr = PaddleOCR(use_angle_cls=True, lang='en', use_gpu=True, show_log=False)
@@ -56,44 +56,44 @@ for line in res:
 print(json.dumps(out))
 `.trim()
 
-    const proc = spawn(
-        'docker',
-        [
-            'compose',
-            '-f',
-            'docker-compose.yaml',
-            'exec',
-            '-T',
-            'paddleocr',
-            'python',
-            '-',
-        ],
-        { cwd: DOCKER_CWD, stdio: ['pipe', 'pipe', 'pipe'] }
-    )
+  const proc = spawn(
+    'docker',
+    [
+      'compose',
+      '-f',
+      'docker-compose.yaml',
+      'exec',
+      '-T',
+      'paddleocr',
+      'python',
+      '-',
+    ],
+    { cwd: DOCKER_CWD, stdio: ['pipe', 'pipe', 'pipe'] }
+  )
 
-    let stdout = Buffer.alloc(0), stderr = Buffer.alloc(0)
-    proc.stdin.write(pythonScript)
-    proc.stdin.end()
-    proc.stdout.on('data', d => { stdout = Buffer.concat([stdout, d]) })
-    proc.stderr.on('data', d => { stderr = Buffer.concat([stderr, d]) })
+  let stdout = Buffer.alloc(0), stderr = Buffer.alloc(0)
+  proc.stdin.write(pythonScript)
+  proc.stdin.end()
+  proc.stdout.on('data', d => { stdout = Buffer.concat([stdout, d]) })
+  proc.stderr.on('data', d => { stderr = Buffer.concat([stderr, d]) })
 
-    proc.on('close', code => {
-        fs.unlink(path.join(IMAGES_DIR, filename), () => { })
-        if (code !== 0) {
-            return res.status(500).send(stderr.toString() || `exit status ${code}`)
-        }
-        try {
-            const parsed = JSON.parse(stdout.toString())
-            res.json({ raw: stdout.toString(), result: parsed })
-        } catch {
-            res.status(200).send(stdout.toString())
-        }
-    })
+  proc.on('close', code => {
+    fs.unlink(path.join(IMAGES_DIR, filename), () => { })
+    if (code !== 0) {
+      return res.status(500).send(stderr.toString() || `exit status ${code}`)
+    }
+    try {
+      const parsed = JSON.parse(stdout.toString())
+      res.json({ raw: stdout.toString(), result: parsed })
+    } catch {
+      res.status(200).send(stdout.toString())
+    }
+  })
 
-    proc.on('error', err => {
-        fs.unlink(path.join(IMAGES_DIR, filename), () => { })
-        res.status(500).send(err.message)
-    })
+  proc.on('error', err => {
+    fs.unlink(path.join(IMAGES_DIR, filename), () => { })
+    res.status(500).send(err.message)
+  })
 })
 
 // ——— New: scrape career segments without API key ———
@@ -151,7 +151,7 @@ app.get('/api/rivals/:username/career', async (req, res) => {
 
 // ── RAW match history ──
 app.get('/api/rivals/:username/matches', async (req, res) => {
-  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${req.params.username}?season=3`;
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${req.params.username}?season=4`;
   try {
     const json = await scrapeJson(url);
     res.json(json);
@@ -172,5 +172,5 @@ app.get('/api/rivals/:username/ranked', async (req, res) => {
 })
 
 app.listen(8099, () =>
-    console.log('🚀 Listening on http://localhost:8099')
+  console.log('🚀 Listening on http://localhost:8099')
 )
