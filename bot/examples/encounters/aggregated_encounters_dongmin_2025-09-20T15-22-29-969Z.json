@@ -1,0 +1,2931 @@
+{
+  "data": {
+    "offset": "-05:00:00",
+    "heatmaps": null,
+    "teammates": [
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "stіnkrs",
+          "platformUserIdentifier": "stіnkrs",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000061.jpg?v=1752225507",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T12:10:03+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 31,
+            "displayValue": "31",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.7,
+            "displayValue": "2.70",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 45.2,
+            "displayValue": "45.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 122,
+            "displayValue": "122",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.97,
+            "displayValue": "2.97",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 51.6,
+            "displayValue": "51.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4657,
+            "displayValue": "4,657",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "0-50 FinalBoss",
+          "platformUserIdentifier": "0-50 FinalBoss",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31033001.jpg?v=1735042828",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-19T09:33:27+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 23,
+            "displayValue": "23",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.55,
+            "displayValue": "4.55",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 69.6,
+            "displayValue": "69.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 121,
+            "displayValue": "121",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.56,
+            "displayValue": "3.56",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 52.1,
+            "displayValue": "52.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4653,
+            "displayValue": "4,653",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "kevie3000",
+          "platformUserIdentifier": "kevie3000",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000001.jpg?v=1735042758",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-14T08:32:48+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 15,
+            "displayValue": "15",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.36,
+            "displayValue": "2.36",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 73,
+            "displayValue": "73",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.34,
+            "displayValue": "2.34",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 52.1,
+            "displayValue": "52.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster III",
+              "tierShortName": "GM3",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4566,
+            "displayValue": "4,566",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "renko_",
+          "platformUserIdentifier": "renko_",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31033203.jpg?v=1748606506",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:38:28+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 13,
+            "displayValue": "13",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.94,
+            "displayValue": "2.94",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 92.3,
+            "displayValue": "92.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 25,
+            "displayValue": "25",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.89,
+            "displayValue": "2.89",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4816,
+            "displayValue": "4,816",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "гukiа",
+          "platformUserIdentifier": "гukiа",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000001.jpg?v=1735042758",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-19T07:10:01+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 12,
+            "displayValue": "12",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.35,
+            "displayValue": "2.35",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.3,
+            "displayValue": "58.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 53,
+            "displayValue": "53",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.56,
+            "displayValue": "3.56",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 64.2,
+            "displayValue": "64.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4665,
+            "displayValue": "4,665",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "mirrоr",
+          "platformUserIdentifier": "mirrоr",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31031203.jpg?v=1754648907",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:55:46+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 7,
+            "displayValue": "7",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.21,
+            "displayValue": "3.21",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 71.4,
+            "displayValue": "71.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 206,
+            "displayValue": "206",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.79,
+            "displayValue": "2.79",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4706,
+            "displayValue": "4,706",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "TomTweakin",
+          "platformUserIdentifier": "TomTweakin",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31037204.jpg?v=1748606508",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T08:19:09+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.11,
+            "displayValue": "3.11",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 47,
+            "displayValue": "47",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.96,
+            "displayValue": "2.96",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 61.7,
+            "displayValue": "61.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4768,
+            "displayValue": "4,768",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "ticо",
+          "platformUserIdentifier": "ticо",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31031205.jpg?v=1757672143",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T04:29:17+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.94,
+            "displayValue": "2.94",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 54,
+            "displayValue": "54",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.95,
+            "displayValue": "3.95",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4838,
+            "displayValue": "4,838",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Free L",
+          "platformUserIdentifier": "Free L",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31033202.jpg?v=1748606505",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-14T08:10:55+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.02,
+            "displayValue": "2.02",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 25,
+            "displayValue": "25.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 167,
+            "displayValue": "167",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.39,
+            "displayValue": "2.39",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 54.5,
+            "displayValue": "54.5%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4643,
+            "displayValue": "4,643",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Malenia",
+          "platformUserIdentifier": "Malenia",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000085.jpg?v=1757672140",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:02:23+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 6.19,
+            "displayValue": "6.19",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 101,
+            "displayValue": "101",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.91,
+            "displayValue": "3.91",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 57.4,
+            "displayValue": "57.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4667,
+            "displayValue": "4,667",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "EatingPizzaRn",
+          "platformUserIdentifier": "EatingPizzaRn",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31018205.jpg?v=1756050211",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T04:29:17+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2,
+            "displayValue": "2.00",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 109,
+            "displayValue": "109",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.63,
+            "displayValue": "2.63",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 51.4,
+            "displayValue": "51.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4664,
+            "displayValue": "4,664",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "RAD Noodle",
+          "platformUserIdentifier": "RAD Noodle",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31056001.jpg?v=1757672148",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T04:37:29+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 8.57,
+            "displayValue": "8.57",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 71,
+            "displayValue": "71",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.54,
+            "displayValue": "3.54",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60.6,
+            "displayValue": "60.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4810,
+            "displayValue": "4,810",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "RуanGosling",
+          "platformUserIdentifier": "RуanGosling",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31021202.jpg?v=1735042805",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:38:28+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.74,
+            "displayValue": "3.74",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 53,
+            "displayValue": "53",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.57,
+            "displayValue": "3.57",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 64.2,
+            "displayValue": "64.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4801,
+            "displayValue": "4,801",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Sobek1",
+          "platformUserIdentifier": "Sobek1",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31029203.jpg?v=1740144812",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-14T08:10:55+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.32,
+            "displayValue": "2.32",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 182,
+            "displayValue": "182",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.41,
+            "displayValue": "2.41",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 51.6,
+            "displayValue": "51.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4722,
+            "displayValue": "4,722",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "god оf thunder",
+          "platformUserIdentifier": "god оf thunder",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31018205.jpg?v=1756050211",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-19T09:08:41+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.38,
+            "displayValue": "2.38",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 30,
+            "displayValue": "30",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.25,
+            "displayValue": "3.25",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 56.7,
+            "displayValue": "56.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster III",
+              "tierShortName": "GM3",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4500,
+            "displayValue": "4,500",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "BxbyHarley",
+          "platformUserIdentifier": "BxbyHarley",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:38:28+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.4,
+            "displayValue": "1.40",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 97,
+            "displayValue": "97",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.26,
+            "displayValue": "2.26",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60.8,
+            "displayValue": "60.8%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4810,
+            "displayValue": "4,810",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "ONG Dawn",
+          "platformUserIdentifier": "ONG Dawn",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31016202.jpg?v=1735042802",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:55:46+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.2,
+            "displayValue": "4.20",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 88,
+            "displayValue": "88",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.28,
+            "displayValue": "2.28",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58,
+            "displayValue": "58.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4799,
+            "displayValue": "4,799",
+            "displayType": "String"
+          }
+        }
+      }
+    ],
+    "enemies": [
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Kendr1c",
+          "platformUserIdentifier": "Kendr1c",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31024201.jpg?v=1735042808",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:55:46+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.54,
+            "displayValue": "2.54",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 81,
+            "displayValue": "81",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.89,
+            "displayValue": "2.89",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58,
+            "displayValue": "58.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4788,
+            "displayValue": "4,788",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Konuya",
+          "platformUserIdentifier": "Konuya",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000044.jpg?v=1740144800",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-14T06:20:17+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.75,
+            "displayValue": "2.75",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 77,
+            "displayValue": "77",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.03,
+            "displayValue": "3.03",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 53.2,
+            "displayValue": "53.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4701,
+            "displayValue": "4,701",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "bxbyharleypet",
+          "platformUserIdentifier": "bxbyharleypet",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:55:46+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.36,
+            "displayValue": "2.36",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 220,
+            "displayValue": "220",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.14,
+            "displayValue": "3.14",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 48.6,
+            "displayValue": "48.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4690,
+            "displayValue": "4,690",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "ArmaDihllo",
+          "platformUserIdentifier": "ArmaDihllo",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31043205.jpg?v=1757672146",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:55:46+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.32,
+            "displayValue": "1.32",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 20,
+            "displayValue": "20.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 124,
+            "displayValue": "124",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.69,
+            "displayValue": "2.69",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 53.2,
+            "displayValue": "53.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4673,
+            "displayValue": "4,673",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "BxbyHarley",
+          "platformUserIdentifier": "BxbyHarley",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:02:23+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.32,
+            "displayValue": "1.32",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 97,
+            "displayValue": "97",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.26,
+            "displayValue": "2.26",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60.8,
+            "displayValue": "60.8%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4810,
+            "displayValue": "4,810",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "RуanGosling",
+          "platformUserIdentifier": "RуanGosling",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31021202.jpg?v=1735042805",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:02:23+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.43,
+            "displayValue": "3.43",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 53,
+            "displayValue": "53",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.57,
+            "displayValue": "3.57",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 64.2,
+            "displayValue": "64.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4801,
+            "displayValue": "4,801",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "mirrоr",
+          "platformUserIdentifier": "mirrоr",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31031203.jpg?v=1754648907",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:23:23+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3.00",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 25,
+            "displayValue": "25.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 206,
+            "displayValue": "206",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.79,
+            "displayValue": "2.79",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4706,
+            "displayValue": "4,706",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "doomedd",
+          "platformUserIdentifier": "doomedd",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31037204.jpg?v=1748606508",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T08:44:28+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.62,
+            "displayValue": "3.62",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 25,
+            "displayValue": "25.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 95,
+            "displayValue": "95",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.1,
+            "displayValue": "4.10",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4853,
+            "displayValue": "4,853",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Cybur",
+          "platformUserIdentifier": "Cybur",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000001.jpg?v=1735042758",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-13T10:28:52+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.52,
+            "displayValue": "2.52",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 215,
+            "displayValue": "215",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.76,
+            "displayValue": "3.76",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 49.3,
+            "displayValue": "49.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4696,
+            "displayValue": "4,696",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "ragnarokkk.",
+          "platformUserIdentifier": "ragnarokkk.",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31031205.jpg?v=1757672143",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T04:10:28+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3.00",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 224,
+            "displayValue": "224",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.97,
+            "displayValue": "2.97",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 49.1,
+            "displayValue": "49.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4628,
+            "displayValue": "4,628",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "FLM2Jouer",
+          "platformUserIdentifier": "FLM2Jouer",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31047204.jpg?v=1752225532",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-19T06:50:03+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.47,
+            "displayValue": "1.47",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 106,
+            "displayValue": "106",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.45,
+            "displayValue": "2.45",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 57.5,
+            "displayValue": "57.5%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4680,
+            "displayValue": "4,680",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "RAD Noodle",
+          "platformUserIdentifier": "RAD Noodle",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31056001.jpg?v=1757672148",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T09:42:41+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.75,
+            "displayValue": "2.75",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 71,
+            "displayValue": "71",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.54,
+            "displayValue": "3.54",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60.6,
+            "displayValue": "60.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4810,
+            "displayValue": "4,810",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "UncleGuap",
+          "platformUserIdentifier": "UncleGuap",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000085.jpg?v=1757672140",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:41:09+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.9,
+            "displayValue": "2.90",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 123,
+            "displayValue": "123",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.88,
+            "displayValue": "2.88",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 56.9,
+            "displayValue": "56.9%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4668,
+            "displayValue": "4,668",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Jay_Np",
+          "platformUserIdentifier": "Jay_Np",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31041204.jpg?v=1756050212",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-14T07:48:06+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 5.53,
+            "displayValue": "5.53",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 105,
+            "displayValue": "105",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.49,
+            "displayValue": "3.49",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4744,
+            "displayValue": "4,744",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "CaptainLuck",
+          "platformUserIdentifier": "CaptainLuck",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000043.jpg?v=1740144800",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-14T07:48:06+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.1,
+            "displayValue": "2.10",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 33.3,
+            "displayValue": "33.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 84,
+            "displayValue": "84",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.54,
+            "displayValue": "2.54",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 56,
+            "displayValue": "56.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster III",
+              "tierShortName": "GM3",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4526,
+            "displayValue": "4,526",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Kazuya 8",
+          "platformUserIdentifier": "Kazuya 8",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31043205.jpg?v=1757672146",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T12:10:03+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.93,
+            "displayValue": "2.93",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 31,
+            "displayValue": "31",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.94,
+            "displayValue": "2.94",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 67.7,
+            "displayValue": "67.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4709,
+            "displayValue": "4,709",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Cant touchthis",
+          "platformUserIdentifier": "Cant touchthis",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:17:23+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.61,
+            "displayValue": "3.61",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 33.3,
+            "displayValue": "33.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 63,
+            "displayValue": "63",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.28,
+            "displayValue": "3.28",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50.8,
+            "displayValue": "50.8%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster III",
+              "tierShortName": "GM3",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4567,
+            "displayValue": "4,567",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "DatBaconTho",
+          "platformUserIdentifier": "DatBaconTho",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T07:17:23+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.26,
+            "displayValue": "3.26",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 33.3,
+            "displayValue": "33.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 95,
+            "displayValue": "95",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.13,
+            "displayValue": "3.13",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 53.7,
+            "displayValue": "53.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4751,
+            "displayValue": "4,751",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "month",
+          "platformUserIdentifier": "month",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-14T05:18:03+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 5.38,
+            "displayValue": "5.38",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.67,
+            "displayValue": "3.67",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66,
+            "displayValue": "66.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4808,
+            "displayValue": "4,808",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "chаd",
+          "platformUserIdentifier": "chаd",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31017001.jpg?v=1736499874",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T10:04:06+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.62,
+            "displayValue": "1.62",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 33.3,
+            "displayValue": "33.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 74,
+            "displayValue": "74",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.53,
+            "displayValue": "2.53",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.1,
+            "displayValue": "58.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster I",
+              "tierShortName": "GM1",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4735,
+            "displayValue": "4,735",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "NeighborChad",
+          "platformUserIdentifier": "NeighborChad",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000001.jpg?v=1735042758",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-20T04:10:28+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.12,
+            "displayValue": "3.12",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 141,
+            "displayValue": "141",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.83,
+            "displayValue": "2.83",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 51.8,
+            "displayValue": "51.8%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4810,
+            "displayValue": "4,810",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Romacen",
+          "platformUserIdentifier": "Romacen",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31048203.jpg?v=1754648912",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-13T10:08:56+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.95,
+            "displayValue": "3.95",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 53,
+            "displayValue": "53",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.44,
+            "displayValue": "2.44",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50.9,
+            "displayValue": "50.9%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster III",
+              "tierShortName": "GM3",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4517,
+            "displayValue": "4,517",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "snakeCase2 2",
+          "platformUserIdentifier": "snakeCase2 2",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31015204.jpg?v=1752225512",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-09-16T05:57:24+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 3,
+            "displayValue": "3",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.31,
+            "displayValue": "2.31",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 33.3,
+            "displayValue": "33.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 22,
+            "displayValue": "22",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.44,
+            "displayValue": "3.44",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 63.6,
+            "displayValue": "63.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "tierName": "Grandmaster II",
+              "tierShortName": "GM2",
+              "color": "#9E4BFF",
+              "seasonName": "S4: Heart of the Dragon",
+              "seasonShortName": "S4"
+            },
+            "value": 4621,
+            "displayValue": "4,621",
+            "displayType": "String"
+          }
+        }
+      }
+    ],
+    "parties": null
+  }
+}

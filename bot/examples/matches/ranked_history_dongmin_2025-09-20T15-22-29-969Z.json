@@ -1,0 +1,1036 @@
+{
+  "data": {
+    "history": {
+      "metadata": {
+        "key": "tier",
+        "name": "rating",
+        "description": "rank"
+      },
+      "data": [
+        [
+          "2025-09-20T12:10:03+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4656
+            ],
+            "displayValue": "Grandmaster II: 4,656.80 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T11:47:36+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4677
+            ],
+            "displayValue": "Grandmaster I: 4,677.79 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T11:26:50+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4697
+            ],
+            "displayValue": "Grandmaster I: 4,697.05 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T10:55:46+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4721
+            ],
+            "displayValue": "Grandmaster I: 4,721.22 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T10:41:09+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4700
+            ],
+            "displayValue": "Grandmaster I: 4,700.14 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T10:23:23+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4720
+            ],
+            "displayValue": "Grandmaster I: 4,720.38 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T10:04:06+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4742
+            ],
+            "displayValue": "Grandmaster I: 4,742.67 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T09:42:41+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4765
+            ],
+            "displayValue": "Grandmaster I: 4,765.79 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T09:17:30+00:00",
+          {
+            "metadata": {
+              "name": "Celestial III",
+              "shortName": "C3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial III",
+              4788
+            ],
+            "displayValue": "Celestial III: 4,788.34 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T08:44:28+00:00",
+          {
+            "metadata": {
+              "name": "Celestial III",
+              "shortName": "C3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial III",
+              4810
+            ],
+            "displayValue": "Celestial III: 4,810.26 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T08:19:09+00:00",
+          {
+            "metadata": {
+              "name": "Celestial III",
+              "shortName": "C3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial III",
+              4790
+            ],
+            "displayValue": "Celestial III: 4,790.52 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T04:37:29+00:00",
+          {
+            "metadata": {
+              "name": "Celestial III",
+              "shortName": "C3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial III",
+              4810
+            ],
+            "displayValue": "Celestial III: 4,810.26 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T04:27:11+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4790
+            ],
+            "displayValue": "Grandmaster I: 4,790.86 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T04:10:28+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4770
+            ],
+            "displayValue": "Grandmaster I: 4,770.38 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-20T03:50:31+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4751
+            ],
+            "displayValue": "Grandmaster I: 4,751.16 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T09:33:27+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4774
+            ],
+            "displayValue": "Grandmaster I: 4,774.85 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T09:08:41+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4796
+            ],
+            "displayValue": "Grandmaster I: 4,796.87 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T08:46:45+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4779
+            ],
+            "displayValue": "Grandmaster I: 4,779.06 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T08:34:11+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4761
+            ],
+            "displayValue": "Grandmaster I: 4,761.62 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T08:12:48+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4784
+            ],
+            "displayValue": "Grandmaster I: 4,784.11 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T07:52:38+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4768
+            ],
+            "displayValue": "Grandmaster I: 4,768.02 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T07:34:54+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4750
+            ],
+            "displayValue": "Grandmaster I: 4,750.75 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T07:10:01+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4733
+            ],
+            "displayValue": "Grandmaster I: 4,733.42 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T06:50:03+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4754
+            ],
+            "displayValue": "Grandmaster I: 4,754.41 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T06:35:09+00:00",
+          {
+            "metadata": {
+              "name": "Celestial III",
+              "shortName": "C3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial III",
+              4770
+            ],
+            "displayValue": "Celestial III: 4,770.69 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-19T06:19:53+00:00",
+          {
+            "metadata": {
+              "name": "Celestial III",
+              "shortName": "C3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial III",
+              4793
+            ],
+            "displayValue": "Celestial III: 4,793.45 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T07:38:28+00:00",
+          {
+            "metadata": {
+              "name": "Celestial III",
+              "shortName": "C3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial III",
+              4815
+            ],
+            "displayValue": "Celestial III: 4,815.49 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T07:17:23+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4793
+            ],
+            "displayValue": "Grandmaster I: 4,793.93 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T07:02:23+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4776
+            ],
+            "displayValue": "Grandmaster I: 4,776.68 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T06:41:20+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4758
+            ],
+            "displayValue": "Grandmaster I: 4,758.45 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T06:17:17+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4742
+            ],
+            "displayValue": "Grandmaster I: 4,742.79 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T05:57:24+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4725
+            ],
+            "displayValue": "Grandmaster I: 4,725.33 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T05:38:22+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4705
+            ],
+            "displayValue": "Grandmaster I: 4,705.86 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T05:16:45+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4728
+            ],
+            "displayValue": "Grandmaster I: 4,728.12 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T04:53:16+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster I",
+              "shortName": "GM1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster I",
+              4707
+            ],
+            "displayValue": "Grandmaster I: 4,707.11 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T04:29:17+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4687
+            ],
+            "displayValue": "Grandmaster II: 4,687.44 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T04:01:14+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4665
+            ],
+            "displayValue": "Grandmaster II: 4,665.70 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T03:46:51+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4643
+            ],
+            "displayValue": "Grandmaster II: 4,643.05 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-16T03:27:20+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4620
+            ],
+            "displayValue": "Grandmaster II: 4,620.04 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T08:32:48+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4594
+            ],
+            "displayValue": "Grandmaster II: 4,594.79 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T08:10:55+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4618
+            ],
+            "displayValue": "Grandmaster II: 4,618.09 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T07:48:06+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster II",
+              "shortName": "GM2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster II",
+              4600
+            ],
+            "displayValue": "Grandmaster II: 4,600.02 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T07:10:34+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4578
+            ],
+            "displayValue": "Grandmaster III: 4,578.74 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T06:49:36+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4559
+            ],
+            "displayValue": "Grandmaster III: 4,559.58 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T06:35:28+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4579
+            ],
+            "displayValue": "Grandmaster III: 4,579.05 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T06:20:17+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4556
+            ],
+            "displayValue": "Grandmaster III: 4,557.00 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T05:55:57+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4578
+            ],
+            "displayValue": "Grandmaster III: 4,578.20 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T05:36:31+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4556
+            ],
+            "displayValue": "Grandmaster III: 4,556.43 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T05:18:03+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4539
+            ],
+            "displayValue": "Grandmaster III: 4,539.12 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T05:03:01+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4561
+            ],
+            "displayValue": "Grandmaster III: 4,561.34 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T04:27:34+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4582
+            ],
+            "displayValue": "Grandmaster III: 4,582.60 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T03:56:31+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4561
+            ],
+            "displayValue": "Grandmaster III: 4,562.00 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T03:43:18+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4579
+            ],
+            "displayValue": "Grandmaster III: 4,579.80 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T03:23:30+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4556
+            ],
+            "displayValue": "Grandmaster III: 4,556.51 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-14T02:57:21+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4539
+            ],
+            "displayValue": "Grandmaster III: 4,539.26 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-13T11:14:18+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4556
+            ],
+            "displayValue": "Grandmaster III: 4,556.94 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-13T10:55:40+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4539
+            ],
+            "displayValue": "Grandmaster III: 4,539.38 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-13T10:28:52+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4520
+            ],
+            "displayValue": "Grandmaster III: 4,520.38 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-13T10:08:56+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4499
+            ],
+            "displayValue": "Grandmaster III: 4,499.27 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-09-13T09:44:35+00:00",
+          {
+            "metadata": {
+              "name": "Grandmaster III",
+              "shortName": "GM3",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/6.png?v=1734906804",
+              "color": "#9E4BFF"
+            },
+            "value": [
+              "Grandmaster III",
+              4520
+            ],
+            "displayValue": "Grandmaster III: 4,520.44 SR",
+            "displayType": "Array"
+          }
+        ]
+      ]
+    },
+    "leaderboard": null,
+    "expiryDate": "2025-09-20T15:25:33.1542704+00:00",
+    "bestMatches": null
+  }
+}
