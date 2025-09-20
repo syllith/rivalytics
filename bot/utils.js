@@ -1,10 +1,12 @@
 import { SEASON_START } from './config.js';
 
+// * Determine if a timestamp value is within the current season start boundary
+//   Accepts number (ms or seconds), numeric string, ISO string, or Date-parsable string.
 export function isWithinCurrentSeason(ts) {
   if (!ts) return false;
   let t;
   if (typeof ts === 'number') {
-    if (ts < 1e12) t = ts * 1000; else t = ts;
+    t = ts < 1e12 ? ts * 1000 : ts; // interpret small numbers as seconds
   } else if (typeof ts === 'string') {
     if (/^\d+$/.test(ts)) {
       const num = Number(ts);
@@ -19,13 +21,19 @@ export function isWithinCurrentSeason(ts) {
   return t >= SEASON_START.getTime();
 }
 
-export function isCompetitiveMode(meta) {
-  const mode = (meta?.modeName || meta?.mapModeName || '').toLowerCase();
-  if (!mode) return false;
-  if (/unknown|custom/.test(mode)) return false;
-  return /(competitive|ranked|tournament)/.test(mode);
+// * Determine if an object represents a competitive/ranked/tournament match.
+//   Accepts either full match object or metadata object. Strict: excludes unknown/custom/practice/training.
+export function isCompetitiveMode(obj) {
+  const meta = obj?.metadata ? obj.metadata : obj; // allow metadata directly
+  const attrMode = (obj?.attributes?.mode || '').toLowerCase();
+  const metaMode = (meta?.modeName || meta?.mapModeName || '').toLowerCase();
+  const combined = [attrMode, metaMode].filter(Boolean).join(' ');
+  if (!combined) return false;
+  if (/unknown|custom|practice|training/.test(combined)) return false; // ! explicitly ignored modes
+  return /(competitive|ranked|tournament)/.test(combined);
 }
 
+// * Consolidate hero segment stats into aggregate objects keyed by hero name + role
 export function getHeroesFromResponse(resp) {
   if (!resp || !resp.data) return [];
   const heroMap = {};
@@ -53,7 +61,7 @@ export function getHeroesFromResponse(resp) {
       };
     }
     const cur = heroMap[key];
-    cur.TimePlayed += (s.timePlayed?.value || 0) / 3600;
+    cur.TimePlayed += (s.timePlayed?.value || 0) / 3600; // convert seconds to hours
     cur.MatchesPlayed += s.matchesPlayed?.value || 0;
     cur.MatchesWon += s.matchesWon?.value || 0;
     cur.Kills += s.kills?.value || 0;
@@ -69,18 +77,21 @@ export function getHeroesFromResponse(resp) {
   return Object.values(heroMap);
 }
 
+// * Human-friendly compact number formatting (k/M with decimals)
 export function formatShortNumber(num) {
   if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(2) + 'M';
   if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + 'k';
   return Math.round(num).toLocaleString();
 }
 
+// * Simple string truncation with ellipsis
 export function truncate(str, max) {
   if (!str) return '';
   if (str.length <= max) return str;
   return str.slice(0, max - 1) + '…';
 }
 
+// * Convert hero name to avatar asset slug (normalize punctuation + spaces)
 export function heroNameToAvatarSlug(name) {
   return name.toLowerCase().replace(/'|\.|!/g, '').replace(/\s+/g, '-') + '_avatar.webp';
 }

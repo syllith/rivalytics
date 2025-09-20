@@ -1,3 +1,4 @@
+// * Central export hub for all command handlers & command->handler name mapping
 export { handleHeroesCommand } from './heroes.js';
 export { handleMatchesCommand } from './matches.js';
 export { handleScrimsCommand } from './scrims.js';

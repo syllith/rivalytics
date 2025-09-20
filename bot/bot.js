@@ -1,64 +1,76 @@
-// Modular Discord Bot entry
+// * Rivalytics Discord Bot entrypoint (modular command router)
 import dotenv from 'dotenv';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { VERBOSE } from './config.js';
 import {
-  handleHeroesCommand,
-  handleMatchesCommand,
-  handleScrimsCommand,
-  handleScrimHeroesCommand,
-  handleTournCommand,
-  handleEncountersCommand,
-  handleHelpCommand,
-  handleGenExampleCommand,
-  commandMap
+    handleHeroesCommand,
+    handleMatchesCommand,
+    handleScrimsCommand,
+    handleScrimHeroesCommand,
+    handleTournCommand,
+    handleEncountersCommand,
+    handleHelpCommand,
+    handleGenExampleCommand,
+    commandMap
 } from './index.js';
 
+// * Load environment variables (current working directory .env first)
 dotenv.config();
 
+// * Discord client with required intents (guild messages + content for prefix commands)
 const discordClient = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
 });
 
+// Command handler lookup keyed by exported handler names referenced in commandMap
 const handlerLookup = {
-  handleHeroesCommand,
-  handleMatchesCommand,
-  handleScrimsCommand,
-  handleScrimHeroesCommand,
-  handleTournCommand,
-  handleEncountersCommand,
-  handleHelpCommand,
-  handleGenExampleCommand
+    handleHeroesCommand,
+    handleMatchesCommand,
+    handleScrimsCommand,
+    handleScrimHeroesCommand,
+    handleTournCommand,
+    handleEncountersCommand,
+    handleHelpCommand,
+    handleGenExampleCommand
 };
 
-function findHandler(command){
-  const key = commandMap[command];
-  return key ? handlerLookup[key] : null;
+// Resolve a handler function by user-entered command trigger
+function findHandler(command) {
+    const key = commandMap[command];
+    return key ? handlerLookup[key] : null;
 }
 
-if (!process.env.DISCORD_BOT_TOKEN){
-  console.log('❌ Discord bot token not provided. Please set DISCORD_BOT_TOKEN in .env file.');
-  process.exit(1);
+//. Fail fast if no bot token is supplied
+if (!process.env.DISCORD_BOT_TOKEN) {
+    console.log('❌ Discord bot token not provided. Please set DISCORD_BOT_TOKEN in .env file.');
+    process.exit(1);
 }
 
+// * Login and attach runtime event listeners
 discordClient.login(process.env.DISCORD_BOT_TOKEN);
 
 discordClient.once('clientReady', () => {
-  console.log(`🤖 Discord bot logged in as ${discordClient.user.tag}!`);
+    console.log(`🤖 Discord bot logged in as ${discordClient.user.tag}!`);
 });
 
 discordClient.on('messageCreate', async (message) => {
-  if (message.author.bot) return;
-  const args = message.content.trim().split(/ +/);
-  const command = args[0].toLowerCase();
-  const handler = findHandler(command);
-  if (!handler) return; // not a bot command
-  try {
-    await handler(message, args);
-  } catch (e){
-    console.error('Discord command error:', e);
-    await message.reply('❌ An error occurred while processing your command.');
-  }
+    if (message.author.bot) return; // ignore other bots/self
+
+    const args = message.content.trim().split(/ +/);
+    const command = args[0].toLowerCase();
+    const handler = findHandler(command);
+    if (!handler) return; // not a recognized command trigger
+
+    try {
+        await handler(message, args); // * Delegate to command module
+    } catch (e) {
+        console.error('Discord command error:', e); // ! Unexpected runtime error
+        try { await message.reply('❌ An error occurred while processing your command.'); } catch (_) { /* swallow */ }
+    }
 });
 
-console.log('🤖 Rivalytics Discord Bot (modular) starting...');
+if (VERBOSE) console.log('🤖 Rivalytics Discord Bot (modular) starting...');

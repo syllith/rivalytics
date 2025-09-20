@@ -80,3 +80,20 @@ npm run dev
 Local instance will be available at `http://localhost:5173`.
 
 ---
+
+### Discord Bot Commands (Overview)
+
+The repository includes a Discord bot (see `/bot` directory) that provides quick in-channel summaries.
+
+Key command notes:
+
+* `!matches <username>` – Shows ranked history deltas plus ONLY recent **competitive** matches. As of latest changes, non-competitive / casual / custom / practice modes are excluded (no relaxed fallback). This ensures data reflects strictly ranked performance context.
+* Filtering logic lives in `bot/utils.js` (`isCompetitiveMode`) and is intentionally strict: it matches explicit `competitive|ranked|tournament` modes and ignores `unknown|custom|practice|training`.
+* If a user has zero recent competitive matches, the matches section will simply be omitted while ranked history still displays.
+
+Future enhancements (ideas):
+* Optional flag to relax filtering when fewer than N competitive matches exist.
+* Pagination for more than 10 competitive matches.
+* Per-match RS delta overlay if API exposes reliable mapping.
+
+---
