@@ -68,6 +68,10 @@ if (process.env.DISCORD_BOT_TOKEN) {
                 await handleMatchesCommand(message, args);
             } else if (command === '!scrims') {
                 await handleScrimsCommand(message, args);
+            } else if (command === '!scrimheroes' || command === '!scrimhero') {
+                await handleScrimHeroesCommand(message, args);
+            } else if (command === '!tourn' || command === '!tournament') {
+                await handleTournCommand(message, args);
             }
         } catch (error) {
             console.error('Discord command error:', error);
@@ -518,6 +522,176 @@ async function handleScrimsCommand(message, args) {
     } catch (error) {
         console.error('❌ Scrims command error:', error);
         await loadingMsg.edit('❌ Failed to fetch scrim match data. Please check the username and try again.');
+    }
+}
+
+
+// !scrimheroes: show hero stats (season 8) only for heroes used in recent scrim (unknown mode) matches
+async function handleScrimHeroesCommand(message, args) {
+    if (args.length < 2) {
+        return message.reply('❌ Please provide a username. Usage: `!scrimheroes <username>`');
+    }
+
+    const username = args[1];
+    if (VERBOSE) console.log(`🔍 Scrim Heroes command requested for username: ${username}`);
+    const loadingMsg = await message.reply(`🔍 Gathering scrim heroes for **${username}** (Season 8)...`);
+
+    try {
+        // 1. Fetch matches (season 8) and filter to scrims (unknown mode)
+        const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=8`;
+        if (VERBOSE) console.log(`📡 Fetching matches for scrim heroes from: ${matchesUrl}`);
+        const matchesResp = await scrapeJson(matchesUrl);
+        if (matchesResp.errors && matchesResp.errors.length > 0) {
+            return loadingMsg.edit(`❌ ${matchesResp.errors[0].message || 'User not found'}`);
+        }
+        const allMatches = matchesResp.data?.matches || [];
+        const scrimMatches = allMatches.filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'unknown');
+        if (scrimMatches.length === 0) {
+            return loadingMsg.edit('❌ No scrim (Unknown mode) matches found for this user in Season 8.');
+        }
+        // 3. Collect hero names used in scrims (overview metadata.heroes)
+        const scrimHeroSet = new Set();
+        scrimMatches.forEach(match => {
+            const overviewSeg = match.segments?.find(seg => seg.type === 'overview');
+            const heroesArr = overviewSeg?.metadata?.heroes || [];
+            heroesArr.forEach(h => { if (h?.name) scrimHeroSet.add(h.name); });
+        });
+        if (scrimHeroSet.size === 0) {
+            return loadingMsg.edit('❌ No heroes recorded in scrim matches.');
+        }
+
+        // 4. Fetch season hero stats and filter to scrim-used heroes
+        const heroesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=8`;
+        let seasonHeroes = [];
+        try {
+            const heroesResp = await scrapeJson(heroesUrl);
+            let allHeroStats = getHeroesFromResponse(heroesResp);
+            if (Array.isArray(heroesResp.data) && heroesResp.data.some(seg => seg.attributes?.season)) {
+                const filteredSegments = { ...heroesResp, data: heroesResp.data.filter(seg => seg.attributes?.season === 8) };
+                allHeroStats = getHeroesFromResponse(filteredSegments);
+            }
+            seasonHeroes = allHeroStats;
+        } catch (e) {
+            if (VERBOSE) console.log('⚠️ Failed to fetch season hero stats:', e.message);
+        }
+
+        if (seasonHeroes.length === 0) {
+            return loadingMsg.edit('❌ Could not load season hero statistics.');
+        }
+
+        const filteredSeason = seasonHeroes.filter(h => scrimHeroSet.has(h.Name));
+        if (filteredSeason.length === 0) {
+            return loadingMsg.edit('❌ No overlapping heroes between scrim usage and season stats.');
+        }
+
+        filteredSeason.sort((a, b) => b.TimePlayed - a.TimePlayed);
+        const top = filteredSeason.slice(0, 10);
+
+        const embed = new EmbedBuilder()
+            .setTitle(`🦸 Scrim-Used Hero Season Stats (S8) for ${username}`)
+            .setColor(0x8A2BE2)
+            .setTimestamp();
+
+        let description = 'These are full Season 8 totals ONLY for heroes you have used in Unknown-mode matches (scrims). Scrim-only per-hero stats are not exposed by the API.\n\n';
+        top.forEach((hero, idx) => {
+            const winRate = hero.MatchesPlayed > 0 ? ((hero.MatchesWon / hero.MatchesPlayed) * 100) : 0;
+            const kda = hero.Deaths > 0 ? ((hero.Kills + hero.Assists) / hero.Deaths) : (hero.Kills + hero.Assists);
+            const avgDmgPerMatch = hero.MatchesPlayed > 0 ? (hero.TotalHeroDamage / hero.MatchesPlayed) : 0;
+            const avgHealPerMatch = hero.MatchesPlayed > 0 ? (hero.TotalHeroHeal / hero.MatchesPlayed) : 0;
+            const roleEmoji = hero.Role === 'Vanguard' ? '🛡️' : hero.Role === 'Duelist' ? '⚔️' : hero.Role === 'Strategist' ? '💚' : '🦸';
+            description += `${roleEmoji} **${idx + 1}. ${hero.Name}** (${hero.Role})\n`;
+            description += `🎮 ${formatShortNumber(hero.MatchesPlayed)} matches | ⏱️ ${hero.TimePlayed.toFixed(1)}h\n`;
+            description += `📈 ${winRate.toFixed(1)}% WR | 💀 ${formatShortNumber(hero.Kills)}/${formatShortNumber(hero.Deaths)} (${kda.toFixed(2)} KDA)\n`;
+            description += `💥 ${formatShortNumber(hero.TotalHeroDamage)} dmg (${formatShortNumber(avgDmgPerMatch)} avg) | 💚 ${formatShortNumber(hero.TotalHeroHeal)} heal (${formatShortNumber(avgHealPerMatch)} avg)\n\n`;
+        });
+
+        embed.setDescription(description);
+        embed.setFooter({ text: `Showing ${top.length} of ${filteredSeason.length} heroes (Season totals)` });
+        await loadingMsg.edit({ content: '', embeds: [embed] });
+    } catch (error) {
+        console.error('❌ Scrim Heroes command error:', error);
+        await loadingMsg.edit('❌ Failed to fetch scrim hero stats. Please try again later.');
+    }
+}
+
+// Tournament matches: filter by modeName === 'Tournament'
+async function handleTournCommand(message, args) {
+    if (args.length < 2) {
+        return message.reply('❌ Please provide a username. Usage: `!tourn <username>`');
+    }
+
+    const username = args[1];
+    if (VERBOSE) console.log(`🔍 Tournament command requested for username: ${username}`);
+    const loadingMsg = await message.reply(`🔍 Looking up Season 6 tournament matches for **${username}**...`);
+
+    try {
+    // Season-specific: tournament command now targets Season 6
+    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=6`;
+    if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season 6) from: ${url}`);
+        const data = await scrapeJson(url);
+        if (data.errors && data.errors.length > 0) {
+            return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`);
+        }
+        const allMatches = data.data?.matches || [];
+        // Filter to tournament mode (case-insensitive exact)
+        const tournMatches = allMatches.filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'tournament');
+        if (VERBOSE) console.log(`🎮 Total matches: ${allMatches.length}, Tournament matches: ${tournMatches.length}`);
+        if (tournMatches.length === 0) {
+            return loadingMsg.edit('❌ No recent Tournament matches found.');
+        }
+
+        const slice = tournMatches.slice(0, 10);
+        let wins = 0, losses = 0, totalDamage = 0, totalKills = 0, totalDeaths = 0;
+        const embed = new EmbedBuilder()
+            .setTitle(`🏟️ Tournament Matches (S6) for ${username}`)
+            .setColor(0xC71585)
+            .setTimestamp();
+
+        const fields = [];
+        slice.forEach((match, index) => {
+            const meta = match.metadata || {};
+            const ts = meta.timestamp ? new Date(meta.timestamp) : null;
+            const overview = match.segments?.find(seg => seg.type === 'overview');
+            const stats = overview?.stats || {};
+            const overviewMeta = overview?.metadata || {};
+            const resultRaw = (overviewMeta.result || 'unknown').toLowerCase();
+            if (resultRaw === 'win') wins++; else if (resultRaw === 'loss') losses++;
+            const emoji = resultRaw === 'win' ? '🟢' : resultRaw === 'loss' ? '🔴' : '⚪';
+            const kills = stats.kills?.value || 0;
+            const deaths = stats.deaths?.value || 0;
+            totalKills += kills; totalDeaths += deaths;
+            const dmgVal = stats.totalHeroDamage?.value || 0;
+            totalDamage += dmgVal;
+            const durationRaw = stats.timePlayed?.displayValue || '';
+            const duration = durationRaw.includes('m') ? durationRaw.replace(/(\d+)m (\d+)s/, '$1:$2') : (durationRaw || '?:??');
+            const mapName = meta.mapName || 'Unknown';
+            const heroObjs = overviewMeta.heroes?.slice(0, 3) || [];
+            const heroesLine = heroObjs.length ? heroObjs.map(h => h.name).join(', ') : '—';
+            const timeCol = ts ? ts.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : '??:??';
+            const dateCol = ts ? ts.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }) : '--/--';
+            const kdRatio = deaths > 0 ? (kills / deaths).toFixed(2) : (kills).toFixed(2);
+
+            const name = `${index + 1}. ${emoji} ${resultRaw === 'win' ? 'Win' : resultRaw === 'loss' ? 'Loss' : '—'} • ${mapName}`.slice(0, 256);
+            const valueLines = [
+                `🕒 ${dateCol} ${timeCol} | ⏱ ${duration}`,
+                `💀 ${kills}/${deaths} (K/D ${kdRatio})`,
+                `💥 ${formatShortNumber(dmgVal)}`,
+                `🦸 ${heroesLine}`,
+                `🎬 Replay: ${meta.replayId || 'N/A'}`
+            ];
+            fields.push({ name, value: valueLines.join('\n').slice(0, 1024), inline: true });
+        });
+
+        const avgDamage = slice.length ? (totalDamage / slice.length) : 0;
+        const avgKD = totalDeaths > 0 ? (totalKills / totalDeaths) : totalKills;
+        const summary = `Wins: ${wins} • Losses: ${losses} • WinRate: ${slice.length ? ((wins / slice.length) * 100).toFixed(1) : '0.0'}%\nAvg Damage: ${formatShortNumber(avgDamage)} • Avg K/D: ${avgKD.toFixed(2)}`;
+        embed.setDescription(summary);
+        fields.slice(0, 25).forEach(f => embed.addFields(f));
+    embed.setFooter({ text: `Season 6 • Showing last ${slice.length} Tournament matches • ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}` });
+        await loadingMsg.edit({ content: '', embeds: [embed] });
+    } catch (error) {
+        console.error('❌ Tournament command error:', error);
+        await loadingMsg.edit('❌ Failed to fetch tournament match data. Please check the username and try again.');
     }
 }
 
