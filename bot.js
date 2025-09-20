@@ -8,6 +8,47 @@ dotenv.config()
 const CHROMIUM_PATH = process.env.CHROMIUM_PATH || '/usr/bin/chromium'
 const VERBOSE = (process.env.BOT_VERBOSE || 'false').toLowerCase() === 'true'
 
+// Season configuration (override via env if needed)
+const CURRENT_SEASON = parseInt(process.env.CURRENT_SEASON || '8', 10);
+// Approximate Season 8 start (UTC). Override with SEASON_8_START_ISO env for precision.
+const SEASON_8_START_ISO = process.env.SEASON_8_START_ISO || '2025-08-20T00:00:00Z';
+const SEASON_START = new Date(SEASON_8_START_ISO); // used for client-side filtering when API does not honor season param
+// Optional ranked boundary detection (season reset). If enabled and a large negative delta is found, older entries are trimmed.
+const RANKED_BOUNDARY_ENABLED = (process.env.RANKED_BOUNDARY_ENABLED || 'true').toLowerCase() === 'true';
+const RANKED_BOUNDARY_THRESHOLD = parseInt(process.env.RANKED_BOUNDARY_THRESHOLD || '400', 10); // treat drops >= this (absolute) as reset
+// Competitive fallback: if strict competitive detection yields fewer than this number, relax filter.
+const COMPETITIVE_RELAX_THRESHOLD = parseInt(process.env.COMPETITIVE_RELAX_THRESHOLD || '5', 10);
+
+function isWithinCurrentSeason(ts) {
+    if (!ts) return false;
+    let t;
+    if (typeof ts === 'number') {
+        // If timestamp looks like seconds (10 digits) convert to ms
+        if (ts < 1e12) t = ts * 1000; else t = ts;
+    } else if (typeof ts === 'string') {
+        // String could be ISO or numeric
+        if (/^\d+$/.test(ts)) {
+            const num = Number(ts);
+            t = num < 1e12 ? num * 1000 : num;
+        } else {
+            t = Date.parse(ts);
+        }
+    } else {
+        return false;
+    }
+    if (Number.isNaN(t)) return false;
+    return t >= SEASON_START.getTime();
+}
+
+function isCompetitiveMode(meta) {
+    const mode = (meta?.modeName || meta?.mapModeName || '').toLowerCase();
+    if (!mode) return false;
+    if (/unknown|custom/.test(mode)) return false; // explicitly exclude
+    // Treat modes containing 'competitive' or 'ranked' or 'tournament' as competitive
+    if (/(competitive|ranked|tournament)/.test(mode)) return true;
+    return false;
+}
+
 // Discord Bot Setup
 const discordClient = new Client({
     intents: [
@@ -213,8 +254,8 @@ async function handleHeroesCommand(message, args) {
     const loadingMsg = await message.reply(`🔍 Looking up heroes for **${username}**...`);
 
     try {
-    // Append season=8 to restrict hero stats to Season 8 only (similar to scrims implementation)
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=8`;
+        // Append season=8 to restrict hero stats to Season 8 only (similar to scrims implementation)
+        const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=8`;
         console.log(`📡 Fetching data from: ${url}`);
 
         const data = await scrapeJson(url);
@@ -294,10 +335,10 @@ async function handleMatchesCommand(message, args) {
 
     const username = args[1];
     if (VERBOSE) console.log(`🔍 Matches (ranked) command requested for username: ${username}`);
-    const loadingMsg = await message.reply(`🔍 Looking up ranked history for **${username}**...`);
+    const loadingMsg = await message.reply(`🔍 Gathering ranked history and recent matches for **${username}**...`);
 
     try {
-        const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/stats/overview/ranked`;
+        const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/stats/overview/ranked?season=${CURRENT_SEASON}`;
         if (VERBOSE) console.log(`📡 Fetching ranked data (via !matches) from: ${url}`);
 
         const data = await scrapeJson(url);
@@ -321,10 +362,11 @@ async function handleMatchesCommand(message, args) {
             return loadingMsg.edit('❌ No ranked data found for this user.');
         }
 
-        const historyData = data.data.history.data;
+        let historyData = data.data.history.data || [];
+        // Rely on API season param; if empty after slice we'll still handle below.
         if (!historyData || historyData.length === 0) {
-            if (VERBOSE) console.log(`❌ No ranked history found`);
-            return loadingMsg.edit('❌ No ranked history found for this user.');
+            if (VERBOSE) console.log(`❌ No ranked history found (API returned none for specified season)`);
+            return loadingMsg.edit('❌ No ranked history found for this user in this season.');
         }
 
         // Most recent (API returns newest first)
@@ -334,8 +376,8 @@ async function handleMatchesCommand(message, args) {
         const currentRank = typeof currentRankData[0] === 'string' ? currentRankData[0] : String(currentRankData[0] || 'Unranked');
         const currentScore = String(currentRankData[1] || '0');
 
-        // Process last 10 entries like original ranked handler
-        const processedGames = historyData.slice(0, 10).map((entry) => {
+        // Take a larger window first for potential boundary detection
+        let processedGamesFull = historyData.slice(0, 25).map((entry) => {
             const [timestamp, info] = entry;
             const d = new Date(timestamp);
             const val = info.value || info.Value || [];
@@ -351,17 +393,78 @@ async function handleMatchesCommand(message, args) {
             };
         });
 
-        for (let i = 0; i < processedGames.length - 1; i++) {
-            const currScore = processedGames[i].numericScore;
-            const nextScore = processedGames[i + 1].numericScore;
+        for (let i = 0; i < processedGamesFull.length - 1; i++) {
+            const currScore = processedGamesFull[i].numericScore;
+            const nextScore = processedGamesFull[i + 1].numericScore;
             const gainNum = currScore - nextScore;
             if (gainNum !== 0) {
-                processedGames[i].gain = gainNum > 0 ? `+${gainNum}` : `${gainNum}`;
+                processedGamesFull[i].gain = gainNum > 0 ? `+${gainNum}` : `${gainNum}`;
             }
         }
 
+        if (RANKED_BOUNDARY_ENABLED) {
+            const idx = processedGamesFull.findIndex(g => {
+                if (!g.gain) return false;
+                const val = parseInt(g.gain, 10);
+                return !Number.isNaN(val) && val <= -RANKED_BOUNDARY_THRESHOLD;
+            });
+            if (idx !== -1) {
+                if (VERBOSE) console.log(`🧭 Ranked boundary detected at index ${idx} (delta ${processedGamesFull[idx].gain})`);
+                processedGamesFull = processedGamesFull.slice(0, idx + 1);
+            } else if (VERBOSE) {
+                console.log('ℹ️ No ranked boundary detected');
+            }
+        }
+
+        const processedGames = processedGamesFull.slice(0, 10);
+
+        // processedGames already limited to 10 by slice above
+
+        // We'll also pull last 10 competitive matches (Season scoped)
+        let recentMatchLines = [];
+        try {
+            const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`; // season-scoped
+            if (VERBOSE) console.log(`📡 Fetching recent matches for merge: ${matchesUrl}`);
+            const matchResp = await scrapeJson(matchesUrl);
+            const allMatches = matchResp.data?.matches || [];
+            let competitive = allMatches.filter(m => isCompetitiveMode(m.metadata));
+            if (competitive.length < COMPETITIVE_RELAX_THRESHOLD) {
+                // Relax: include any mode that is NOT unknown/custom if we are missing data
+                const relaxed = allMatches.filter(m => {
+                    const mode = (m.metadata?.modeName || m.metadata?.mapModeName || '').toLowerCase();
+                    if (!mode) return false;
+                    return !/(unknown|custom)/.test(mode);
+                });
+                if (VERBOSE) console.log(`⚠️ Relaxing competitive filter: strict=${competitive.length}, relaxed=${relaxed.length}`);
+                competitive = relaxed;
+            } else if (VERBOSE) {
+                console.log(`🎯 Competitive matches detected (strict) : ${competitive.length} / ${allMatches.length}`);
+            }
+            const recent = competitive.slice(0, 10);
+            recent.forEach((match, idx) => {
+                const meta = match.metadata || {};
+                const overview = match.segments?.find(seg => seg.type === 'overview');
+                const stats = overview?.stats || {};
+                const overviewMeta = overview?.metadata || {};
+                const resultRaw = (overviewMeta.result || 'unknown').toLowerCase();
+                const emoji = resultRaw === 'win' ? '🟢' : resultRaw === 'loss' ? '🔴' : '⚪';
+                const kills = stats.kills?.value ?? 0;
+                const deaths = stats.deaths?.value ?? 0;
+                const kd = deaths > 0 ? (kills / deaths).toFixed(2) : kills.toFixed(2);
+                const dmgVal = stats.totalHeroDamage?.value || 0;
+                const dmg = dmgVal ? formatShortNumber(dmgVal) : '0';
+                const durationRaw = stats.timePlayed?.displayValue || '';
+                const duration = durationRaw ? durationRaw.replace(/(\d+)m (\d+)s/, '$1:$2').replace('s', '') : '?:??';
+                const mapName = meta.mapName || 'Unknown';
+                const modeName = meta.modeName || meta.mapModeName || 'Mode';
+                recentMatchLines.push(`${idx + 1}. ${emoji} ${mapName} • ${modeName} • ${kills}/${deaths} (K/D ${kd}) • ${dmg} dmg • ${duration}`);
+            });
+        } catch (e) {
+            if (VERBOSE) console.log('⚠️ Failed to fetch recent matches for merged output:', e.message);
+        }
+
         const embed = new EmbedBuilder()
-            .setTitle(`🏆 Ranked History for ${username}`)
+            .setTitle(`🏆 Ranked & Recent Matches for ${username}`)
             .setColor(0xFFD700)
             .setTimestamp();
 
@@ -375,13 +478,11 @@ async function handleMatchesCommand(message, args) {
                 const isGain = game.gain && game.gain.startsWith('+');
                 const isLoss = game.gain && game.gain.startsWith('-');
                 const emoji = isGain ? '🟢' : isLoss ? '🔴' : '⚪';
-                const resultText = isGain ? 'Loss' : isLoss ? 'Loss' : 'No Change'; // We'll rely on emoji + gain for direction; keep Loss for negative or positive? Adjust below
-                // Actually show 'Gain' or 'Loss'
                 const direction = isGain ? 'Gain' : isLoss ? 'Loss' : 'No Change';
                 const gainDisplay = game.gain ? ` ${game.gain}` : '';
-                const resultCol = `${direction}${gainDisplay}`; // e.g., "Loss -19" or "Gain +24" or "No Change"
+                const resultCol = `${direction}${gainDisplay}`;
                 const scoreCol = game.numericScore.toLocaleString('en-US');
-                const timeCol = `${game.date} ${game.time}`; // already short (M/D HH:MM AM/PM)
+                const timeCol = `${game.date} ${game.time}`;
                 return {
                     index: `${index + 1}.`,
                     emoji,
@@ -409,9 +510,14 @@ async function handleMatchesCommand(message, args) {
         }
 
         // Wrap lines in a code block for monospaced alignment
-        const codeBlock = '```' + '\n' + lines.join('\n') + '\n' + '```';
-        embed.setDescription(header + '\n\n' + codeBlock);
-        embed.setFooter({ text: `Showing last ${processedGames.length} ranked entries (newest first)` });
+        const rankedBlock = '```' + '\n' + lines.join('\n') + '\n' + '```';
+        let desc = header + '\n\n' + rankedBlock;
+        if (recentMatchLines.length) {
+            desc += `\n**Recent Competitive Matches (Season ${CURRENT_SEASON}, last ${recentMatchLines.length})**\n`;
+            desc += recentMatchLines.map(l => '• ' + l).join('\n');
+        }
+        embed.setDescription(desc);
+        embed.setFooter({ text: `Season ${CURRENT_SEASON} • Ranked entries: ${processedGames.length} • Competitive matches: ${recentMatchLines.length}` });
         if (VERBOSE) console.log(`✅ Successfully built ranked history embed via !matches`);
         await loadingMsg.edit({ content: '', embeds: [embed] });
     } catch (error) {
@@ -624,12 +730,12 @@ async function handleTournCommand(message, args) {
 
     const username = args[1];
     if (VERBOSE) console.log(`🔍 Tournament command requested for username: ${username}`);
-    const loadingMsg = await message.reply(`🔍 Looking up Season 6 tournament matches for **${username}**...`);
+    const loadingMsg = await message.reply(`🔍 Looking up Season 8 tournament matches for **${username}**...`);
 
     try {
-    // Season-specific: tournament command now targets Season 6
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=6`;
-    if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season 6) from: ${url}`);
+        // Season-specific: tournament command now targets Season 8
+        const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=8`;
+        if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season 8) from: ${url}`);
         const data = await scrapeJson(url);
         if (data.errors && data.errors.length > 0) {
             return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`);
@@ -689,7 +795,7 @@ async function handleTournCommand(message, args) {
         const summary = `Wins: ${wins} • Losses: ${losses} • WinRate: ${slice.length ? ((wins / slice.length) * 100).toFixed(1) : '0.0'}%\nAvg Damage: ${formatShortNumber(avgDamage)} • Avg K/D: ${avgKD.toFixed(2)}`;
         embed.setDescription(summary);
         fields.slice(0, 25).forEach(f => embed.addFields(f));
-    embed.setFooter({ text: `Season 6 • Showing last ${slice.length} Tournament matches • ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}` });
+        embed.setFooter({ text: `Season 8 • Showing last ${slice.length} Tournament matches • ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}` });
         await loadingMsg.edit({ content: '', embeds: [embed] });
     } catch (error) {
         console.error('❌ Tournament command error:', error);
@@ -709,8 +815,9 @@ async function handleHelpCommand(message, args) {
     lines.push('  Includes: Time Played (hours), Matches Played/Won, Win Rate, Kills, Deaths, Assists, KDA, Total Hero Damage & per‑match avg, Total Hero Heal & per‑match avg, Damage Taken / Match, Survival Kills / Match, Role (Vanguard/Duelist/Strategist). Shows top 10 heroes.');
     lines.push('');
     lines.push('🏆 `!matches <user>`');
-    lines.push('  Pulls most recent ranked ladder history entries (newest first).');
-    lines.push('  Provides: Current Rank Name, Current Rank Score, chronological list of recent entries with score after match, gain/loss delta, timestamp. Useful for tracking progression swings.');
+    lines.push(`  Combines Season ${CURRENT_SEASON} ranked ladder history (newest first) plus last 10 competitive matches.`);
+    lines.push('  Ranked: current rank & score + per-entry score delta (season-filtered by timestamp).');
+    lines.push('  Competitive: Result, Map, Mode, Kills/Deaths (K/D), Damage (short), Duration (m:s). Includes only modes containing ranked/competitive/tournament; excludes unknown/custom.');
     lines.push('');
     lines.push('🎮 `!scrims <user>`');
     lines.push('  Filters Season 8 match list to entries whose modeName is exactly "Unknown" (interpreted as custom/scrim games).');
@@ -721,7 +828,7 @@ async function handleHelpCommand(message, args) {
     lines.push('  Provides same hero metrics as `!heroes`, restricted to this subset. Note: values are season totals, not isolated to scrims (API limitation).');
     lines.push('');
     lines.push('🏟️ `!tourn <user>` (alias: `!tournament`)');
-    lines.push('  Retrieves recent Season 6 matches where modeName is "Tournament".');
+    lines.push('  Retrieves recent Season 8 matches where modeName is "Tournament".');
     lines.push('  For each match: Result, Map, Date & Time, Duration, Kills/Deaths + K/D, Total Hero Damage, Up to first 3 Heroes Played, Replay ID. Includes summary aggregates (wins, losses, win rate, average damage, average K/D).');
     lines.push('');
     const text = lines.join('\n');
