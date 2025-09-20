@@ -72,6 +72,8 @@ if (process.env.DISCORD_BOT_TOKEN) {
                 await handleScrimHeroesCommand(message, args);
             } else if (command === '!tourn' || command === '!tournament') {
                 await handleTournCommand(message, args);
+            } else if (command === '!help' || command === '!info') {
+                await handleHelpCommand(message, args);
             }
         } catch (error) {
             console.error('Discord command error:', error);
@@ -693,6 +695,38 @@ async function handleTournCommand(message, args) {
         console.error('❌ Tournament command error:', error);
         await loadingMsg.edit('❌ Failed to fetch tournament match data. Please check the username and try again.');
     }
+}
+
+
+// Help / Info Command
+async function handleHelpCommand(message, args) {
+    const lines = [];
+    lines.push('Rivalytics Bot Commands');
+    lines.push('Usage: <command> <username>. Below describes the data each command retrieves.');
+    lines.push('');
+    lines.push('🦸 `!heroes <user>` (alias: `!hero`)');
+    lines.push('  Returns Season 8 hero performance aggregated per hero. Sorted by time played.');
+    lines.push('  Includes: Time Played (hours), Matches Played/Won, Win Rate, Kills, Deaths, Assists, KDA, Total Hero Damage & per‑match avg, Total Hero Heal & per‑match avg, Damage Taken / Match, Survival Kills / Match, Role (Vanguard/Duelist/Strategist). Shows top 10 heroes.');
+    lines.push('');
+    lines.push('🏆 `!matches <user>`');
+    lines.push('  Pulls most recent ranked ladder history entries (newest first).');
+    lines.push('  Provides: Current Rank Name, Current Rank Score, chronological list of recent entries with score after match, gain/loss delta, timestamp. Useful for tracking progression swings.');
+    lines.push('');
+    lines.push('🎮 `!scrims <user>`');
+    lines.push('  Filters Season 8 match list to entries whose modeName is exactly "Unknown" (interpreted as custom/scrim games).');
+    lines.push('  For each listed scrim: Result (Win/Loss/—), Map, Date & Time, Match Duration, Kills, Deaths, K/D, Total Hero Damage, Up to first 3 Heroes Played, Replay ID (if present). Also includes overall summary (wins, losses, win rate, avg damage, avg K/D).');
+    lines.push('');
+    lines.push('🧪 `!scrimheroes <user>` (alias: `!scrimhero`)');
+    lines.push('  Shows Season 8 TOTAL hero stats but only for heroes that appear in your scrim (Unknown mode) matches.');
+    lines.push('  Provides same hero metrics as `!heroes`, restricted to this subset. Note: values are season totals, not isolated to scrims (API limitation).');
+    lines.push('');
+    lines.push('🏟️ `!tourn <user>` (alias: `!tournament`)');
+    lines.push('  Retrieves recent Season 6 matches where modeName is "Tournament".');
+    lines.push('  For each match: Result, Map, Date & Time, Duration, Kills/Deaths + K/D, Total Hero Damage, Up to first 3 Heroes Played, Replay ID. Includes summary aggregates (wins, losses, win rate, average damage, average K/D).');
+    lines.push('');
+    const text = lines.join('\n');
+    // Ensure under Discord 2000 char limit
+    await message.reply(text.length > 1900 ? text.slice(0, 1990) + '…' : text);
 }
 
 
