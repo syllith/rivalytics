@@ -113,6 +113,8 @@ if (process.env.DISCORD_BOT_TOKEN) {
                 await handleScrimHeroesCommand(message, args);
             } else if (command === '!tourn' || command === '!tournament') {
                 await handleTournCommand(message, args);
+            } else if (command === '!encounters' || command === '!encounter') {
+                await handleEncountersCommand(message, args);
             } else if (command === '!help' || command === '!info') {
                 await handleHelpCommand(message, args);
             }
@@ -222,6 +224,18 @@ function formatShortNumber(num) {
     if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(2) + 'M';
     if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + 'k';
     return Math.round(num).toLocaleString();
+}
+
+// Helper: try fetch JSON directly (without puppeteer) for simple public API endpoints; fallback to scrapeJson
+async function fetchJsonDirect(url) {
+    try {
+        const res = await fetch(url, { headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0 RivalyticsBot/1.0' } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+    } catch (e) {
+        if (VERBOSE) console.log(`ℹ️ Direct fetch failed for ${url}: ${e.message}; falling back to headless scrape`);
+        return await scrapeJson(url);
+    }
 }
 
 // Helper: truncate string with ellipsis
@@ -803,6 +817,116 @@ async function handleTournCommand(message, args) {
     }
 }
 
+// Encounters: show recently encountered players (played with) - derived from profile career segment plus matches list.
+// Command: !encounters <username> [limit]
+// Strategy:
+// 1. Fetch recent matches (season scoped). Iterate matches; collect teammate player handles from metadata/segments (overview teammates/heroes if provided by API) or generic players list when exposed.
+// 2. Count occurrences and last seen timestamp; exclude the queried user; sort by most recent then frequency.
+// 3. Display top N (default 10, max 25) encountered players with: timesPlayedTogether, that player's displayed rank if present in match roster metadata, lastEncounter date, optional their win rate in those shared matches (wins where both on same team).
+// Note: Tracker API does not expose a dedicated "encounters" endpoint in provided HAR for Marvel Rivals; we emulate by parsing match rosters.
+// If API later exposes /profile/<ign>/encounters we can attempt fetch and prefer it.
+async function handleEncountersCommand(message, args) {
+    if (args.length < 2) {
+        return message.reply('❌ Please provide a username. Usage: `!encounters <username> [count]`');
+    }
+    const username = args[1];
+    const limit = Math.min(Math.max(parseInt(args[2] || '10', 10) || 10, 3), 25);
+    if (VERBOSE) console.log(`🔍 Encounters command for ${username} (limit ${limit})`);
+    const loadingMsg = await message.reply(`🔍 Gathering recent encounters for **${username}**...`);
+
+    try {
+        const encountersUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/aggregated?localOffset=300&filter=encounters&season=${CURRENT_SEASON}`;
+        if (VERBOSE) console.log(`📡 Fetching aggregated encounters: ${encountersUrl}`);
+        const resp = await fetchJsonDirect(encountersUrl);
+        if (resp?.errors?.length) {
+            return loadingMsg.edit(`❌ ${resp.errors[0].message || 'API error fetching encounters.'}`);
+        }
+        const teammates = resp?.data?.teammates || [];
+        const enemies = resp?.data?.enemies || [];
+        if (!teammates.length && !enemies.length) {
+            return loadingMsg.edit('❌ No encounter data returned (teammates/enemies empty).');
+        }
+
+        // Normalize records into unified objects
+        function mapRecord(r, type) {
+            const handle = r.platformInfo?.platformUserHandle || r.platformInfo?.platformUserIdentifier || 'Unknown';
+            const tsRaw = r.metadata?.lastMatchTimestamp;
+            const ts = tsRaw ? Date.parse(tsRaw) : 0;
+            const stats = r.stats || {};
+            const matchesPlayed = stats.matchesPlayed?.value || 0;
+            const kd = stats.kdRatio?.value || stats.kdRatio?.metadata?.parsedValue || 0;
+            let winPctVal = stats.winPct?.value;
+            if (typeof winPctVal === 'object' && winPctVal?.parsedValue != null) winPctVal = winPctVal.parsedValue;
+            if (typeof winPctVal === 'number' && winPctVal > 1 && winPctVal <= 100) {
+                // leave as is
+            }
+            const winPct = winPctVal;
+            const seasonRankObj = stats.seasonRank;
+            const rankScore = seasonRankObj?.value?.parsedValue || 0;
+            const rankTier = seasonRankObj?.metadata?.tierShortName || seasonRankObj?.metadata?.tierName || '';
+            const rankIcon = seasonRankObj?.metadata?.iconUrl || '';
+            const seasonWinPctRaw = stats.seasonWinPct?.value;
+            let seasonWinPct = seasonWinPctRaw;
+            if (typeof seasonWinPct === 'object' && seasonWinPct?.parsedValue != null) seasonWinPct = seasonWinPct.parsedValue;
+            const seasonKD = stats.seasonKdRatio?.value || 0;
+            const seasonMatches = stats.seasonMatchesPlayed?.value || 0;
+            return {
+                type,
+                handle,
+                lastTs: ts,
+                matchesTogether: matchesPlayed,
+                kdTogether: kd,
+                winPctTogether: winPct,
+                seasonRankScore: rankScore,
+                seasonRankTier: rankTier,
+                seasonKD,
+                seasonWinPct,
+                seasonMatches,
+                rankIcon,
+            };
+        }
+
+        // Prepare separate lists
+        const allyNormalized = teammates.map(r => mapRecord(r, 'ally'))
+            .sort((a, b) => (b.matchesTogether - a.matchesTogether) || (b.lastTs - a.lastTs));
+        const enemyNormalized = enemies.map(r => mapRecord(r, 'enemy'))
+            .sort((a, b) => (b.matchesTogether - a.matchesTogether) || (b.lastTs - a.lastTs));
+
+        const allyTop = allyNormalized.slice(0, limit);
+        const enemyTop = enemyNormalized.slice(0, limit);
+
+        function formatBlock(e, idx, label) {
+            const last = e.lastTs ? new Date(e.lastTs).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }) : '—';
+            const winPctDisplay = (typeof e.winPctTogether === 'number') ? `${e.winPctTogether.toFixed(1)}%` : '—';
+            const seasonWinDisplay = (typeof e.seasonWinPct === 'number') ? `${e.seasonWinPct.toFixed(1)}%` : '—';
+            const tier = e.seasonRankTier ? e.seasonRankTier : '';
+            const seasonKD = e.seasonKD ? e.seasonKD.toFixed(2) : '—';
+            const headLine = `${idx + 1}. ${e.handle}${tier ? ` (${tier})` : ''} ${label}`.trim();
+            const togetherLine = `Together: ${e.matchesTogether} games | Win%: ${winPctDisplay} | K/D: ${e.kdTogether?.toFixed ? e.kdTogether.toFixed(2) : e.kdTogether}`;
+            const lastLine = `Last Seen: ${last}`;
+            const seasonLine = `Season: ${e.seasonMatches}m • Win% ${seasonWinDisplay} • K/D ${seasonKD} • RS ${e.seasonRankScore || '—'}`;
+            return '```\n' + headLine + '\n' + togetherLine + '\n' + lastLine + '\n' + seasonLine + '\n' + '```';
+        }
+
+        const allyBlocks = allyTop.map((e, i) => formatBlock(e, i, '[With]'));
+        const enemyBlocks = enemyTop.map((e, i) => formatBlock(e, i, '[Against]'));
+
+        const embed = new EmbedBuilder()
+            .setTitle(`Encounters for ${username}`)
+            .setColor(0x2E8B57)
+            .setTimestamp();
+
+    const allyHeader = allyBlocks.length ? '**🤝 Played With**\n' : '';
+    const enemyHeader = enemyBlocks.length ? '\n**⚔️ Played Against**\n' : '';
+        embed.setDescription(allyHeader + allyBlocks.join('\n') + enemyHeader + enemyBlocks.join('\n'));
+        embed.setFooter({ text: `Season ${CURRENT_SEASON} • Teammates: ${teammates.length} • Enemies: ${enemies.length} • Showing up to ${limit} each` });
+        await loadingMsg.edit({ content: '', embeds: [embed] });
+    } catch (e) {
+        console.error('❌ Encounters command error:', e);
+        await loadingMsg.edit('❌ Failed to fetch encounter data. API may have changed.');
+    }
+}
+
 
 // Help / Info Command
 async function handleHelpCommand(message, args) {
@@ -830,6 +954,10 @@ async function handleHelpCommand(message, args) {
     lines.push('🏟️ `!tourn <user>` (alias: `!tournament`)');
     lines.push('  Retrieves recent Season 8 matches where modeName is "Tournament".');
     lines.push('  For each match: Result, Map, Date & Time, Duration, Kills/Deaths + K/D, Total Hero Damage, Up to first 3 Heroes Played, Replay ID. Includes summary aggregates (wins, losses, win rate, average damage, average K/D).');
+    lines.push('');
+    lines.push('🤝 `!encounters <user> [count]` (alias: `!encounter`)');
+    lines.push('  Uses official aggregated encounters endpoint (Season scoped) to list recent teammates and enemies.');
+    lines.push('  Metrics per player: Together Matches, Together Win%, Together K/D, Last Encounter Date, Season Rank Score & Tier, Season Win%, Season K/D, Season Matches. Allies listed before enemies. Optional count (3-25, default 10).');
     lines.push('');
     const text = lines.join('\n');
     // Ensure under Discord 2000 char limit
