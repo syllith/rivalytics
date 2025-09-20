@@ -87,7 +87,12 @@ export async function handleMatchesCommand(message, args) {
             const competitive = allMatches.filter(m => isCompetitiveMode(m));
             if (VERBOSE) console.log(`🎯 Competitive matches (strict only): ${competitive.length} / ${allMatches.length}`);
 
-            competitive.slice(0, 10).forEach((match, idx) => {
+            // Determine if all targeted matches share identical modeName (e.g., all 'Competitive') so we can suppress it for brevity
+            const topCompetitive = competitive.slice(0, 10);
+            const uniqueModeNames = new Set(topCompetitive.map(m => (m.metadata?.modeName || m.metadata?.mapModeName || '').trim()));
+            const suppressModeName = uniqueModeNames.size === 1; // only one distinct mode (likely 'Competitive')
+
+            topCompetitive.forEach((match, idx) => {
                 const meta = match.metadata || {};
                 const overview = match.segments?.find(seg => seg.type === 'overview');
                 const stats = overview?.stats || {};
@@ -104,8 +109,14 @@ export async function handleMatchesCommand(message, args) {
                 const duration = durationRaw ? durationRaw.replace(/(\d+)m (\d+)s/, '$1:$2').replace('s', '') : '?:??';
                 const mapName = meta.mapName || 'Unknown';
                 const modeName = meta.modeName || meta.mapModeName || 'Mode';
+                const replayId = meta.replayId || meta.replayID || meta.replayid || overviewMeta.replayId || match.attributes?.id || 'n/a';
 
-                recentMatchLines.push(`${idx + 1}. ${emoji} ${mapName} • ${modeName} • ${kills}/${deaths} (K/D ${kd}) • ${dmg} dmg • ${duration}`);
+                // Conditionally include mode segment
+                const modeSegment = suppressModeName ? '' : ` • ${modeName}`;
+                // Append a short replay tag (use last 5 chars for compactness) for quick reference / copy
+                const replayShort = replayId !== 'n/a' ? ` • 🔁 ${replayId}` : '';
+
+                recentMatchLines.push(`${idx + 1}. ${emoji} ${mapName}${modeSegment} • ${kills}/${deaths} (K/D ${kd}) • ${dmg} dmg • ${duration}${replayShort}`);
             });
         } catch (e) {
             if (VERBOSE) console.log('⚠️ Failed to fetch recent matches for merged output:', e.message); // ! Non‑fatal merge failure

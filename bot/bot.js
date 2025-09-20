@@ -1,5 +1,4 @@
 // * Rivalytics Discord Bot entrypoint (modular command router)
-import dotenv from 'dotenv';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { VERBOSE } from './config.js';
 import {
@@ -13,8 +12,7 @@ import {
     handleGenExampleCommand,
     commandMap
 } from './index.js';
-
-// * Environment already loaded via config.js (single root .env load). This import remains only if other modules expect dotenv present.
+import { handleScrimsInteraction } from './commands/scrims.js';
 
 // * Discord client with required intents (guild messages + content for prefix commands)
 const discordClient = new Client({
@@ -73,3 +71,18 @@ discordClient.on('messageCreate', async (message) => {
 });
 
 if (VERBOSE) console.log('🤖 Rivalytics Discord Bot (modular) starting...');
+
+// * Component Interaction handling (pagination buttons etc.)
+discordClient.on('interactionCreate', async (interaction) => {
+    try {
+        // Scrims pagination
+        const handled = await handleScrimsInteraction(interaction);
+        if (handled) return;
+        // Future: other handlers
+    } catch (e) {
+        if (VERBOSE) console.error('Interaction handling error:', e);
+        if (interaction.isRepliable()) {
+            try { await interaction.reply({ content: '❌ Interaction failed.', ephemeral: true }); } catch (_) {}
+        }
+    }
+});
