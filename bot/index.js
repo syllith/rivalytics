@@ -20,8 +20,8 @@ export const commandMeta = [
     title: '🦸 Hero Stats',
     usage: '!heroes <user>',
     descriptionLines: [
-        `Season ${CURRENT_SEASON} hero stats for a user. Shows top 10 heroes by time played.`,
-        'Includes matches, win rate, KDA, damage, and role.'
+      `Season ${CURRENT_SEASON} hero stats for a user. Shows top 10 heroes by time played.`,
+      'Includes matches, win rate, KDA, damage, and role.'
     ]
   },
   {
@@ -30,8 +30,8 @@ export const commandMeta = [
     title: '🏆 Ranked & Recent Matches',
     usage: '!matches <user>',
     descriptionLines: [
-        `Shows Season ${CURRENT_SEASON} ranked history and last 10 competitive matches.`,
-        'Includes rank, score, result, map, K/D, and damage.'
+      `Shows Season ${CURRENT_SEASON} ranked history and last 10 competitive matches.`,
+      'Includes rank, score, result, map, K/D, and damage.'
     ]
   },
   {
@@ -40,8 +40,8 @@ export const commandMeta = [
     title: '🎮 Scrims',
     usage: '!scrims <user>',
     descriptionLines: [
-        'Lists Season 8 custom/scrim games for a user.',
-        'Shows result, map, K/D, damage, and summary stats.'
+      'Lists Season 8 custom/scrim games for a user.',
+      'Shows result, map, K/D, damage, and summary stats.'
     ]
   },
   {
@@ -50,8 +50,8 @@ export const commandMeta = [
     title: '🧪 Scrim Heroes',
     usage: '!scrimheroes <user>',
     descriptionLines: [
-        'Season 8 hero stats for heroes played in scrims.',
-        'Same metrics as !heroes, but only for scrim heroes.'
+      'Season 8 hero stats for heroes played in scrims.',
+      'Same metrics as !heroes, but only for scrim heroes.'
     ]
   },
   {
@@ -60,8 +60,8 @@ export const commandMeta = [
     title: '🏟️ Tournament Matches',
     usage: '!tourn <user>',
     descriptionLines: [
-        'Shows recent Season 8 tournament matches for a user.',
-        'Includes result, map, K/D, damage, and summary.'
+      'Shows recent Season 8 tournament matches for a user.',
+      'Includes result, map, K/D, damage, and summary.'
     ]
   },
   {
@@ -70,8 +70,8 @@ export const commandMeta = [
     title: '🤝 Encounters',
     usage: '!encounters <user> [count]',
     descriptionLines: [
-        `Lists recent teammates and enemies for Season ${CURRENT_SEASON}.`,
-        'Shows matches, win%, K/D, rank, and last encounter.'
+      `Lists recent teammates and enemies for Season ${CURRENT_SEASON}.`,
+      'Shows matches, win%, K/D, rank, and last encounter.'
     ]
   },
   {
@@ -80,8 +80,8 @@ export const commandMeta = [
     title: '🧪 Generate JSON Examples',
     usage: '!genexample <user>',
     descriptionLines: [
-        'Fetches and saves raw JSON for all endpoints.',
-        'Stores files in bot/examples/<command>.'
+      'Fetches and saves raw JSON for all endpoints.',
+      'Stores files in bot/examples/<command>.'
     ]
   },
   {
@@ -90,7 +90,7 @@ export const commandMeta = [
     title: 'ℹ️ Help',
     usage: '!help',
     descriptionLines: [
-        'Shows this help listing.'
+      'Shows this help listing.'
     ]
   }
 ];

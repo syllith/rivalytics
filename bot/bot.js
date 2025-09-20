@@ -14,8 +14,7 @@ import {
     commandMap
 } from './index.js';
 
-// * Load environment variables (current working directory .env first)
-dotenv.config();
+// * Environment already loaded via config.js (single root .env load). This import remains only if other modules expect dotenv present.
 
 // * Discord client with required intents (guild messages + content for prefix commands)
 const discordClient = new Client({

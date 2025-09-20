@@ -3,19 +3,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
-// * Primary .env load (current working directory)
-dotenv.config();
-
-// * Fallback: attempt to load project root .env (parent of /bot) if token still missing
-if (!process.env.DISCORD_BOT_TOKEN) {
-  try {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname  = path.dirname(__filename);
-    const parentEnv  = path.resolve(__dirname, '../.env');
-    if (fs.existsSync(parentEnv)) dotenv.config({ path: parentEnv });
-  } catch (e) {
-    //. Silent – later code will exit if token still missing
-  }
+// * Single env load for bot: prefer project root ../.env (the one actually containing secrets)
+try {
+	const __filename = fileURLToPath(import.meta.url);
+	const __dirname = path.dirname(__filename);
+	const rootEnv = path.resolve(__dirname, '../.env');
+	if (fs.existsSync(rootEnv)) dotenv.config({ path: rootEnv });
+} catch (_) {
+	// Silent – bot.js will perform a runtime token presence check.
 }
 
 // * Environment-driven configuration exports
