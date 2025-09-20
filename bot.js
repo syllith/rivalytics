@@ -207,7 +207,8 @@ async function handleHeroesCommand(message, args) {
     const loadingMsg = await message.reply(`🔍 Looking up heroes for **${username}**...`);
 
     try {
-        const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all`;
+    // Append season=8 to restrict hero stats to Season 8 only (similar to scrims implementation)
+    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=8`;
         console.log(`📡 Fetching data from: ${url}`);
 
         const data = await scrapeJson(url);
@@ -226,7 +227,13 @@ async function handleHeroesCommand(message, args) {
         console.log(`📊 Found ${data.data.length} total segments`);
 
         // Process heroes exactly like the frontend
-        const heroes = getHeroesFromResponse(data);
+        let heroes = getHeroesFromResponse(data);
+
+        // Safety: if API ignored season param, attempt manual filter if a season attribute exists on segments
+        if (Array.isArray(data.data) && data.data.some(seg => seg.attributes?.season)) {
+            const filteredSegments = { ...data, data: data.data.filter(seg => seg.attributes?.season === 8) };
+            heroes = getHeroesFromResponse(filteredSegments);
+        }
         console.log(`🦸 Processed ${heroes.length} heroes`);
 
         if (heroes.length === 0) {
@@ -249,6 +256,8 @@ async function handleHeroesCommand(message, args) {
         topHeroes.forEach((hero, index) => {
             const winRate = hero.MatchesPlayed > 0 ? ((hero.MatchesWon / hero.MatchesPlayed) * 100) : 0;
             const kda = hero.Deaths > 0 ? ((hero.Kills + hero.Assists) / hero.Deaths) : (hero.Kills + hero.Assists);
+            const avgDmgPerMatch = hero.MatchesPlayed > 0 ? (hero.TotalHeroDamage / hero.MatchesPlayed) : 0;
+            const avgHealPerMatch = hero.MatchesPlayed > 0 ? (hero.TotalHeroHeal / hero.MatchesPlayed) : 0;
 
             const roleEmoji = hero.Role === 'Vanguard' ? '🛡️' :
                 hero.Role === 'Duelist' ? '⚔️' :
@@ -257,7 +266,7 @@ async function handleHeroesCommand(message, args) {
             description += `${roleEmoji} **${index + 1}. ${hero.Name}** (${hero.Role})\n`;
             description += `⏱️ ${hero.TimePlayed.toFixed(1)}h | 🎮 ${formatShortNumber(hero.MatchesPlayed)} matches\n`;
             description += `📈 ${winRate.toFixed(1)}% WR | 💀 ${formatShortNumber(hero.Kills)}/${formatShortNumber(hero.Deaths)} (${kda.toFixed(2)} KDA)\n`;
-            description += `💥 ${formatShortNumber(hero.TotalHeroDamage)} dmg | 💚 ${formatShortNumber(hero.TotalHeroHeal)} heal\n\n`;
+            description += `💥 ${formatShortNumber(hero.TotalHeroDamage)} dmg (${formatShortNumber(avgDmgPerMatch)} avg) | 💚 ${formatShortNumber(hero.TotalHeroHeal)} heal (${formatShortNumber(avgHealPerMatch)} avg)\n\n`;
         });
 
         embed.setDescription(description);
