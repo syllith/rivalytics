@@ -10,9 +10,14 @@ import {
     handleEncountersCommand,
     handleHelpCommand,
     handleGenExampleCommand,
+    handleWatchCommand,
+    handleUnwatchCommand,
+    handleWatchlistCommand,
+    handleWatchRunCommand,
     commandMap
 } from './index.js';
 import { handleScrimsInteraction } from './commands/scrims.js';
+import { initWatchlist } from './watchlist.js';
 
 // * Discord client with required intents (guild messages + content for prefix commands)
 const discordClient = new Client({
@@ -33,6 +38,10 @@ const handlerLookup = {
     handleEncountersCommand,
     handleHelpCommand,
     handleGenExampleCommand
+    ,handleWatchCommand
+    ,handleUnwatchCommand
+    ,handleWatchlistCommand
+    ,handleWatchRunCommand
 };
 
 // Resolve a handler function by user-entered command trigger
@@ -52,6 +61,12 @@ discordClient.login(process.env.DISCORD_BOT_TOKEN);
 
 discordClient.once('clientReady', () => {
     console.log(`🤖 Discord bot logged in as ${discordClient.user.tag}!`);
+    // Initialize watchlist scheduler after client is ready
+    try {
+        initWatchlist(discordClient);
+    } catch (e) {
+        console.error('❌ Failed to initialize watchlist:', e);
+    }
 });
 
 discordClient.on('messageCreate', async (message) => {

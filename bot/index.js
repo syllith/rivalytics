@@ -10,6 +10,7 @@ export { handleTournCommand } from './commands/tourn.js';
 export { handleEncountersCommand } from './commands/encounters.js';
 export { handleHelpCommand } from './commands/help.js';
 export { handleGenExampleCommand } from './commands/genexample.js';
+export { handleWatchCommand, handleUnwatchCommand, handleWatchlistCommand, handleWatchRunCommand } from './commands/watchlist.js';
 
 // * Command metadata (single source of truth for help + mapping)
 //   Each entry: { triggers: ['!cmd','!alias'], handler, title, usage, descriptionLines[] }
@@ -91,6 +92,43 @@ export const commandMeta = [
     usage: '!help',
     descriptionLines: [
       'Shows this help listing.'
+    ]
+  }
+  ,
+  {
+    triggers: ['!watch'],
+    handler: 'handleWatchCommand',
+    title: '👁️ Add to Watchlist',
+    usage: '!watch <user>',
+    descriptionLines: [
+      'Adds a user to the automated watchlist (matches + scrims every interval).'
+    ]
+  },
+  {
+    triggers: ['!unwatch'],
+    handler: 'handleUnwatchCommand',
+    title: '🚫 Remove from Watchlist',
+    usage: '!unwatch <user>',
+    descriptionLines: [
+      'Removes a user from the watchlist.'
+    ]
+  },
+  {
+    triggers: ['!watchlist'],
+    handler: 'handleWatchlistCommand',
+    title: '📋 List Watchlist',
+    usage: '!watchlist',
+    descriptionLines: [
+      'Shows currently watched users and last run times.'
+    ]
+  },
+  {
+    triggers: ['!watchrun'],
+    handler: 'handleWatchRunCommand',
+    title: '⚡ Manual Watchlist Run',
+    usage: '!watchrun',
+    descriptionLines: [
+      'Manually triggers an immediate run for due watchlist entries (admin/debug).'
     ]
   }
 ];
