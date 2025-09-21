@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import { fetchJsonDirect } from '../browser.js';
-import { CURRENT_SEASON, VERBOSE } from '../config.js';
+import { CURRENT_SEASON, PUBLIC_SEASON, VERBOSE } from '../config.js';
 
 // * Handle the !encounters command: shows top teammates and opponents with shared stats
 export async function handleEncountersCommand(message, args) {
@@ -14,7 +14,7 @@ export async function handleEncountersCommand(message, args) {
   if (VERBOSE) console.log(`🔍 Encounters command for ${username} (limit ${limit})`);
 
   // * Immediate feedback while fetching
-  const loadingMsg = await message.reply(`🔍 Gathering recent encounters for **${username}**...`);
+  const loadingMsg = await message.reply(`🔍 Gathering recent encounters for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
     // * Aggregated endpoint returns teammates / enemies arrays and per‑relation stats
@@ -115,7 +115,7 @@ export async function handleEncountersCommand(message, args) {
 
     embed.setDescription(allyHeader + allyBlocks.join('\n') + enemyHeader + enemyBlocks.join('\n'));
     embed.setFooter({
-      text: `Season ${CURRENT_SEASON} • Teammates: ${teammates.length} • Enemies: ${enemies.length} • Showing up to ${limit} each`
+      text: `Season ${PUBLIC_SEASON} • Teammates: ${teammates.length} • Enemies: ${enemies.length} • Showing up to ${limit} each`
     });
 
     await loadingMsg.edit({ content: '', embeds: [embed] }); // * Success: replace loading message

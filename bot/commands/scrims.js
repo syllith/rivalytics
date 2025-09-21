@@ -1,13 +1,13 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { scrapeJson } from '../browser.js';
 import { formatShortNumber } from '../utils.js';
-import { VERBOSE } from '../config.js';
+import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 import { initPagination, appendPage, getEntry, setCurrentPage, buildDisabledState } from '../pagination.js';
 
 // * Fetch a single page of matches (optionally with next cursor)
 async function fetchMatchPage(username, nextCursor = null) {
   const cursorParam = nextCursor ? `&next=${encodeURIComponent(nextCursor)}` : '';
-  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=8${cursorParam}`;
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}${cursorParam}`;
   if (VERBOSE) console.log(`📡 (scrims) Fetching: ${url}`);
   const data = await scrapeJson(url);
   if (data.errors?.length) throw new Error(data.errors[0].message || 'API error');
@@ -25,7 +25,7 @@ function extractUnknown(matches) {
 function buildEmbed(username, pageIdx, page, totalPages) {
   const displayMatches = page.matches;
   const embed = new EmbedBuilder()
-    .setTitle(`🎮 Scrim Matches for ${username}`)
+  .setTitle(`🎮 Scrim Matches (S${PUBLIC_SEASON}) for ${username}`)
     .setColor(0x4B7BEC)
     .setTimestamp();
 
@@ -79,7 +79,8 @@ function buildEmbed(username, pageIdx, page, totalPages) {
   const avgKD = totalDeaths > 0 ? (totalKills / totalDeaths) : totalKills;
   embed.setDescription(`Page ${pageIdx + 1}/${totalPages} • Matches: ${displayMatches.length}\nWins: ${wins} • Losses: ${losses} • WinRate: ${displayMatches.length ? ((wins / displayMatches.length) * 100).toFixed(1) : '0.0'}%\nAvg Damage: ${formatShortNumber(avgDamage)} • Avg K/D: ${avgKD.toFixed(2)}`);
   fields.slice(0, 25).forEach(f => embed.addFields(f));
-  embed.setFooter({ text: `Showing scrim (unknown) mode matches • ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}` });
+  // * Footer intentionally omits explicit time to avoid duplicating Discord's rendered embed timestamp
+  embed.setFooter({ text: 'Showing scrim (unknown) mode matches' });
   return embed;
 }
 

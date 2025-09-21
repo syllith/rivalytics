@@ -17,6 +17,9 @@ try {
 export const CHROMIUM_PATH = process.env.CHROMIUM_PATH || '/usr/bin/chromium';
 export const VERBOSE = (process.env.BOT_VERBOSE || 'false').toLowerCase() === 'true';
 export const CURRENT_SEASON = parseInt(process.env.CURRENT_SEASON || '8', 10);
+// Publicly displayed season (Marvel Rivals uses half steps internally). Example: internal 8 => public 4.
+// Allow explicit override via PUBLIC_SEASON env; else derive by dividing CURRENT_SEASON by 2 and rounding up.
+export const PUBLIC_SEASON = parseInt(process.env.PUBLIC_SEASON || `${Math.ceil(CURRENT_SEASON / 2)}`, 10);
 export const SEASON_8_START_ISO = process.env.SEASON_8_START_ISO || '2025-08-20T00:00:00Z';
 export const SEASON_START = new Date(SEASON_8_START_ISO);
 export const RANKED_BOUNDARY_ENABLED = (process.env.RANKED_BOUNDARY_ENABLED || 'true').toLowerCase() === 'true';

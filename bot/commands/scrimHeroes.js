@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { scrapeJson } from '../browser.js';
 import { getHeroesFromResponse, formatShortNumber } from '../utils.js';
-import { VERBOSE } from '../config.js';
+import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 
 // * Handle the !scrimheroes command: list season hero stats for heroes actually used in scrim (Unknown mode) matches
 export async function handleScrimHeroesCommand(message, args) {
@@ -12,18 +12,18 @@ export async function handleScrimHeroesCommand(message, args) {
   if (VERBOSE) console.log(`🔍 Scrim Heroes command requested for username: ${username}`);
 
   // * Loading indicator while we gather match + hero data
-  const loadingMsg = await message.reply(`🔍 Gathering scrim heroes for **${username}** (Season 8)...`);
+  const loadingMsg = await message.reply(`🔍 Gathering scrim heroes for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
     // 1) Pull recent matches to discover which heroes appear in Unknown mode (treated as scrims)
-    const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=8`;
+  const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`;
     if (VERBOSE) console.log(`📡 Fetching matches for scrim heroes from: ${matchesUrl}`);
     const matchesResp = await scrapeJson(matchesUrl);
     if (matchesResp.errors?.length) return loadingMsg.edit(`❌ ${matchesResp.errors[0].message || 'User not found'}`); // ! API/user error
 
     const allMatches = matchesResp.data?.matches || [];
     const scrimMatches = allMatches.filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'unknown');
-    if (!scrimMatches.length) return loadingMsg.edit('❌ No scrim (Unknown mode) matches found for this user in Season 8.'); // ! No scrim sample
+  if (!scrimMatches.length) return loadingMsg.edit(`❌ No scrim (Unknown mode) matches found for this user in Season ${PUBLIC_SEASON}.`); // ! No scrim sample
 
     // Collect unique hero names used in scrim matches (from overview metadata.heroes)
     const scrimHeroSet = new Set();
@@ -35,14 +35,14 @@ export async function handleScrimHeroesCommand(message, args) {
     if (!scrimHeroSet.size) return loadingMsg.edit('❌ No heroes recorded in scrim matches.'); // ! No hero metadata available
 
     // 2) Fetch season-wide career hero stats (will filter to just scrim heroes)
-    const heroesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=8`;
+  const heroesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=${CURRENT_SEASON}`;
     let seasonHeroes = [];
     try {
       const heroesResp = await scrapeJson(heroesUrl);
       let allHeroStats = getHeroesFromResponse(heroesResp);
-      // Filter to season 8 segments if multi-season present
+  // Filter to internal CURRENT_SEASON segments if multi-season present
       if (heroesResp.data?.some(seg => seg.attributes?.season)) {
-        const filteredSegments = { ...heroesResp, data: heroesResp.data.filter(seg => seg.attributes?.season === 8) };
+        const filteredSegments = { ...heroesResp, data: heroesResp.data.filter(seg => seg.attributes?.season === CURRENT_SEASON) };
         allHeroStats = getHeroesFromResponse(filteredSegments);
       }
       seasonHeroes = allHeroStats;
@@ -61,11 +61,11 @@ export async function handleScrimHeroesCommand(message, args) {
     const top = filteredSeason.slice(0, 10);
 
     const embed = new EmbedBuilder()
-      .setTitle(`🦸 Scrim-Used Hero Season Stats (S8) for ${username}`)
+      .setTitle(`🦸 Scrim-Used Hero Season Stats (S${PUBLIC_SEASON}) for ${username}`)
       .setColor(0x8A2BE2)
       .setTimestamp();
 
-    let description = 'These are full Season 8 totals ONLY for heroes you have used in Unknown-mode matches (scrims). Scrim-only per-hero stats are not exposed by the API.\n\n';
+  let description = `These are full Season ${PUBLIC_SEASON} totals ONLY for heroes you have used in Unknown-mode matches (scrims). Scrim-only per-hero stats are not exposed by the API.\n\n`;
 
     top.forEach((hero, idx) => {
       const winRate = hero.MatchesPlayed ? (hero.MatchesWon / hero.MatchesPlayed) * 100 : 0;
@@ -81,7 +81,7 @@ export async function handleScrimHeroesCommand(message, args) {
 
     embed
       .setDescription(description)
-      .setFooter({ text: `Showing ${top.length} of ${filteredSeason.length} heroes (Season totals)` });
+      .setFooter({ text: `Showing ${top.length} of ${filteredSeason.length} heroes (Season ${PUBLIC_SEASON} totals)` });
 
     await loadingMsg.edit({ content: '', embeds: [embed] }); // * Success
   } catch (e) {

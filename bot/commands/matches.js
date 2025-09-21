@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import { scrapeJson } from '../browser.js';
-import { CURRENT_SEASON, VERBOSE, RANKED_BOUNDARY_ENABLED, RANKED_BOUNDARY_THRESHOLD } from '../config.js';
+import { CURRENT_SEASON, PUBLIC_SEASON, VERBOSE, RANKED_BOUNDARY_ENABLED, RANKED_BOUNDARY_THRESHOLD } from '../config.js';
 import { formatShortNumber, isCompetitiveMode } from '../utils.js';
 
 // * Handle the !matches command: ranked ladder changes + recent competitive match snapshots
@@ -12,7 +12,7 @@ export async function handleMatchesCommand(message, args) {
     if (VERBOSE) console.log(`🔍 Matches (ranked) command requested for username: ${username}`);
 
     // * Provide loading feedback
-    const loadingMsg = await message.reply(`🔍 Gathering ranked history and recent matches for **${username}**...`);
+    const loadingMsg = await message.reply(`🔍 Gathering ranked history and recent matches for **${username}** (Season ${PUBLIC_SEASON})...`);
 
     try {
         // =============== Ranked Overview Fetch ===============
@@ -161,11 +161,11 @@ export async function handleMatchesCommand(message, args) {
         let desc = header + '\n\n' + rankedBlock;
 
         if (recentMatchLines.length) {
-            desc += `\n**Recent Competitive Matches (Season ${CURRENT_SEASON}, last ${recentMatchLines.length})**\n` + recentMatchLines.map(l => '• ' + l).join('\n');
+            desc += `\n**Recent Competitive Matches (Season ${PUBLIC_SEASON}, last ${recentMatchLines.length})**\n` + recentMatchLines.map(l => '• ' + l).join('\n');
         }
 
         embed.setDescription(desc).setFooter({
-            text: `Season ${CURRENT_SEASON} • Ranked entries: ${processedGames.length} • Competitive matches: ${recentMatchLines.length}`
+            text: `Season ${PUBLIC_SEASON} • Ranked entries: ${processedGames.length} • Competitive matches: ${recentMatchLines.length}`
         });
 
         await loadingMsg.edit({ content: '', embeds: [embed] }); // * Success path

@@ -38,10 +38,10 @@ const handlerLookup = {
     handleEncountersCommand,
     handleHelpCommand,
     handleGenExampleCommand
-    ,handleWatchCommand
-    ,handleUnwatchCommand
-    ,handleWatchlistCommand
-    ,handleWatchRunCommand
+    , handleWatchCommand
+    , handleUnwatchCommand
+    , handleWatchlistCommand
+    , handleWatchRunCommand
 };
 
 // Resolve a handler function by user-entered command trigger
@@ -97,7 +97,7 @@ discordClient.on('interactionCreate', async (interaction) => {
     } catch (e) {
         if (VERBOSE) console.error('Interaction handling error:', e);
         if (interaction.isRepliable()) {
-            try { await interaction.reply({ content: '❌ Interaction failed.', ephemeral: true }); } catch (_) {}
+            try { await interaction.reply({ content: '❌ Interaction failed.', ephemeral: true }); } catch (_) { }
         }
     }
 });

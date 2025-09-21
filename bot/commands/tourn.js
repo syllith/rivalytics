@@ -1,9 +1,9 @@
 import { EmbedBuilder } from 'discord.js';
 import { scrapeJson } from '../browser.js';
 import { formatShortNumber } from '../utils.js';
-import { VERBOSE } from '../config.js';
+import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 
-// * Handle the !tourn command: recent Tournament mode matches (Season 8)
+// * Handle the !tourn command: recent Tournament mode matches (public season display)
 export async function handleTournCommand(message, args) {
   //. Username required
   if (args.length < 2) return message.reply('❌ Please provide a username. Usage: `!tourn <username>`');
@@ -12,12 +12,12 @@ export async function handleTournCommand(message, args) {
   if (VERBOSE) console.log(`🔍 Tournament command requested for username: ${username}`);
 
   // * Loading indicator
-  const loadingMsg = await message.reply(`🔍 Looking up Season 8 tournament matches for **${username}**...`);
+  const loadingMsg = await message.reply(`🔍 Looking up Season ${PUBLIC_SEASON} tournament matches for **${username}**...`);
 
   try {
     // Fetch matches and filter by Tournament mode
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=8`;
-    if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season 8) from: ${url}`);
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`;
+  if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season ${CURRENT_SEASON}) from: ${url}`);
     const data = await scrapeJson(url);
     if (data.errors?.length) return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`); // ! API/user error
 
@@ -76,13 +76,14 @@ export async function handleTournCommand(message, args) {
     const avgKD = totalDeaths > 0 ? (totalKills / totalDeaths) : totalKills;
 
     const embed = new EmbedBuilder()
-      .setTitle(`🏟️ Tournament Matches (S8) for ${username}`)
+      .setTitle(`🏟️ Tournament Matches (S${PUBLIC_SEASON}) for ${username}`)
       .setColor(0xC71585)
       .setTimestamp();
 
     embed.setDescription(`Wins: ${wins} • Losses: ${losses} • WinRate: ${(slice.length ? (wins / slice.length * 100).toFixed(1) : '0.0')}%\nAvg Damage: ${formatShortNumber(avgDamage)} • Avg K/D: ${avgKD.toFixed(2)}`);
     fields.slice(0, 25).forEach(f => embed.addFields(f));
-    embed.setFooter({ text: `Season 8 • Showing last ${slice.length} Tournament matches • ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}` });
+  // * Footer omits explicit time; Discord will show timestamp separately via setTimestamp()
+  embed.setFooter({ text: `Season ${PUBLIC_SEASON} • Showing last ${slice.length} Tournament matches` });
 
     await loadingMsg.edit({ content: '', embeds: [embed] }); // * Success path
   } catch (e) {

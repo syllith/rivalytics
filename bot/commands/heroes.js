@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { getHeroesFromResponse, formatShortNumber } from '../utils.js';
 import { scrapeJson } from '../browser.js';
-import { VERBOSE } from '../config.js';
+import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 
 // * Handle the !heroes command: show top hero stats for a player
 export async function handleHeroesCommand(message, args) {
@@ -12,11 +12,11 @@ export async function handleHeroesCommand(message, args) {
   if (VERBOSE) console.log(`🔍 Heroes command requested for username: ${username}`);
 
   // * Provide immediate feedback while data is fetched
-  const loadingMsg = await message.reply(`🔍 Looking up heroes for **${username}**...`);
+  const loadingMsg = await message.reply(`🔍 Looking up heroes for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
     // Career segments (season aware). Currently season hard‑coded (mirrors original logic)
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=8`;
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=${CURRENT_SEASON}`;
     if (VERBOSE) console.log(`📡 Fetching data from: ${url}`);
 
     const data = await scrapeJson(url);
@@ -26,9 +26,9 @@ export async function handleHeroesCommand(message, args) {
     // Extract hero stat objects (utility consolidates differences in structure)
     let heroes = getHeroesFromResponse(data);
 
-    // If multiple seasons included, filter to explicit season 8 (behavior preserved)
+  // If multiple seasons included, filter to explicit internal CURRENT_SEASON (behavior preserved)
     if (data.data.some(seg => seg.attributes?.season)) {
-      const filteredSegments = { ...data, data: data.data.filter(seg => seg.attributes?.season === 8) };
+      const filteredSegments = { ...data, data: data.data.filter(seg => seg.attributes?.season === CURRENT_SEASON) };
       heroes = getHeroesFromResponse(filteredSegments);
     }
 
@@ -38,7 +38,7 @@ export async function handleHeroesCommand(message, args) {
     heroes.sort((a, b) => b.TimePlayed - a.TimePlayed);
 
     const embed = new EmbedBuilder()
-      .setTitle(`🦸 Hero Stats for ${username}`)
+      .setTitle(`🦸 Hero Stats (S${PUBLIC_SEASON}) for ${username}`)
       .setColor(0x00AE86)
       .setTimestamp();
 
