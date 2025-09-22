@@ -10,7 +10,8 @@ export function renderScrimsCard({ username, season, rows }) {
   // Normalize input rows into render-friendly shape
   const processed = rows.slice(0, MAX_ROWS).map(r => ({
     idx: `${r.index}.`,
-    result: r.resultEmoji === '🟢' ? 'W' : r.resultEmoji === '🔴' ? 'L' : '-',
+    // Store semantic outcome instead of raw emoji so we can custom-render if emoji fonts are missing
+    outcome: r.resultEmoji === '🟢' ? 'win' : r.resultEmoji === '🔴' ? 'loss' : 'unknown',
     map: r.mapName || 'Unknown',
     kd: `${r.kills}/${r.deaths}`,
     kdr: String(r.kd || '0'),
@@ -27,8 +28,24 @@ export function renderScrimsCard({ username, season, rows }) {
   const rowFont = `400 ${FONT_ROW}px ${FONT_STACK}`; const smallFont = `400 ${FONT_SMALL}px ${FONT_STACK}`; const headerFont = `600 ${FONT_HEADER}px ${FONT_STACK}`;
 
   // Column layout definition
-  const columns = [{ key: 'idx', label: '#', font: rowFont }, { key: 'result', label: 'R', font: rowFont }, { key: 'map', label: 'Map', font: rowFont }, { key: 'kd', label: 'K/D', font: rowFont }, { key: 'kdr', label: 'Ratio', font: rowFont }, { key: 'dmg', label: 'Damage', font: rowFont }, { key: 'dur', label: 'Dur', font: rowFont }, { key: 'heroes', label: 'Top Heroes', font: smallFont }, { key: 'replay', label: 'Replay', font: smallFont }, { key: 'time', label: 'Time', font: smallFont }];
-  columns.forEach(col => { const headerW = measure(headerFont, col.label || ''); const contentW = Math.max(headerW, ...processed.map(p => measure(col.font, p[col.key] || ''))); col.width = Math.max(50, contentW); });
+  const columns = [
+    { key: 'idx', label: '#', font: rowFont, align: 'right', pad: 0 },
+    { key: 'outcome', label: 'R', font: rowFont, align: 'center', fixed: 50 },
+    { key: 'map', label: 'Map', font: rowFont, align: 'left' },
+    { key: 'kd', label: 'K/D', font: rowFont, align: 'right' },
+    { key: 'kdr', label: 'Ratio', font: rowFont, align: 'right' },
+    { key: 'dmg', label: 'Damage', font: rowFont, align: 'right' },
+    { key: 'dur', label: 'Dur', font: rowFont, align: 'right' },
+    { key: 'heroes', label: 'Top Heroes', font: smallFont, align: 'left' },
+    { key: 'replay', label: 'Replay', font: smallFont, align: 'right' },
+    { key: 'time', label: 'Time', font: smallFont, align: 'right' }
+  ];
+  columns.forEach(col => {
+    if (col.fixed) { col.width = col.fixed; return; }
+    const headerW = measure(headerFont, col.label || '');
+    const contentW = Math.max(headerW, ...processed.map(p => measure(col.font, p[col.key] || '')));
+    col.width = Math.max(50, contentW + (col.align === 'left' ? 10 : 0));
+  });
 
   // Total width computation (clamped between base & max)
   let requiredInnerWidth = columns.reduce((a, c) => a + c.width, 0) + MIN_GAP * (columns.length - 1) + OUTER_MARGIN * 2 + 40; let WIDTH = Math.min(MAX_WIDTH, Math.max(BASE_WIDTH, Math.ceil(requiredInnerWidth)));
@@ -53,22 +70,44 @@ export function renderScrimsCard({ username, season, rows }) {
 
   // Table container
   const tableX = OUTER_MARGIN, tableY = TABLE_TOP_OFFSET, tableW = WIDTH - OUTER_MARGIN * 2, tableH = ROW_H * (processed.length + 1) + 36; ctx.fillStyle = '#141C2A'; roundRect(ctx, tableX, tableY, tableW, tableH, 18); ctx.fill();
-  let curX = tableX + 28; columns.forEach(col => { col.x = curX; curX += col.width + MIN_GAP; });
-  const headerY = tableY + 52; columns.forEach(col => { if (col.label) drawText(ctx, col.label, col.x, headerY, { font: headerFont, color: '#AAB4CF' }); });
+  let curX = tableX + 28;
+  columns.forEach(col => { col.x = curX; curX += col.width + MIN_GAP; }); // col.x is left edge
+  const headerY = tableY + 52;
+  columns.forEach(col => {
+    if (!col.label) return;
+    const hx = col.align === 'right' ? col.x + col.width : col.align === 'center' ? col.x + col.width / 2 : col.x;
+    drawText(ctx, col.label, hx, headerY, { font: headerFont, color: '#AAB4CF', align: col.align || 'left', baseline: 'alphabetic' });
+  });
 
   // Data rows with alternating shading + truncation for wide hero sets
   processed.forEach((row, i) => {
     const rowY = headerY + (i + 1) * ROW_H;
     if (i % 2 === 0) { ctx.fillStyle = 'rgba(255,255,255,0.04)'; ctx.fillRect(tableX + 10, rowY - ROW_H + 12, tableW - 20, ROW_H - 10); }
     columns.forEach(col => {
+      const cellMidY = rowY - (ROW_H / 2) + 6; // center baseline correction
+      if (col.key === 'outcome') {
+        const centerY = cellMidY + 4; // fine tune
+        const centerX = col.x + col.width / 2;
+        const radius = 14;
+        let fill = '#4C5A6F';
+        if (row.outcome === 'win') fill = '#2EAD5A';
+        else if (row.outcome === 'loss') fill = '#D03C2F';
+        ctx.beginPath();
+        ctx.fillStyle = fill;
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.fill();
+        const letter = row.outcome === 'win' ? 'W' : row.outcome === 'loss' ? 'L' : '-';
+        drawText(ctx, letter, centerX, centerY + 1, { font: `600 18px ${FONT_STACK}`, align: 'center', baseline: 'middle', color: '#FFFFFF' });
+        return;
+      }
       let text = row[col.key] || '';
       const font = (col.key === 'heroes' || col.key === 'replay' || col.key === 'time') ? smallFont : rowFont;
-      if (col.key === 'heroes' && text) { // truncate hero list to fit
+      if (col.key === 'heroes' && text) {
         mctx.font = font;
-        while (mctx.measureText(text).width > col.width && text.length > 4) text = text.slice(0, -2) + '…';
+        while (mctx.measureText(text).width > col.width - 4 && text.length > 4) text = text.slice(0, -2) + '…';
       }
-      const color = col.key === 'result' ? (text === 'W' ? '#4CAF50' : text === 'L' ? '#F44336' : '#D1DAE8') : '#FFFFFF';
-      drawText(ctx, text, col.x, rowY - 16, { font, color });
+      const drawX = col.align === 'right' ? col.x + col.width : col.align === 'center' ? col.x + col.width / 2 : col.x;
+      drawText(ctx, text, drawX, cellMidY + 8, { font, color: '#FFFFFF', align: col.align || 'left', baseline: 'alphabetic' });
     });
   });
 

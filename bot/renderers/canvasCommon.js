@@ -78,3 +78,30 @@ export function formatShortNumber(num) {
   if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
   return String(num);
 }
+
+// Draw a win/loss outcome badge (circle + letter) independent of emoji fonts
+// outcome: 'win' | 'loss' | 'unknown'
+// options: { radius=14, font=`600 18px ${FONT_STACK}`, palette overrides }
+export function drawOutcomeBadge(ctx, x, y, outcome, opts = {}) {
+  const { radius = 14, font = `600 18px ${FONT_STACK}`, palette = {} } = opts;
+  const colors = {
+    winFill: palette.winFill || '#2EAD5A',
+    lossFill: palette.lossFill || '#D03C2F',
+    unknownFill: palette.unknownFill || '#4C5A6F',
+    text: palette.text || '#FFFFFF'
+  };
+  let fill = colors.unknownFill;
+  if (outcome === 'win') fill = colors.winFill; else if (outcome === 'loss') fill = colors.lossFill;
+  ctx.beginPath();
+  ctx.fillStyle = fill;
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fill();
+  const letter = outcome === 'win' ? 'W' : outcome === 'loss' ? 'L' : '-';
+  ctx.save();
+  ctx.font = font;
+  ctx.fillStyle = colors.text;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(letter, x, y + 1); // slight vertical tweak
+  ctx.restore();
+}
