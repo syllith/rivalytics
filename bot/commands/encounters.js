@@ -1,6 +1,7 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { fetchJsonDirect } from '../browser.js';
 import { CURRENT_SEASON, PUBLIC_SEASON, VERBOSE } from '../config.js';
+import { renderEncountersCard } from '../renderers/encountersCard.js';
 
 // * Handle the !encounters command: shows top teammates and opponents with shared stats
 export async function handleEncountersCommand(message, args) {
@@ -101,10 +102,30 @@ export async function handleEncountersCommand(message, args) {
       return '```\n' + headLine + '\n' + togetherLine + '\n' + lastLine + '\n' + seasonLine + '\n```';
     }
 
+    // Try canvas card first -------------------------------------------------
+    let renderError = null;
+    try {
+      const buf = renderEncountersCard({
+        username,
+        season: PUBLIC_SEASON,
+        allies: allyTop,
+        enemies: enemyTop,
+        totalAllies: teammates.length,
+        totalEnemies: enemies.length,
+        limit
+      });
+      const attachment = new AttachmentBuilder(buf, { name: `encounters_${username}.png` });
+      await loadingMsg.edit({ content: '', embeds: [], files: [attachment] });
+      return; // done
+    } catch (imgErr) {
+      renderError = imgErr;
+      console.warn('⚠️ Encounters card render failed, falling back to embed:', imgErr && imgErr.stack ? imgErr.stack : imgErr.message);
+      // Fallback to original embed formatting below
+    }
+
     const allyBlocks = allyTop.map((e, i) => formatBlock(e, i, '[With]'));
     const enemyBlocks = enemyTop.map((e, i) => formatBlock(e, i, '[Against]'));
 
-    // * Build embed (ally section first then enemy section if present)
     const embed = new EmbedBuilder()
       .setTitle(`Encounters for ${username}`)
       .setColor(0x2E8B57)
@@ -114,11 +135,12 @@ export async function handleEncountersCommand(message, args) {
     const enemyHeader = enemyBlocks.length ? '\n**⚔️ Played Against**\n' : '';
 
     embed.setDescription(allyHeader + allyBlocks.join('\n') + enemyHeader + enemyBlocks.join('\n'));
+    const footerBase = `Season ${PUBLIC_SEASON} • Teammates: ${teammates.length} • Enemies: ${enemies.length} • Showing up to ${limit} each (embed fallback)`;
     embed.setFooter({
-      text: `Season ${PUBLIC_SEASON} • Teammates: ${teammates.length} • Enemies: ${enemies.length} • Showing up to ${limit} each`
+      text: renderError ? `${footerBase} • Reason: ${renderError.message || 'render error'}` : footerBase
     });
 
-    await loadingMsg.edit({ content: '', embeds: [embed] }); // * Success: replace loading message
+    await loadingMsg.edit({ content: '', embeds: [embed] });
   } catch (e) {
     console.error('❌ Encounters command error:', e); // ! Unexpected failure path
     await loadingMsg.edit('❌ Failed to fetch encounter data. API may have changed.');

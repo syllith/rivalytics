@@ -13,10 +13,10 @@ import {
     handleWatchCommand,
     handleUnwatchCommand,
     handleWatchlistCommand,
-    handleWatchRunCommand,
     commandMap
 } from './index.js';
 import { handleScrimsInteraction } from './commands/scrims.js';
+import { handleMatchesInteraction } from './commands/matches.js';
 import { initWatchlist } from './watchlist.js';
 
 // * Discord client with required intents (guild messages + content for prefix commands)
@@ -37,11 +37,10 @@ const handlerLookup = {
     handleTournCommand,
     handleEncountersCommand,
     handleHelpCommand,
-    handleGenExampleCommand
-    , handleWatchCommand
-    , handleUnwatchCommand
-    , handleWatchlistCommand
-    , handleWatchRunCommand
+    handleGenExampleCommand,
+    handleWatchCommand,
+    handleUnwatchCommand,
+    handleWatchlistCommand
 };
 
 // Resolve a handler function by user-entered command trigger
@@ -87,12 +86,12 @@ discordClient.on('messageCreate', async (message) => {
 
 if (VERBOSE) console.log('🤖 Rivalytics Discord Bot (modular) starting...');
 
-// * Component Interaction handling (pagination buttons etc.)
+// * Component Interaction handling (replay buttons etc.)
 discordClient.on('interactionCreate', async (interaction) => {
     try {
-        // Scrims pagination
-        const handled = await handleScrimsInteraction(interaction);
-        if (handled) return;
+        // Scrims replay buttons
+        if (await handleScrimsInteraction(interaction)) return;
+        if (await handleMatchesInteraction(interaction)) return;
         // Future: other handlers
     } catch (e) {
         if (VERBOSE) console.error('Interaction handling error:', e);

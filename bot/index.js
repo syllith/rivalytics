@@ -10,7 +10,7 @@ export { handleTournCommand } from './commands/tourn.js';
 export { handleEncountersCommand } from './commands/encounters.js';
 export { handleHelpCommand } from './commands/help.js';
 export { handleGenExampleCommand } from './commands/genexample.js';
-export { handleWatchCommand, handleUnwatchCommand, handleWatchlistCommand, handleWatchRunCommand } from './commands/watchlist.js';
+export { handleWatchCommand, handleUnwatchCommand, handleWatchlistCommand } from './commands/watchlist.js';
 
 // * Command metadata (single source of truth for help + mapping)
 //   Each entry: { triggers: ['!cmd','!alias'], handler, title, usage, descriptionLines[] }
@@ -28,7 +28,7 @@ export const commandMeta = [
   {
     triggers: ['!matches'],
     handler: 'handleMatchesCommand',
-    title: '🏆 Ranked & Recent Matches',
+  title: '🏆 Ranked Matches',
     usage: '!matches <user>',
     descriptionLines: [
   `Shows Season ${PUBLIC_SEASON} ranked history and last 10 competitive matches.`,
@@ -75,14 +75,14 @@ export const commandMeta = [
       'Shows matches, win%, K/D, rank, and last encounter.'
     ]
   },
+  // Dev-only command intentionally omitted from info output (still available for dev usage)
   {
     triggers: ['!genexample'],
     handler: 'handleGenExampleCommand',
     title: '🧪 Generate JSON Examples',
     usage: '!genexample <user>',
     descriptionLines: [
-      'Fetches and saves raw JSON for all endpoints.',
-      'Stores files in bot/examples/<command>.'
+      'Developer: fetch & save raw API payloads used by commands.'
     ]
   },
   {
@@ -122,15 +122,7 @@ export const commandMeta = [
       'Shows currently watched users and last run times.'
     ]
   },
-  {
-    triggers: ['!watchrun'],
-    handler: 'handleWatchRunCommand',
-    title: '⚡ Manual Watchlist Run',
-    usage: '!watchrun',
-    descriptionLines: [
-      'Manually triggers an immediate run for due watchlist entries (admin/debug).'
-    ]
-  }
+  // Removed !watchrun command per requirement (manual trigger no longer exposed)
 ];
 
 // * Build commandMap (trigger -> handlerName) for quick lookup
@@ -161,5 +153,21 @@ export function getHelpText() {
     lines.push('');
   }
 
+  return lines.join('\n');
+}
+
+// Alternate info view: exclude dev / redundant commands (!genexample, !help itself)
+export function getInfoText() {
+  const lines = [];
+  lines.push('Rivalytics Bot Commands (Info)');
+  lines.push('Usage: <command> <username>.');
+  lines.push('');
+  for (const meta of commandMeta) {
+    if (meta.handler === 'handleHelpCommand') continue; // skip !help
+    if (meta.handler === 'handleGenExampleCommand') continue; // hide dev command
+    lines.push(`${meta.title} \`${meta.usage}\`${meta.triggers.length > 1 ? ` (aliases: ${meta.triggers.slice(1).join(', ')})` : ''}`);
+    meta.descriptionLines.forEach(l => lines.push('  ' + l));
+    lines.push('');
+  }
   return lines.join('\n');
 }

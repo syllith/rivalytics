@@ -1,4 +1,4 @@
-import { addToWatchlist, removeFromWatchlist, listWatchlist, manualRunAll } from '../watchlist.js';
+import { addToWatchlist, removeFromWatchlist, listWatchlist } from '../watchlist.js';
 import { VERBOSE } from '../config.js';
 
 // * Handle !watch <username>
@@ -30,8 +30,4 @@ export async function handleWatchlistCommand(message) {
   return message.reply('👁️ Current watchlist:\n' + lines.join('\n'));
 }
 
-// * Optional admin manual trigger: !watchrun
-export async function handleWatchRunCommand(message) {
-  if (VERBOSE) console.log('⚡ Manual watchlist run invoked');
-  return manualRunAll(message);
-}
+// ! Removed manual !watchrun command per requirement (manual trigger deprecated)

@@ -16,8 +16,8 @@ export async function handleTournCommand(message, args) {
 
   try {
     // Fetch matches and filter by Tournament mode
-  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`;
-  if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season ${CURRENT_SEASON}) from: ${url}`);
+    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`;
+    if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season ${CURRENT_SEASON}) from: ${url}`);
     const data = await scrapeJson(url);
     if (data.errors?.length) return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`); // ! API/user error
 
@@ -82,8 +82,8 @@ export async function handleTournCommand(message, args) {
 
     embed.setDescription(`Wins: ${wins} • Losses: ${losses} • WinRate: ${(slice.length ? (wins / slice.length * 100).toFixed(1) : '0.0')}%\nAvg Damage: ${formatShortNumber(avgDamage)} • Avg K/D: ${avgKD.toFixed(2)}`);
     fields.slice(0, 25).forEach(f => embed.addFields(f));
-  // * Footer omits explicit time; Discord will show timestamp separately via setTimestamp()
-  embed.setFooter({ text: `Season ${PUBLIC_SEASON} • Showing last ${slice.length} Tournament matches` });
+    // * Footer omits explicit time; Discord will show timestamp separately via setTimestamp()
+    embed.setFooter({ text: `Season ${PUBLIC_SEASON} • Showing last ${slice.length} Tournament matches` });
 
     await loadingMsg.edit({ content: '', embeds: [embed] }); // * Success path
   } catch (e) {

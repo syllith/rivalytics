@@ -1,7 +1,8 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { scrapeJson } from '../browser.js';
 import { CURRENT_SEASON, PUBLIC_SEASON, VERBOSE, RANKED_BOUNDARY_ENABLED, RANKED_BOUNDARY_THRESHOLD } from '../config.js';
 import { formatShortNumber, isCompetitiveMode } from '../utils.js';
+import { renderMatchesCard } from '../renderers/matchesCard.js';
 
 // * Handle the !matches command: ranked ladder changes + recent competitive match snapshots
 export async function handleMatchesCommand(message, args) {
@@ -45,7 +46,9 @@ export async function handleMatchesCommand(message, args) {
                 rank,
                 score,
                 numericScore: Number(String(score).replace(/,/g, '')) || 0,
-                gain: ''
+                gain: '',
+                epoch: d.getTime(),
+                iso: d.toISOString()
             };
         });
 
@@ -77,6 +80,7 @@ export async function handleMatchesCommand(message, args) {
 
         // =============== Recent Competitive Matches ===============
         let recentMatchLines = [];
+        let recentMatchObjs = [];
         try {
             const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`;
             if (VERBOSE) console.log(`📡 Fetching recent matches for merge: ${matchesUrl}`);
@@ -116,15 +120,56 @@ export async function handleMatchesCommand(message, args) {
                 // Append a short replay tag (use last 5 chars for compactness) for quick reference / copy
                 const replayShort = replayId !== 'n/a' ? ` • 🔁 ${replayId}` : '';
 
-                recentMatchLines.push(`${idx + 1}. ${emoji} ${mapName}${modeSegment} • ${kills}/${deaths} (K/D ${kd}) • ${dmg} dmg • ${duration}${replayShort}`);
+                const line = `${idx + 1}. ${emoji} ${mapName}${modeSegment} • ${kills}/${deaths} (K/D ${kd}) • ${dmg} dmg • ${duration}${replayShort}`;
+                recentMatchLines.push(line);
+                const ts = meta.timestamp ? new Date(meta.timestamp) : null;
+                recentMatchObjs.push({
+                    index: idx + 1,
+                    emoji,
+                    mapName,
+                    modeName: suppressModeName ? '' : modeName,
+                    kills,
+                    deaths,
+                    kd,
+                    damage: dmgVal,
+                    duration,
+                    replayShort: replayId !== 'n/a' ? replayId : '',
+                    timestamp: ts ? ts.toISOString() : null
+                });
             });
         } catch (e) {
             if (VERBOSE) console.log('⚠️ Failed to fetch recent matches for merged output:', e.message); // ! Non‑fatal merge failure
         }
 
-        // =============== Embed Construction ===============
+        // =============== Combined Paired Row Construction ===============
+        // We expect the ranked history and the competitive match list to correspond sequentially (index 0 with 0, etc.).
+        // Build up to 10 paired rows where each row merges ranked delta info with the same-index recent match stats.
+        const pairedCount = Math.min(10, Math.min(processedGames.length, recentMatchObjs.length));
+        const combinedRows = [];
+        for (let i = 0; i < pairedCount; i++) {
+            const r = processedGames[i];
+            const m = recentMatchObjs[i];
+            combinedRows.push({
+                index: i + 1,
+                // Ranked side
+                rankScore: r.numericScore,
+                delta: r.gain || '',
+                // Match side
+                mapName: m.mapName + (m.modeName ? ' • ' + m.modeName : ''),
+                resultEmoji: m.emoji || '',
+                kills: m.kills,
+                deaths: m.deaths,
+                kd: m.kd,
+                damage: m.damage,
+                duration: m.duration,
+                replay: m.replayShort ? m.replayShort.slice(-6) : '',
+                timestamp: m.timestamp || r.iso || null
+            });
+        }
+
+        // =============== Embed Construction (legacy fallback) ===============
         const embed = new EmbedBuilder()
-            .setTitle(`🏆 Ranked & Recent Matches for ${username}`)
+            .setTitle(`🏆 Ranked Matches for ${username}`)
             .setColor(0xFFD700)
             .setTimestamp();
 
@@ -168,9 +213,71 @@ export async function handleMatchesCommand(message, args) {
             text: `Season ${PUBLIC_SEASON} • Ranked entries: ${processedGames.length} • Competitive matches: ${recentMatchLines.length}`
         });
 
-        await loadingMsg.edit({ content: '', embeds: [embed] }); // * Success path
+        // Try image first
+        try {
+            const png = renderMatchesCard({
+                username,
+                season: PUBLIC_SEASON,
+                currentRank,
+                currentScore: formattedScore,
+                combinedRows
+            });
+            const attachment = new AttachmentBuilder(png, { name: `matches_${username}.png` });
+            // Build buttons for each match (1..n) returning replay id when clicked
+            const buttons = [];
+            combinedRows.forEach((row, idx) => {
+                if (!row.replay) return; // skip if no replay id
+                buttons.push(new ButtonBuilder()
+                    .setCustomId(`matchreplay_${loadingMsg.id}_${idx}`)
+                    .setLabel(String(idx + 1))
+                    .setStyle(ButtonStyle.Secondary)
+                );
+            });
+            const rowsComponents = [];
+            if (buttons.length) {
+                // Discord max 5 buttons per row, split accordingly
+                for (let i = 0; i < buttons.length; i += 5) {
+                    rowsComponents.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
+                }
+            }
+            // Store a lightweight mapping on the message object via a symbol? Instead we export a lookup map.
+            replayCache.set(loadingMsg.id, combinedRows.map(r => r.replay));
+            await loadingMsg.edit({ content: '', embeds: [], files: [attachment], components: rowsComponents });
+        } catch (imgErr) {
+            console.warn('⚠️ Matches image render failed, falling back to embed:', imgErr.message);
+            await loadingMsg.edit({ content: '', embeds: [embed] });
+        }
     } catch (e) {
         console.error('❌ Ranked (matches) command error:', e); // ! Unexpected failure
         await loadingMsg.edit('❌ Failed to fetch ranked history. Please check the username and try again.');
     }
+}
+
+// In‑memory replay id cache keyed by message id -> array of replay short ids aligned to buttons
+const replayCache = new Map();
+
+export async function handleMatchesInteraction(interaction) {
+    if (!interaction.isButton()) return false;
+    if (!interaction.customId.startsWith('matchreplay_')) return false;
+    // CustomId format: matchreplay_<messageId>_<index>
+    const parts = interaction.customId.split('_');
+    const messageId = parts[1];
+    const idx = parseInt(parts[2], 10);
+    const list = replayCache.get(messageId);
+    if (!list) {
+        try { await interaction.reply({ content: '⏰ Replay buttons expired.', ephemeral: true }); } catch (_) { }
+        return true;
+    }
+    const replayId = list[idx];
+    if (!replayId) {
+        try { await interaction.reply({ content: '❌ Replay unavailable.', ephemeral: true }); } catch (_) { }
+        return true;
+    }
+    try {
+        await interaction.reply({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+    } catch (e) {
+        // Fallback attempt
+        try { await interaction.followUp({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true }); } catch (_) { }
+    }
+    return true;
 }
