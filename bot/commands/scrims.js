@@ -128,7 +128,13 @@ export async function handleScrimsCommand(message, args) {
     }
   } catch (e) {
     console.error('❌ Scrims command error:', e);
-    await loadingMsg.edit('❌ Failed to fetch scrim match data. Please check the username and try again.');
+    const msg = (e && e.message) ? e.message : '';
+    //. Detect private profile status surfaced by upstream API (exact token 'Private')
+    if (/private/i.test(msg)) {
+      await loadingMsg.edit('🔒 This profile appears to be **Private** – match history is hidden. Ask the user to enable public match data on Tracker.gg and try again.');
+      return;
+    }
+    await loadingMsg.edit('❌ Failed to fetch scrim match data. Please check the username or try again later.');
   }
 }
 // In-memory replay cache for scrims (messageId -> replayId[])

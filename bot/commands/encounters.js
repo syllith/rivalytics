@@ -143,6 +143,11 @@ export async function handleEncountersCommand(message, args) {
     await loadingMsg.edit({ content: '', embeds: [embed] });
   } catch (e) {
     console.error('❌ Encounters command error:', e); // ! Unexpected failure path
+    const msg = (e && e.message) ? e.message : '';
+    if (/private/i.test(msg)) { // Private profile detection
+      await loadingMsg.edit('🔒 This profile is **Private** – encounter data (teammates/opponents) is unavailable until match history is public.');
+      return;
+    }
     await loadingMsg.edit('❌ Failed to fetch encounter data. API may have changed.');
   }
 }

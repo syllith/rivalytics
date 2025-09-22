@@ -1,5 +1,5 @@
 import { addToWatchlist, removeFromWatchlist, listWatchlist } from '../watchlist.js';
-import { VERBOSE } from '../config.js';
+import { VERBOSE, WATCHLIST_INTERVAL_MINUTES, WATCHLIST_CHANNEL_NAME } from '../config.js';
 
 // * Handle !watch <username>
 export async function handleWatchCommand(message, args) {
@@ -7,7 +7,31 @@ export async function handleWatchCommand(message, args) {
   const username = args[1];
   const { added, reason } = addToWatchlist(username);
   if (!added) return message.reply(`❌ Could not add **${username}**: ${reason}.`);
-  return message.reply(`👁️ Added **${username}** to the watchlist. Updates every configured interval.`);
+
+  // Derive a human-readable interval description
+  const mins = WATCHLIST_INTERVAL_MINUTES;
+  let human;
+  if (mins % 60 === 0) {
+    const hours = mins / 60;
+    human = hours === 1 ? 'every 1 hour' : `every ${hours} hours`;
+  } else if (mins > 60) {
+    const hours = Math.floor(mins / 60);
+    const rem = mins % 60;
+    human = `every ${hours}h ${rem}m`;
+  } else {
+    human = mins === 1 ? 'every 1 minute' : `every ${mins} minutes`;
+  }
+  // Resolve a proper channel mention if possible (so it links/clicks). Fallback to plaintext if not found.
+  let channelRef = `#${WATCHLIST_CHANNEL_NAME}`;
+  try {
+    if (message.guild) {
+      const channel = message.guild.channels.cache.find(ch => ch.name === WATCHLIST_CHANNEL_NAME && ch.isTextBased());
+      if (channel) channelRef = `<#${channel.id}>`;
+    }
+  } catch (e) {
+    // Silently ignore resolution failures; keep plaintext fallback.
+  }
+  return message.reply(`👁️ Added **${username}** to the watchlist. Updates ${human} in ${channelRef}.`);
 }
 
 // * Handle !unwatch <username>
