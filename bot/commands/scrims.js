@@ -50,14 +50,16 @@ export async function handleScrimsCommand(message, args) {
 
     // Prepare structured rows for canvas renderer
     let wins = 0, losses = 0, totalDamage = 0, totalKills = 0, totalDeaths = 0;
-    const cardRows = [];
-    const LIMIT_FOR_CARD = TARGET_MATCHES; // 15 rows on card
-    replayCache.set(loadingMsg.id, []);
+  const cardRows = [];
+  const LIMIT_FOR_CARD = TARGET_MATCHES; // 15 rows on card
+  replayCache.set(loadingMsg.id, []);
+  matchIdCache.set(loadingMsg.id, []);
     collected.slice(0, LIMIT_FOR_CARD).forEach((match, idx) => {
       const meta = match.metadata || {};
       const overview = match.segments?.find(s => s.type === 'overview');
       const stats = overview?.stats || {};
       const overviewMeta = overview?.metadata || {};
+      const matchId = match.attributes?.id || '';
       const resultRaw = (overviewMeta.result || 'unknown').toLowerCase();
       if (resultRaw === 'win') wins++; else if (resultRaw === 'loss') losses++;
       const resultEmoji = resultRaw === 'win' ? '🟢' : resultRaw === 'loss' ? '🔴' : '⚪';
@@ -68,10 +70,13 @@ export async function handleScrimsCommand(message, args) {
       const durationRaw = stats.timePlayed?.displayValue || '';
       const duration = durationRaw ? durationRaw.replace(/(\d+)m (\d+)s/, '$1:$2').replace('s', '') : '?:??';
       const mapName = meta.mapName || 'Unknown';
-      const replayId = meta.replayId || overviewMeta.replayId || match.attributes?.id || '';
+      const replayId = meta.replayId || overviewMeta.replayId || '';
       const kd = deaths > 0 ? (kills / deaths).toFixed(2) : kills.toFixed(2);
       const heroes = overviewMeta.heroes?.slice(0, 3).map(h => h.name).join(', ') || '';
-      if (replayId) replayCache.get(loadingMsg.id).push(replayId);
+      if (replayId) {
+        replayCache.get(loadingMsg.id).push(replayId);
+        matchIdCache.get(loadingMsg.id).push(matchId || '');
+      }
       cardRows.push({
         index: idx + 1,
         mapName,
@@ -83,6 +88,7 @@ export async function handleScrimsCommand(message, args) {
         duration,
         heroes,
         replay: replayId ? replayId.slice(-6) : '',
+        matchId: matchId || '',
         timestamp: meta.timestamp || null
       });
     });
@@ -107,6 +113,7 @@ export async function handleScrimsCommand(message, args) {
         .setStyle(ButtonStyle.Secondary));
       const rowsComponents = [];
       for (let i = 0; i < buttons.length; i += 5) rowsComponents.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
+      // matchIdCache already populated alongside replayCache above
       await loadingMsg.edit({ content: '', embeds: [], files: [attachment], components: rowsComponents });
     } catch (cardErr) {
       console.warn('⚠️ Scrims image render failed, falling back to embed:', cardErr.message);
@@ -124,6 +131,7 @@ export async function handleScrimsCommand(message, args) {
         .setStyle(ButtonStyle.Secondary));
       const rowsComponents = [];
       for (let i = 0; i < buttons.length; i += 5) rowsComponents.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
+      // matchIdCache already populated alongside replayCache above
       await loadingMsg.edit({ content: '', embeds: [embed], components: rowsComponents });
     }
   } catch (e) {
@@ -139,6 +147,8 @@ export async function handleScrimsCommand(message, args) {
 }
 // In-memory replay cache for scrims (messageId -> replayId[])
 const replayCache = new Map();
+// Parallel cache for scrims: messageId -> tracker match id[] for team comp links
+const matchIdCache = new Map();
 
 // * Interaction handler for scrim replay buttons
 export async function handleScrimsInteraction(interaction) {
@@ -153,14 +163,34 @@ export async function handleScrimsInteraction(interaction) {
     return true;
   }
   const replayId = list[idx];
+  const matchIds = matchIdCache.get(messageId) || [];
+  const matchId = matchIds[idx] || '';
   if (!replayId) {
     try { await interaction.reply({ content: '❌ Replay unavailable.', ephemeral: true }); } catch (_) { }
     return true;
   }
   try {
-    await interaction.reply({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+    const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
+    if (link) {
+      const embed = new EmbedBuilder()
+        .setColor(0x5865F2)
+        .setDescription(`🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
+      await interaction.reply({ embeds: [embed], ephemeral: true });
+    } else {
+      await interaction.reply({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+    }
   } catch (e) {
-    try { await interaction.followUp({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true }); } catch (_) { }
+    const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
+    try {
+      if (link) {
+        const embed = new EmbedBuilder()
+          .setColor(0x5865F2)
+          .setDescription(`🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
+        await interaction.followUp({ embeds: [embed], ephemeral: true });
+      } else {
+        await interaction.followUp({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+      }
+    } catch (_) { }
   }
   return true;
 }

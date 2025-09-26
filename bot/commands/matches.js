@@ -101,6 +101,7 @@ export async function handleMatchesCommand(message, args) {
                 const overview = match.segments?.find(seg => seg.type === 'overview');
                 const stats = overview?.stats || {};
                 const overviewMeta = overview?.metadata || {};
+                const matchId = match.attributes?.id || '';
 
                 const resultRaw = (overviewMeta.result || 'unknown').toLowerCase();
                 const emoji = resultRaw === 'win' ? '🟢' : resultRaw === 'loss' ? '🔴' : '⚪';
@@ -113,7 +114,7 @@ export async function handleMatchesCommand(message, args) {
                 const duration = durationRaw ? durationRaw.replace(/(\d+)m (\d+)s/, '$1:$2').replace('s', '') : '?:??';
                 const mapName = meta.mapName || 'Unknown';
                 const modeName = meta.modeName || meta.mapModeName || 'Mode';
-                const replayId = meta.replayId || meta.replayID || meta.replayid || overviewMeta.replayId || match.attributes?.id || 'n/a';
+                const replayId = meta.replayId || meta.replayID || meta.replayid || overviewMeta.replayId || 'n/a';
 
                 // Conditionally include mode segment
                 const modeSegment = suppressModeName ? '' : ` • ${modeName}`;
@@ -134,6 +135,7 @@ export async function handleMatchesCommand(message, args) {
                     damage: dmgVal,
                     duration,
                     replayShort: replayId !== 'n/a' ? replayId : '',
+                    matchId,
                     timestamp: ts ? ts.toISOString() : null
                 });
             });
@@ -163,6 +165,7 @@ export async function handleMatchesCommand(message, args) {
                 damage: m.damage,
                 duration: m.duration,
                 replay: m.replayShort ? m.replayShort.slice(-6) : '',
+                matchId: m.matchId || '',
                 timestamp: m.timestamp || r.iso || null
             });
         }
@@ -242,6 +245,7 @@ export async function handleMatchesCommand(message, args) {
             }
             // Store a lightweight mapping on the message object via a symbol? Instead we export a lookup map.
             replayCache.set(loadingMsg.id, combinedRows.map(r => r.replay));
+            matchIdCache.set(loadingMsg.id, combinedRows.map(r => r.matchId || ''));
             await loadingMsg.edit({ content: '', embeds: [], files: [attachment], components: rowsComponents });
         } catch (imgErr) {
             console.warn('⚠️ Matches image render failed, falling back to embed:', imgErr.message);
@@ -255,6 +259,8 @@ export async function handleMatchesCommand(message, args) {
 
 // In‑memory replay id cache keyed by message id -> array of replay short ids aligned to buttons
 const replayCache = new Map();
+// Parallel cache to map message id -> array of tracker match ids for team comp links
+const matchIdCache = new Map();
 
 export async function handleMatchesInteraction(interaction) {
     if (!interaction.isButton()) return false;
@@ -269,15 +275,35 @@ export async function handleMatchesInteraction(interaction) {
         return true;
     }
     const replayId = list[idx];
+    const matchIds = matchIdCache.get(messageId) || [];
+    const matchId = matchIds[idx] || '';
     if (!replayId) {
         try { await interaction.reply({ content: '❌ Replay unavailable.', ephemeral: true }); } catch (_) { }
         return true;
     }
     try {
-        await interaction.reply({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+        const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
+        if (link) {
+            const embed = new EmbedBuilder()
+                .setColor(0x5865F2)
+                .setDescription(`🎬 Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+        } else {
+            await interaction.reply({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+        }
     } catch (e) {
         // Fallback attempt
-        try { await interaction.followUp({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true }); } catch (_) { }
+        const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
+        try {
+            if (link) {
+                const embed = new EmbedBuilder()
+                    .setColor(0x5865F2)
+                    .setDescription(`🎬 Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
+            } else {
+                await interaction.followUp({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+            }
+        } catch (_) { }
     }
     return true;
 }
