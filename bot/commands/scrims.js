@@ -1,6 +1,6 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } from 'discord.js';
 import { scrapeJson } from '../browser.js';
-import { formatShortNumber } from '../utils.js';
+import { formatShortNumber, computeEffectiveness, scoreToGrade } from '../utils.js';
 import { renderScrimsCard } from '../renderers/scrimsCard.js';
 import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 
@@ -51,6 +51,7 @@ export async function handleScrimsCommand(message, args) {
     // Prepare structured rows for canvas renderer
     let wins = 0, losses = 0, totalDamage = 0, totalKills = 0, totalDeaths = 0;
   const cardRows = [];
+  const perMatchEffs = []; // collect per-match per-hero efficiencies for overall average
   const LIMIT_FOR_CARD = TARGET_MATCHES; // 15 rows on card
   replayCache.set(loadingMsg.id, []);
   matchIdCache.set(loadingMsg.id, []);
@@ -72,7 +73,29 @@ export async function handleScrimsCommand(message, args) {
       const mapName = meta.mapName || 'Unknown';
       const replayId = meta.replayId || overviewMeta.replayId || '';
       const kd = deaths > 0 ? (kills / deaths).toFixed(2) : kills.toFixed(2);
-      const heroes = overviewMeta.heroes?.slice(0, 3).map(h => h.name).join(', ') || '';
+      // Compute simple per-hero efficiency snapshots using available per-match stats (approximation)
+      const heroNames = overviewMeta.heroes?.slice(0, 3).map(h => h.name) || [];
+      // Build a minimal hero stat object resembling the career aggregation for computeEffectiveness
+      const heroEffs = heroNames.map(() => computeEffectiveness({
+        MatchesPlayed: 1,
+        MatchesWon: resultRaw === 'win' ? 1 : 0,
+        Kills: kills,
+        Deaths: deaths,
+        Assists: stats.assists?.value || 0,
+        TotalHeroDamage: damage,
+        TotalHeroHeal: stats.totalHeroHeal?.value || 0,
+        TotalHeroDamagePerMinute: stats.totalHeroDamagePerMinute?.value || 0,
+        TotalHeroHealPerMinute: stats.totalHeroHealPerMinute?.value || 0,
+        MainAttacks: stats.mainAttacks?.value || 0,
+        MainAttackHits: stats.mainAttackHits?.value || 0,
+        HeadKills: stats.headKills?.value || 0,
+        SoloKills: stats.soloKills?.value || 0,
+        SurvivalKills: stats.maxSurvivalKills?.value || stats.survivalKills?.value || 0,
+        TotalDamageTaken: stats.totalDamageTaken?.value || 0
+      }));
+      // Annotate hero names with (eff)
+      const heroes = heroNames.map((n, i) => `${n} (${Math.round(heroEffs[i] || 0)})`).join(', ');
+      if (heroEffs.length) perMatchEffs.push(...heroEffs);
       if (replayId) {
         replayCache.get(loadingMsg.id).push(replayId);
         matchIdCache.get(loadingMsg.id).push(matchId || '');
@@ -101,7 +124,7 @@ export async function handleScrimsCommand(message, args) {
 
     // Attempt canvas render first
     try {
-      const png = renderScrimsCard({ username, season: PUBLIC_SEASON, rows: cardRows });
+  const png = renderScrimsCard({ username, season: PUBLIC_SEASON, rows: cardRows });
       const attachmentName = `scrims_${username}.png`;
       const attachment = new AttachmentBuilder(png, { name: attachmentName });
 
@@ -114,14 +137,33 @@ export async function handleScrimsCommand(message, args) {
       const rowsComponents = [];
       for (let i = 0; i < buttons.length; i += 5) rowsComponents.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
       // matchIdCache already populated alongside replayCache above
-      await loadingMsg.edit({ content: '', embeds: [], files: [attachment], components: rowsComponents });
+      // Append overall average efficiency summary with grade
+      let avgEff = 0, grade = '';
+      if (perMatchEffs.length) {
+        avgEff = perMatchEffs.reduce((a, b) => a + b, 0) / perMatchEffs.length;
+        grade = scoreToGrade(avgEff);
+      }
+      const summaryEmbed = (perMatchEffs.length)
+        ? new EmbedBuilder()
+            .setColor(0x4B7BEC)
+            .setDescription(`Average Scrim Efficiency: ${Math.round(avgEff)} (${grade})`)
+        : null;
+      await loadingMsg.edit({ content: '', embeds: summaryEmbed ? [summaryEmbed] : [], files: [attachment], components: rowsComponents });
     } catch (cardErr) {
       console.warn('⚠️ Scrims image render failed, falling back to embed:', cardErr.message);
       const embed = new EmbedBuilder()
         .setTitle(`🎮 Scrim Matches (S${PUBLIC_SEASON}) for ${username}`)
         .setColor(0x4B7BEC)
         .setTimestamp();
-      embed.setDescription(`Matches: ${totalMatches} • Wins: ${wins} • Losses: ${losses} • WinRate: ${winRate}%\nAvg Damage: ${avgDmg} • Avg K/D: ${avgKD}` + '\n\n' + cardRows.map(r => `• ${r.index}. ${r.resultEmoji} ${r.mapName} • ${r.kills}/${r.deaths} (K/D ${r.kd}) • ${formatShortNumber(r.damage)} dmg • ${r.duration}${r.heroes ? ' • ' + r.heroes : ''}${r.replay ? ' • 🔁 ' + r.replay : ''}`).join('\n'))
+      // Compute average efficiency and grade
+      let avgEff = 0, grade = '';
+      if (perMatchEffs.length) {
+        avgEff = perMatchEffs.reduce((a, b) => a + b, 0) / perMatchEffs.length;
+        grade = scoreToGrade(avgEff);
+      }
+      const headerLine = `Matches: ${totalMatches} • Wins: ${wins} • Losses: ${losses} • WinRate: ${winRate}%\nAvg Damage: ${avgDmg} • Avg K/D: ${avgKD}`;
+      const threatLine = perMatchEffs.length ? `\nOverall Scrim Efficiency: ${Math.round(avgEff)} (${grade})` : '';
+      embed.setDescription(headerLine + threatLine + '\n\n' + cardRows.map(r => `• ${r.index}. ${r.resultEmoji} ${r.mapName} • ${r.kills}/${r.deaths} (K/D ${r.kd}) • ${formatShortNumber(r.damage)} dmg • ${r.duration}${r.heroes ? ' • ' + r.heroes : ''}${r.replay ? ' • 🔁 ' + r.replay : ''}`).join('\n'))
         .setFooter({ text: `Showing ${cardRows.length} scrim matches (Unknown mode)` });
       // Build buttons using replayCache
       const replayIds = replayCache.get(loadingMsg.id);

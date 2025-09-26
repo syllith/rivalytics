@@ -34,6 +34,46 @@ export function isCompetitiveMode(obj) {
 }
 
 // * Consolidate hero segment stats into aggregate objects keyed by hero name + role
+// Compute effectiveness score (ported from web app Hero.jsx)
+export function computeEffectiveness(h) {
+  if (!h || (h.MatchesPlayed ?? 0) <= 0) return 0;
+  const winPct = (h.MatchesWon || 0) / Math.max(1, h.MatchesPlayed || 0);
+  const kda = ((h.Kills || 0) + (h.Assists || 0)) / Math.max(1, h.Deaths || 0);
+  const dmgPerMatch = (h.TotalHeroDamage || 0) / Math.max(1, h.MatchesPlayed || 0);
+  const healPerMatch = (h.TotalHeroHeal || 0) / Math.max(1, h.MatchesPlayed || 0);
+  const dmgPerMin = h.TotalHeroDamagePerMinute || 0;
+  const healPerMin = h.TotalHeroHealPerMinute || 0;
+  const accuracy = (h.MainAttacks || 0) > 0 ? (h.MainAttackHits || 0) / Math.max(1, h.MainAttacks || 0) : 0;
+  const headPct = (h.Kills || 0) > 0 ? (h.HeadKills || 0) / Math.max(1, h.Kills || 0) : 0;
+  const survKillsPM = (h.SurvivalKills || 0) / Math.max(1, h.MatchesPlayed || 0);
+  const dmgTakenPM = (h.TotalDamageTaken || 0) / Math.max(1, h.MatchesPlayed || 0);
+
+  let eff =
+    winPct * 40 +
+    kda * 20 +
+    (dmgPerMatch / 1000) * 6 +
+    (healPerMatch / 1000) * 4 +
+    (dmgPerMin / 100) * 4 +
+    (healPerMin / 100) * 2 +
+    accuracy * 10 +
+    headPct * 10 +
+    survKillsPM * 5 -
+    (dmgTakenPM / 1000) * 5;
+
+  return Math.max(0, eff);
+}
+
+// Convert a numeric efficiency score into a letter grade (100~F, 300~A), with +/-
+export function scoreToGrade(score) {
+  const grades = ['F','D-','D','D+','C-','C','C+','B-','B','B+','A-','A','A+'];
+  if (score >= 650) return 'A+'; // elite tier
+  if (score >= 400) return 'A';  // adjusted A threshold
+  // Map 100..400 -> F..A linearly (12 buckets excluding A+)
+  const t = Math.max(0, Math.min(1, (score - 100) / 300)); // 100->0, 400->1
+  const idx = Math.min(11, Math.round(t * 11)); // 0..11 => F..A
+  return grades[idx];
+}
+
 export function getHeroesFromResponse(resp) {
   if (!resp || !resp.data) return [];
   const heroMap = {};
@@ -56,12 +96,17 @@ export function getHeroesFromResponse(resp) {
         TotalHeroHeal: 0,
         TotalHeroDamagePerMinute: 0,
         TotalHeroHealPerMinute: 0,
-        DamageTakenPerMatch: 0,
-        SurvivalKillsPerMatch: 0
+        MainAttacks: 0,
+        MainAttackHits: 0,
+        HeadKills: 0,
+        SoloKills: 0,
+        SurvivalKills: 0,
+        TotalDamageTaken: 0,
+        Effectiveness: 0
       };
     }
     const cur = heroMap[key];
-    cur.TimePlayed += (s.timePlayed?.value || 0) / 3600; // convert seconds to hours
+    cur.TimePlayed += (s.timePlayed?.value || 0) / 3600; // seconds -> hours
     cur.MatchesPlayed += s.matchesPlayed?.value || 0;
     cur.MatchesWon += s.matchesWon?.value || 0;
     cur.Kills += s.kills?.value || 0;
@@ -71,10 +116,15 @@ export function getHeroesFromResponse(resp) {
     cur.TotalHeroHeal += s.totalHeroHeal?.value || 0;
     cur.TotalHeroDamagePerMinute += s.totalHeroDamagePerMinute?.value || 0;
     cur.TotalHeroHealPerMinute += s.totalHeroHealPerMinute?.value || 0;
-    cur.DamageTakenPerMatch += s.damageTakenPerMatch?.value || 0;
-    cur.SurvivalKillsPerMatch += s.survivalKillsPerMatch?.value || 0;
+    cur.MainAttacks += s.mainAttacks?.value || 0;
+    cur.MainAttackHits += s.mainAttackHits?.value || 0;
+    cur.HeadKills += s.headKills?.value || 0;
+    cur.SoloKills += s.soloKills?.value || 0;
+    cur.SurvivalKills += s.survivalKills?.value || 0;
+    cur.TotalDamageTaken += s.totalDamageTaken?.value || 0;
   });
-  return Object.values(heroMap);
+  // compute effectiveness for each
+  return Object.values(heroMap).map(h => ({ ...h, Effectiveness: computeEffectiveness(h) }));
 }
 
 // * Human-friendly compact number formatting (k/M with decimals)

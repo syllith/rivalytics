@@ -1,4 +1,5 @@
 import { createCanvas, roundRect, drawText, formatShortNumber, FONT_STACK } from './canvasCommon.js';
+import { scoreToGrade } from '../utils.js';
 
 // Primary hero statistics card (competitive / ranked context)
 export function renderHeroesCard({ username, season, heroes }) {
@@ -28,7 +29,8 @@ export function renderHeroesCard({ username, season, heroes }) {
       idx: `${idx + 1}.`, hero: h.Name, role: h.Role || '-', time: h.TimePlayed.toFixed(1),
       matches: formatShortNumber(h.MatchesPlayed), win: winRate.toFixed(1) + '%', kda: kda.toFixed(2),
       dmg: formatShortNumber(h.TotalHeroDamage), heal: formatShortNumber(h.TotalHeroHeal),
-      avgDmg: formatAvg(avgDmg), avgHeal: formatAvg(avgHeal)
+      avgDmg: formatAvg(avgDmg), avgHeal: formatAvg(avgHeal),
+      eff: (() => { const e = Math.round(h.Effectiveness || 0); return `${e} (${scoreToGrade(e)})`; })()
     };
   });
 
@@ -44,7 +46,7 @@ export function renderHeroesCard({ username, season, heroes }) {
     { key: 'idx', label: '#', font: rowFont }, { key: 'hero', label: 'Hero', font: rowFont }, { key: 'role', label: 'Role', font: rowFont },
     { key: 'time', label: 'Time (h)', font: rowFont }, { key: 'matches', label: 'Matches', font: rowFont }, { key: 'win', label: 'Win %', font: rowFont },
     { key: 'kda', label: 'KDA', font: rowFont }, { key: 'dmg', label: 'Damage', font: rowFont }, { key: 'avgDmg', label: 'Avg Dmg', font: rowFont },
-    { key: 'heal', label: 'Heal', font: rowFont }, { key: 'avgHeal', label: 'Avg Heal', font: rowFont }
+    { key: 'heal', label: 'Heal', font: rowFont }, { key: 'avgHeal', label: 'Avg Heal', font: rowFont }, { key: 'eff', label: 'Eff', font: rowFont }
   ];
   columns.forEach(col => { const headerW = measure(headerFont, col.label); const contentW = Math.max(...rows.map(r => measure(col.font, r[col.key] || ''))); col.width = Math.max(headerW, contentW) + 8; });
   const heroCol = columns.find(c => c.key === 'hero'); if (heroCol) heroCol.width = Math.max(heroCol.width, 160); // ensure hero names remain legible

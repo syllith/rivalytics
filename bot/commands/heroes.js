@@ -1,5 +1,5 @@
 import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { getHeroesFromResponse, formatShortNumber } from '../utils.js';
+import { getHeroesFromResponse, formatShortNumber, scoreToGrade } from '../utils.js';
 import { scrapeJson } from '../browser.js';
 import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 import { renderHeroesCard } from '../renderers/heroesCard.js';
@@ -55,6 +55,8 @@ export async function handleHeroesCommand(message, args) {
         const kda = hero.Deaths ? (hero.Kills + hero.Assists) / hero.Deaths : (hero.Kills + hero.Assists);
         const avgDmg = hero.MatchesPlayed ? hero.TotalHeroDamage / hero.MatchesPlayed : 0;
         const avgHeal = hero.MatchesPlayed ? hero.TotalHeroHeal / hero.MatchesPlayed : 0;
+  const eff = hero.Effectiveness ?? 0;
+  const grade = scoreToGrade(eff);
         const roleEmoji = hero.Role === 'Vanguard'
           ? '🛡️'
           : hero.Role === 'Duelist'
@@ -63,7 +65,7 @@ export async function handleHeroesCommand(message, args) {
               ? '💚'
               : '🦸';
         description += `${roleEmoji} **${index + 1}. ${hero.Name}** (${hero.Role})\n` +
-          `⏱️ ${hero.TimePlayed.toFixed(1)}h | 🎮 ${formatShortNumber(hero.MatchesPlayed)} matches\n` +
+          `⏱️ ${hero.TimePlayed.toFixed(1)}h | 🎮 ${formatShortNumber(hero.MatchesPlayed)} matches | 📊 Eff: ${eff.toFixed(0)} (${grade})\n` +
           `📈 ${winRate.toFixed(1)}% WR | 💀 ${formatShortNumber(hero.Kills)}/${formatShortNumber(hero.Deaths)} (${kda.toFixed(2)} KDA)\n` +
           `💥 ${formatShortNumber(hero.TotalHeroDamage)} dmg | 💚 ${formatShortNumber(hero.TotalHeroHeal)} heal\n\n`;
       });
