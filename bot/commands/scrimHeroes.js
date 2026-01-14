@@ -4,7 +4,10 @@ import { getHeroesFromResponse, formatShortNumber } from '../utils.js';
 import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 import { renderScrimHeroesCard } from '../renderers/scrimHeroesCard.js';
 
-// * Handle the !scrimheroes command: list season hero stats for heroes actually used in scrim (Unknown mode) matches
+// Scrim mode names - tracker.gg now distinguishes between tournament customs ("Unknown") and regular customs ("Custom Game")
+const SCRIM_MODE_NAMES = ['unknown', 'custom game'];
+
+// * Handle the !scrimheroes command: list season hero stats for heroes actually used in scrim/custom matches
 export async function handleScrimHeroesCommand(message, args) {
   //. Require username
   if (args.length < 2) return message.reply('❌ Please provide a username. Usage: `!scrimheroes <username>`');
@@ -16,22 +19,25 @@ export async function handleScrimHeroesCommand(message, args) {
   const loadingMsg = await message.reply(`🔍 Gathering scrim heroes for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
-    // 1) Paginate recent matches to discover which heroes appear in Unknown mode (scrims)
+    // 1) Paginate recent matches to discover which heroes appear in scrim/custom matches
     const MAX_SOURCE_PAGES = 10; // allow deeper scan for older scrims
     let nextCursor = null;
     let scrimMatches = [];
     for (let page = 0; page < MAX_SOURCE_PAGES; page++) {
       const cursorParam = nextCursor ? `&next=${encodeURIComponent(nextCursor)}` : '';
-      const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}${cursorParam}`;
+      const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${CURRENT_SEASON}${cursorParam}`;
       if (VERBOSE) console.log(`📡 (scrimHeroes) Fetching: ${matchesUrl}`);
       const matchesResp = await scrapeJson(matchesUrl);
       if (matchesResp.errors?.length) return loadingMsg.edit(`❌ ${matchesResp.errors[0].message || 'User not found'}`);
-      const batch = (matchesResp.data?.matches || []).filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'unknown');
+      const batch = (matchesResp.data?.matches || []).filter(m => {
+        const modeName = (m.metadata?.modeName || '').trim().toLowerCase();
+        return SCRIM_MODE_NAMES.includes(modeName);
+      });
       if (batch.length) scrimMatches = scrimMatches.concat(batch);
       nextCursor = matchesResp.data?.metadata?.next || null;
       if (!nextCursor || scrimMatches.length >= 25) break; // enough sample or no more pages
     }
-    if (!scrimMatches.length) return loadingMsg.edit(`❌ No scrim (Unknown mode) matches found for this user in Season ${PUBLIC_SEASON} after scanning up to ${MAX_SOURCE_PAGES} pages.`);
+    if (!scrimMatches.length) return loadingMsg.edit(`❌ No scrim/custom matches found for this user in Season ${PUBLIC_SEASON} after scanning up to ${MAX_SOURCE_PAGES} pages.`);
 
     // Collect unique hero names used in scrim matches (from overview metadata.heroes)
     const scrimHeroSet = new Set();
@@ -43,7 +49,7 @@ export async function handleScrimHeroesCommand(message, args) {
     if (!scrimHeroSet.size) return loadingMsg.edit('❌ No heroes recorded in scrim matches.'); // ! No hero metadata available
 
     // 2) Fetch season-wide career hero stats (will filter to just scrim heroes)
-    const heroesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=${CURRENT_SEASON}`;
+    const heroesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/segments/career?mode=all&season=${CURRENT_SEASON}`;
     let seasonHeroes = [];
     try {
       const heroesResp = await scrapeJson(heroesUrl);

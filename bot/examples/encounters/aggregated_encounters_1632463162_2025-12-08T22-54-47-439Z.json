@@ -1,0 +1,2931 @@
+{
+  "data": {
+    "offset": "-05:00:00",
+    "heatmaps": null,
+    "teammates": [
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "yellow >_<",
+          "platformUserIdentifier": "yellow >_<",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31032203.jpg?v=1736499883",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-06T09:57:19+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 38,
+            "displayValue": "38",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.23,
+            "displayValue": "2.23",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 282,
+            "displayValue": "282",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.59,
+            "displayValue": "2.59",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 53.5,
+            "displayValue": "53.5%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5166,
+            "displayValue": "5,166",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "alura",
+          "platformUserIdentifier": "alura",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31024206.jpg?v=1760095248",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T00:44:11+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 15,
+            "displayValue": "15",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.98,
+            "displayValue": "2.98",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 250,
+            "displayValue": "250",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.01,
+            "displayValue": "3.01",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.4,
+            "displayValue": "58.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5146,
+            "displayValue": "5,146",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Oasis.-",
+          "platformUserIdentifier": "Oasis.-",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31047001.jpg?v=1735042840",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-21T04:58:45+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 10,
+            "displayValue": "10",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.5,
+            "displayValue": "2.50",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 70,
+            "displayValue": "70.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 97,
+            "displayValue": "97",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.78,
+            "displayValue": "2.78",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 62.9,
+            "displayValue": "62.9%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5198,
+            "displayValue": "5,198",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "ƒraud",
+          "platformUserIdentifier": "ƒraud",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31024206.jpg?v=1760095248",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-26T04:27:40+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 9,
+            "displayValue": "9",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.2,
+            "displayValue": "4.20",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 66.7,
+            "displayValue": "66.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 93,
+            "displayValue": "93",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.4,
+            "displayValue": "3.40",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 62.4,
+            "displayValue": "62.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5156,
+            "displayValue": "5,156",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "JohnPorky1996",
+          "platformUserIdentifier": "JohnPorky1996",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31047206.jpg?v=1764253620",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-02T11:30:08+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 7,
+            "displayValue": "7",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.97,
+            "displayValue": "3.97",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 71.4,
+            "displayValue": "71.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 161,
+            "displayValue": "161",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.7,
+            "displayValue": "3.70",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 64,
+            "displayValue": "64.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5161,
+            "displayValue": "5,161",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "forkydog",
+          "platformUserIdentifier": "forkydog",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-21T04:27:59+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 7,
+            "displayValue": "7",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.96,
+            "displayValue": "3.96",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 71.4,
+            "displayValue": "71.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 180,
+            "displayValue": "180",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.02,
+            "displayValue": "3.02",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 55,
+            "displayValue": "55.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5067,
+            "displayValue": "5,067",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "ƒraud ㅇᆺㅇ",
+          "platformUserIdentifier": "ƒraud ㅇᆺㅇ",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T12:39:20+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 7,
+            "displayValue": "7",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.04,
+            "displayValue": "2.04",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 28.6,
+            "displayValue": "28.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 90,
+            "displayValue": "90",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.18,
+            "displayValue": "3.18",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 55.6,
+            "displayValue": "55.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 4993,
+            "displayValue": "4,993",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "аlura",
+          "platformUserIdentifier": "аlura",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31048202.jpg?v=1740144826",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-19T00:43:16+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 6,
+            "displayValue": "6",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.34,
+            "displayValue": "2.34",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 33.3,
+            "displayValue": "33.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 135,
+            "displayValue": "135",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.25,
+            "displayValue": "3.25",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 57,
+            "displayValue": "57.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5005,
+            "displayValue": "5,005",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Valentina Eve",
+          "platformUserIdentifier": "Valentina Eve",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31050202.jpg?v=1740144827",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T10:20:27+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.45,
+            "displayValue": "2.45",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 20,
+            "displayValue": "20.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 136,
+            "displayValue": "136",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.36,
+            "displayValue": "3.36",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.1,
+            "displayValue": "58.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5051,
+            "displayValue": "5,051",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "SJP",
+          "platformUserIdentifier": "SJP",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T11:28:52+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.79,
+            "displayValue": "2.79",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 210,
+            "displayValue": "210",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.29,
+            "displayValue": "3.29",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.6,
+            "displayValue": "58.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/7.png?v=1734906804",
+              "tierName": "Eternity",
+              "tierShortName": "E",
+              "color": "#EB46FF",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5110,
+            "displayValue": "5,110",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Dylan_FPS",
+          "platformUserIdentifier": "Dylan_FPS",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31056001.jpg?v=1757672148",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-30T08:42:58+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.67,
+            "displayValue": "2.67",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 385,
+            "displayValue": "385",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.24,
+            "displayValue": "3.24",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50.4,
+            "displayValue": "50.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5039,
+            "displayValue": "5,039",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "CR Jmac",
+          "platformUserIdentifier": "CR Jmac",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000001.jpg?v=1735042758",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-17T04:21:25+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.78,
+            "displayValue": "4.78",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 42,
+            "displayValue": "42",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.13,
+            "displayValue": "4.13",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 57.1,
+            "displayValue": "57.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial II",
+              "tierShortName": "C2",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 4902,
+            "displayValue": "4,902",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "HoldOnTiIIMay",
+          "platformUserIdentifier": "HoldOnTiIIMay",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-08T03:30:20+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.22,
+            "displayValue": "4.22",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 254,
+            "displayValue": "254",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.5,
+            "displayValue": "2.50",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 53.1,
+            "displayValue": "53.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5033,
+            "displayValue": "5,033",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Crims0nne",
+          "platformUserIdentifier": "Crims0nne",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-18T02:52:21+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.69,
+            "displayValue": "2.69",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 245,
+            "displayValue": "245",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.78,
+            "displayValue": "2.78",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 51.8,
+            "displayValue": "51.8%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5001,
+            "displayValue": "5,001",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "demonhunter-_-",
+          "platformUserIdentifier": "demonhunter-_-",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31047206.jpg?v=1764253620",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-08T04:38:10+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.79,
+            "displayValue": "2.79",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 245,
+            "displayValue": "245",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.32,
+            "displayValue": "3.32",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 56.7,
+            "displayValue": "56.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/7.png?v=1734906804",
+              "tierName": "Eternity",
+              "tierShortName": "E",
+              "color": "#EB46FF",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5106,
+            "displayValue": "5,106",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "IDK-IDK-IDK",
+          "platformUserIdentifier": "IDK-IDK-IDK",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31052205.jpg?v=1756050213",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-04T04:03:41+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.22,
+            "displayValue": "3.22",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 117,
+            "displayValue": "117",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.79,
+            "displayValue": "2.79",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 59.8,
+            "displayValue": "59.8%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/7.png?v=1734906804",
+              "tierName": "Eternity",
+              "tierShortName": "E",
+              "color": "#EB46FF",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5100,
+            "displayValue": "5,100",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Smashᅟ",
+          "platformUserIdentifier": "Smashᅟ",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31054201.jpg?v=1754648917",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-01T02:43:45+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.63,
+            "displayValue": "3.63",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 25,
+            "displayValue": "25.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 211,
+            "displayValue": "211",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.21,
+            "displayValue": "4.21",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 56.4,
+            "displayValue": "56.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5193,
+            "displayValue": "5,193",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Kclumzyy",
+          "platformUserIdentifier": "Kclumzyy",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000105.jpg?v=1764253610",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T12:39:20+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.32,
+            "displayValue": "2.32",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 494,
+            "displayValue": "494",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.67,
+            "displayValue": "2.67",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 52.4,
+            "displayValue": "52.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 4818,
+            "displayValue": "4,818",
+            "displayType": "String"
+          }
+        }
+      }
+    ],
+    "enemies": [
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Ruѕһ",
+          "platformUserIdentifier": "Ruѕһ",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31048001.jpg?v=1735042841",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-28T04:17:27+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 10,
+            "displayValue": "10",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.85,
+            "displayValue": "2.85",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 259,
+            "displayValue": "259",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.34,
+            "displayValue": "3.34",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 55.6,
+            "displayValue": "55.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial II",
+              "tierShortName": "C2",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 4953,
+            "displayValue": "4,953",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "alura",
+          "platformUserIdentifier": "alura",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31024206.jpg?v=1760095248",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-04T03:13:05+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 7,
+            "displayValue": "7",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.92,
+            "displayValue": "1.92",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 28.6,
+            "displayValue": "28.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 250,
+            "displayValue": "250",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.01,
+            "displayValue": "3.01",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.4,
+            "displayValue": "58.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5146,
+            "displayValue": "5,146",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "jеllаl",
+          "platformUserIdentifier": "jеllаl",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31042204.jpg?v=1762943321",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T11:28:52+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 7,
+            "displayValue": "7",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.56,
+            "displayValue": "2.56",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 28.6,
+            "displayValue": "28.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 284,
+            "displayValue": "284",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.12,
+            "displayValue": "3.12",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 55.3,
+            "displayValue": "55.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5120,
+            "displayValue": "5,120",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Doomеd",
+          "platformUserIdentifier": "Doomеd",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31048204.jpg?v=1760095249",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-02T11:30:08+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 6,
+            "displayValue": "6",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.21,
+            "displayValue": "3.21",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 33.3,
+            "displayValue": "33.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 234,
+            "displayValue": "234",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.07,
+            "displayValue": "4.07",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.1,
+            "displayValue": "58.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5239,
+            "displayValue": "5,239",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "cutepuppies123",
+          "platformUserIdentifier": "cutepuppies123",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-06T06:33:22+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 6,
+            "displayValue": "6",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.79,
+            "displayValue": "1.79",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 0,
+            "displayValue": "0.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 349,
+            "displayValue": "349",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.21,
+            "displayValue": "3.21",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 53.6,
+            "displayValue": "53.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial II",
+              "tierShortName": "C2",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 4998,
+            "displayValue": "4,998",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "SadLonelyLoser",
+          "platformUserIdentifier": "SadLonelyLoser",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31040001.jpg?v=1736499889",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-30T08:27:41+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 6,
+            "displayValue": "6",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.89,
+            "displayValue": "1.89",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 16.7,
+            "displayValue": "16.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 137,
+            "displayValue": "137",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.2,
+            "displayValue": "4.20",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 59.1,
+            "displayValue": "59.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5154,
+            "displayValue": "5,154",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "snakeCase2",
+          "platformUserIdentifier": "snakeCase2",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31035203.jpg?v=1736499885",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-30T09:01:45+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 6,
+            "displayValue": "6",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.31,
+            "displayValue": "2.31",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 127,
+            "displayValue": "127",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.85,
+            "displayValue": "2.85",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.3,
+            "displayValue": "58.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/7.png?v=1734906804",
+              "tierName": "Eternity",
+              "tierShortName": "E",
+              "color": "#EB46FF",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5110,
+            "displayValue": "5,110",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Yopperton",
+          "platformUserIdentifier": "Yopperton",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000001.jpg?v=1735042758",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-08T03:48:40+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 6,
+            "displayValue": "6",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.36,
+            "displayValue": "2.36",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 214,
+            "displayValue": "214",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.58,
+            "displayValue": "2.58",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 54.2,
+            "displayValue": "54.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5012,
+            "displayValue": "5,012",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "month",
+          "platformUserIdentifier": "month",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31054205.jpg?v=1764253622",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-03T05:43:27+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 6,
+            "displayValue": "6",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.59,
+            "displayValue": "2.59",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 16.7,
+            "displayValue": "16.7%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 158,
+            "displayValue": "158",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.87,
+            "displayValue": "4.87",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 55.1,
+            "displayValue": "55.1%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/7.png?v=1734906804",
+              "tierName": "Eternity",
+              "tierShortName": "E",
+              "color": "#EB46FF",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5103,
+            "displayValue": "5,103",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "LFT Unovvn",
+          "platformUserIdentifier": "LFT Unovvn",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31058001.jpg?v=1764253623",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-19T00:23:46+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.67,
+            "displayValue": "1.67",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.73,
+            "displayValue": "2.73",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 62,
+            "displayValue": "62.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5145,
+            "displayValue": "5,145",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "klikks",
+          "platformUserIdentifier": "klikks",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31031202.jpg?v=1740144814",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T12:21:27+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.96,
+            "displayValue": "3.96",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 177,
+            "displayValue": "177",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.81,
+            "displayValue": "2.81",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 57.6,
+            "displayValue": "57.6%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5014,
+            "displayValue": "5,014",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "tekixd",
+          "platformUserIdentifier": "tekixd",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000093.jpg?v=1764253604",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-29T06:54:16+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.89,
+            "displayValue": "2.89",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 214,
+            "displayValue": "214",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.97,
+            "displayValue": "3.97",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 57.5,
+            "displayValue": "57.5%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5157,
+            "displayValue": "5,157",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "averyomi",
+          "platformUserIdentifier": "averyomi",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31033202.jpg?v=1748606505",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-23T04:24:16+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.81,
+            "displayValue": "3.81",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 115,
+            "displayValue": "115",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.83,
+            "displayValue": "3.83",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 64.3,
+            "displayValue": "64.3%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5270,
+            "displayValue": "5,270",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "еusher",
+          "platformUserIdentifier": "еusher",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T03:44:48+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.17,
+            "displayValue": "4.17",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 100,
+            "displayValue": "100.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 148,
+            "displayValue": "148",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.91,
+            "displayValue": "3.91",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 63.5,
+            "displayValue": "63.5%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5254,
+            "displayValue": "5,254",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "LFT Staestt",
+          "platformUserIdentifier": "LFT Staestt",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31028204.jpg?v=1764253613",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-28T03:13:03+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.89,
+            "displayValue": "2.89",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 168,
+            "displayValue": "168",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.43,
+            "displayValue": "3.43",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 56.5,
+            "displayValue": "56.5%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5076,
+            "displayValue": "5,076",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "bedtime5tory",
+          "platformUserIdentifier": "bedtime5tory",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31024206.jpg?v=1760095248",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-29T11:31:32+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.37,
+            "displayValue": "2.37",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 20,
+            "displayValue": "20.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 158,
+            "displayValue": "158",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.38,
+            "displayValue": "3.38",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60.8,
+            "displayValue": "60.8%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5274,
+            "displayValue": "5,274",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "orocco7ᵗᵗᵛ",
+          "platformUserIdentifier": "orocco7ᵗᵗᵛ",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/30000093.jpg?v=1764253604",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T12:39:20+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.68,
+            "displayValue": "2.68",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 60,
+            "displayValue": "60.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 288,
+            "displayValue": "288",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.05,
+            "displayValue": "3.05",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 54.2,
+            "displayValue": "54.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5040,
+            "displayValue": "5,040",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "аlura",
+          "platformUserIdentifier": "аlura",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31048202.jpg?v=1740144826",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-19T00:23:46+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.17,
+            "displayValue": "3.17",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 40,
+            "displayValue": "40.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 135,
+            "displayValue": "135",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.25,
+            "displayValue": "3.25",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 57,
+            "displayValue": "57.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial I",
+              "tierShortName": "C1",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5005,
+            "displayValue": "5,005",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "stіnkrs",
+          "platformUserIdentifier": "stіnkrs",
+          "avatarUrl": null,
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-30T03:58:28+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 5,
+            "displayValue": "5",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 4.03,
+            "displayValue": "4.03",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 80,
+            "displayValue": "80.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 229,
+            "displayValue": "229",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.03,
+            "displayValue": "3.03",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 59,
+            "displayValue": "59.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5220,
+            "displayValue": "5,220",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "Xantho.",
+          "platformUserIdentifier": "Xantho.",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31052001.jpg?v=1735042842",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-21T00:10:40+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.09,
+            "displayValue": "3.09",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 25,
+            "displayValue": "25.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 250,
+            "displayValue": "250",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.15,
+            "displayValue": "3.15",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 58.4,
+            "displayValue": "58.4%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5205,
+            "displayValue": "5,205",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "sokо",
+          "platformUserIdentifier": "sokо",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31031001.jpg?v=1735042826",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-11-28T01:57:58+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.82,
+            "displayValue": "2.82",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 50,
+            "displayValue": "50.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 158,
+            "displayValue": "158",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 3.55,
+            "displayValue": "3.55",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 59.5,
+            "displayValue": "59.5%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/8.png?v=1734906804",
+              "tierName": "One Above All",
+              "tierShortName": "OAA",
+              "color": "#FF4F4D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 5189,
+            "displayValue": "5,189",
+            "displayType": "String"
+          }
+        }
+      },
+      {
+        "platformInfo": {
+          "platformSlug": "ign",
+          "platformUserId": null,
+          "platformUserHandle": "jephreii",
+          "platformUserIdentifier": "jephreii",
+          "avatarUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/items/nameplates/avatars/31028201.jpg?v=1748606503",
+          "additionalParameters": null
+        },
+        "metadata": {
+          "lastMatchTimestamp": "2025-12-05T12:39:20+00:00"
+        },
+        "stats": {
+          "matchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 4,
+            "displayValue": "4",
+            "displayType": "Number"
+          },
+          "kdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 1.55,
+            "displayValue": "1.55",
+            "displayType": "NumberPrecision2"
+          },
+          "winPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 25,
+            "displayValue": "25.0%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonMatchesPlayed": {
+            "displayName": "Matches Played",
+            "metadata": {},
+            "value": 125,
+            "displayValue": "125",
+            "displayType": "Number"
+          },
+          "seasonKdRatio": {
+            "displayName": "K/D Ratio",
+            "metadata": {},
+            "value": 2.61,
+            "displayValue": "2.61",
+            "displayType": "NumberPrecision2"
+          },
+          "seasonWinPct": {
+            "displayName": "Win%",
+            "metadata": {},
+            "value": 51.2,
+            "displayValue": "51.2%",
+            "displayType": "NumberPercentage"
+          },
+          "seasonRank": {
+            "displayName": "Rank Score",
+            "category": "skillrating",
+            "metadata": {
+              "unit": "RS",
+              "iconUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "tierName": "Celestial III",
+              "tierShortName": "C3",
+              "color": "#FE5A1D",
+              "seasonName": "S5: Love is a Battlefield",
+              "seasonShortName": "S5"
+            },
+            "value": 4854,
+            "displayValue": "4,854",
+            "displayType": "String"
+          }
+        }
+      }
+    ],
+    "parties": null
+  }
+}

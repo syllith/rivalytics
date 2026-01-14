@@ -1,0 +1,1036 @@
+{
+  "data": {
+    "history": {
+      "metadata": {
+        "key": "tier",
+        "name": "rating",
+        "description": "rank"
+      },
+      "data": [
+        [
+          "2025-12-08T04:38:10+00:00",
+          {
+            "metadata": {
+              "name": "Eternity",
+              "shortName": "E",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/7.png?v=1734906804",
+              "color": "#EB46FF"
+            },
+            "value": [
+              "Eternity",
+              5114
+            ],
+            "displayValue": "Eternity: 5,114.97 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-08T04:11:58+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5097
+            ],
+            "displayValue": "Celestial I: 5,097.35 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-08T03:48:40+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5077
+            ],
+            "displayValue": "Celestial I: 5,077.87 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-08T03:30:20+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5058
+            ],
+            "displayValue": "Celestial I: 5,058.51 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-08T03:11:52+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5080
+            ],
+            "displayValue": "Celestial I: 5,080.80 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-08T02:52:41+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5060
+            ],
+            "displayValue": "Celestial I: 5,060.37 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-08T02:32:18+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5039
+            ],
+            "displayValue": "Celestial I: 5,039.76 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-07T03:42:47+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5020
+            ],
+            "displayValue": "Celestial I: 5,020.64 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-07T03:23:37+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5042
+            ],
+            "displayValue": "Celestial I: 5,042.97 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-07T03:11:06+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5023
+            ],
+            "displayValue": "Celestial I: 5,023.44 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-07T02:47:25+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5003
+            ],
+            "displayValue": "Celestial I: 5,003.67 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-06T09:57:19+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4982
+            ],
+            "displayValue": "Celestial I: 4,982.70 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-06T06:33:22+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5000
+            ],
+            "displayValue": "Celestial I: 5,000.73 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-06T06:01:25+00:00",
+          {
+            "metadata": {
+              "name": "Celestial II",
+              "shortName": "C2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial II",
+              4978
+            ],
+            "displayValue": "Celestial II: 4,978.93 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-06T05:45:22+00:00",
+          {
+            "metadata": {
+              "name": "Celestial II",
+              "shortName": "C2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial II",
+              4961
+            ],
+            "displayValue": "Celestial II: 4,961.02 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-06T05:29:10+00:00",
+          {
+            "metadata": {
+              "name": "Celestial II",
+              "shortName": "C2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial II",
+              4940
+            ],
+            "displayValue": "Celestial II: 4,940.38 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-06T05:09:09+00:00",
+          {
+            "metadata": {
+              "name": "Celestial II",
+              "shortName": "C2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial II",
+              4922
+            ],
+            "displayValue": "Celestial II: 4,922.08 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T12:39:20+00:00",
+          {
+            "metadata": {
+              "name": "Celestial II",
+              "shortName": "C2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial II",
+              4940
+            ],
+            "displayValue": "Celestial II: 4,940.86 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T12:21:27+00:00",
+          {
+            "metadata": {
+              "name": "Celestial II",
+              "shortName": "C2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial II",
+              4961
+            ],
+            "displayValue": "Celestial II: 4,961.41 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T12:00:37+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4982
+            ],
+            "displayValue": "Celestial I: 4,982.74 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T11:28:52+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5003
+            ],
+            "displayValue": "Celestial I: 5,003.91 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T11:13:14+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4984
+            ],
+            "displayValue": "Celestial I: 4,984.67 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T10:47:41+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5007
+            ],
+            "displayValue": "Celestial I: 5,007.60 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T10:20:27+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5030
+            ],
+            "displayValue": "Celestial I: 5,030.10 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T09:59:08+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5009
+            ],
+            "displayValue": "Celestial I: 5,009.72 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T09:35:43+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5030
+            ],
+            "displayValue": "Celestial I: 5,030.60 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T07:41:27+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5012
+            ],
+            "displayValue": "Celestial I: 5,012.84 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T07:19:15+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5034
+            ],
+            "displayValue": "Celestial I: 5,034.74 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T07:05:01+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5016
+            ],
+            "displayValue": "Celestial I: 5,016.01 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T03:44:48+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5036
+            ],
+            "displayValue": "Celestial I: 5,036.74 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T03:25:45+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5061
+            ],
+            "displayValue": "Celestial I: 5,061.17 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T00:44:11+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5081
+            ],
+            "displayValue": "Celestial I: 5,081.96 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-05T00:17:59+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5061
+            ],
+            "displayValue": "Celestial I: 5,061.70 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T23:52:41+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5044
+            ],
+            "displayValue": "Celestial I: 5,044.45 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T22:44:41+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5024
+            ],
+            "displayValue": "Celestial I: 5,024.57 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T22:07:34+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5005
+            ],
+            "displayValue": "Celestial I: 5,005.04 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T10:41:33+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4987
+            ],
+            "displayValue": "Celestial I: 4,987.35 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T10:09:34+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5006
+            ],
+            "displayValue": "Celestial I: 5,006.92 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T09:44:45+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5026
+            ],
+            "displayValue": "Celestial I: 5,026.90 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T09:32:06+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5007
+            ],
+            "displayValue": "Celestial I: 5,007.92 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T04:03:41+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5033
+            ],
+            "displayValue": "Celestial I: 5,033.14 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T03:34:21+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5051
+            ],
+            "displayValue": "Celestial I: 5,051.85 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T03:13:05+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5031
+            ],
+            "displayValue": "Celestial I: 5,031.20 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-04T02:47:05+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5010
+            ],
+            "displayValue": "Celestial I: 5,010.85 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-03T05:43:27+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5032
+            ],
+            "displayValue": "Celestial I: 5,032.69 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-02T11:30:08+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5053
+            ],
+            "displayValue": "Celestial I: 5,053.42 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-02T11:11:59+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5035
+            ],
+            "displayValue": "Celestial I: 5,035.99 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-02T10:53:24+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5016
+            ],
+            "displayValue": "Celestial I: 5,016.48 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-02T10:32:18+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4998
+            ],
+            "displayValue": "Celestial I: 4,998.49 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-02T10:15:42+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5017
+            ],
+            "displayValue": "Celestial I: 5,017.75 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-02T09:48:11+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5000
+            ],
+            "displayValue": "Celestial I: 5,000.43 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-01T02:43:45+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4981
+            ],
+            "displayValue": "Celestial I: 4,981.69 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-01T02:26:07+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4998
+            ],
+            "displayValue": "Celestial I: 4,998.62 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-01T01:54:09+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5017
+            ],
+            "displayValue": "Celestial I: 5,017.42 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-12-01T01:31:22+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              4999
+            ],
+            "displayValue": "Celestial I: 4,999.77 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-11-30T09:38:30+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5017
+            ],
+            "displayValue": "Celestial I: 5,017.54 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-11-30T09:01:45+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5042
+            ],
+            "displayValue": "Celestial I: 5,042.11 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-11-30T08:42:58+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5021
+            ],
+            "displayValue": "Celestial I: 5,021.07 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-11-30T08:27:41+00:00",
+          {
+            "metadata": {
+              "name": "Celestial I",
+              "shortName": "C1",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial I",
+              5002
+            ],
+            "displayValue": "Celestial I: 5,002.46 SR",
+            "displayType": "Array"
+          }
+        ],
+        [
+          "2025-11-30T08:15:34+00:00",
+          {
+            "metadata": {
+              "name": "Celestial II",
+              "shortName": "C2",
+              "imageUrl": "https://trackercdn.com/cdn/tracker.gg/marvel-rivals/images/ranks/celestial.png?v=1734906804",
+              "color": "#FE5A1D"
+            },
+            "value": [
+              "Celestial II",
+              4981
+            ],
+            "displayValue": "Celestial II: 4,981.94 SR",
+            "displayType": "Array"
+          }
+        ]
+      ]
+    },
+    "leaderboard": null,
+    "expiryDate": "2025-12-08T22:57:50.4104924+00:00",
+    "bestMatches": null
+  }
+}

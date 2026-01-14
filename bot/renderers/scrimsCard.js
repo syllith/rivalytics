@@ -1,15 +1,24 @@
 import { createCanvas, roundRect, drawText, formatShortNumber, FONT_STACK } from './canvasCommon.js';
 
 // Scrim match summary card (non-ranked / practice context)
-export function renderScrimsCard({ username, season, rows }) {
-  //. Cap rows to 15 for readability & consistent card height
-  const MAX_ROWS = Math.min(rows.length, 15);
+// Supports pagination: page parameter (0-indexed), ROWS_PER_PAGE=20, max 100 total
+// 20 per page to match Discord's button limit (5 rows max, 1 for nav = 4 rows × 5 buttons = 20)
+export const SCRIMS_ROWS_PER_PAGE = 20;
+export const SCRIMS_MAX_TOTAL = 100;
+
+export function renderScrimsCard({ username, season, rows, page = 0, totalRows = null }) {
+  // Support pagination: each page shows up to 25 rows
+  const totalAvailable = totalRows ?? rows.length;
+  const totalPages = Math.ceil(Math.min(totalAvailable, SCRIMS_MAX_TOTAL) / SCRIMS_ROWS_PER_PAGE);
+  const startIdx = page * SCRIMS_ROWS_PER_PAGE;
+  const pageRows = rows.slice(startIdx, startIdx + SCRIMS_ROWS_PER_PAGE);
+  const MAX_ROWS = pageRows.length;
   const FONT_TITLE = 48, FONT_USER = 30, FONT_HEADER = 20, FONT_ROW = 20, FONT_SMALL = 16;
   const OUTER_MARGIN = 40, ROW_H = 48, TABLE_TOP_OFFSET = 130, MIN_GAP = 28, BASE_WIDTH = 1500, MAX_WIDTH = 1900;
 
-  // Normalize input rows into render-friendly shape
-  const processed = rows.slice(0, MAX_ROWS).map(r => ({
-    idx: `${r.index}.`,
+  // Normalize input rows into render-friendly shape (with adjusted index for current page)
+  const processed = pageRows.map((r, i) => ({
+    idx: `${startIdx + i + 1}.`,
     // Store semantic outcome instead of raw emoji so we can custom-render if emoji fonts are missing
     outcome: r.resultEmoji === '🟢' ? 'win' : r.resultEmoji === '🔴' ? 'loss' : 'unknown',
     map: r.mapName || 'Unknown',
@@ -63,10 +72,11 @@ export function renderScrimsCard({ username, season, rows }) {
   // Background gradient (cooler palette for scrims)
   const grad = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT); grad.addColorStop(0, '#101726'); grad.addColorStop(1, '#18263A'); ctx.fillStyle = grad; ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-  // Title + meta header
-  drawText(ctx, `Scrim Matches (S${season})`, OUTER_MARGIN, 56, { font: `600 ${FONT_TITLE}px ${FONT_STACK}` });
+  // Title + meta header (show page info if paginated)
+  const pageLabel = totalPages > 1 ? ` (Page ${page + 1}/${totalPages})` : '';
+  drawText(ctx, `Scrim Matches (S${season})${pageLabel}`, OUTER_MARGIN, 56, { font: `600 ${FONT_TITLE}px ${FONT_STACK}` });
   drawText(ctx, username, WIDTH - OUTER_MARGIN, 56, { font: `300 ${FONT_USER}px ${FONT_STACK}`, align: 'right', color: '#AAB4CF' });
-  drawText(ctx, `Total Matches: ${rows.length} • Generated ${new Date().toLocaleDateString()}`, OUTER_MARGIN, 100, { font: `400 ${FONT_SMALL}px ${FONT_STACK}`, color: '#D1DAE8' });
+  drawText(ctx, `Total Matches: ${totalAvailable} • Page ${page + 1} of ${totalPages} • Generated ${new Date().toLocaleDateString()}`, OUTER_MARGIN, 100, { font: `400 ${FONT_SMALL}px ${FONT_STACK}`, color: '#D1DAE8' });
 
   // Table container
   const tableX = OUTER_MARGIN, tableY = TABLE_TOP_OFFSET, tableW = WIDTH - OUTER_MARGIN * 2, tableH = ROW_H * (processed.length + 1) + 36; ctx.fillStyle = '#141C2A'; roundRect(ctx, tableX, tableY, tableW, tableH, 18); ctx.fill();
@@ -112,6 +122,8 @@ export function renderScrimsCard({ username, season, rows }) {
   });
 
   // Footer meta
-  drawText(ctx, `Rows: ${processed.length}/${rows.length}`, OUTER_MARGIN, HEIGHT - 28, { font: `300 ${FONT_SMALL}px ${FONT_STACK}`, color: '#AAB4CF' });
+  const rowRangeStart = startIdx + 1;
+  const rowRangeEnd = startIdx + processed.length;
+  drawText(ctx, `Showing ${rowRangeStart}-${rowRangeEnd} of ${totalAvailable} matches`, OUTER_MARGIN, HEIGHT - 28, { font: `300 ${FONT_SMALL}px ${FONT_STACK}`, color: '#AAB4CF' });
   return canvas.toBuffer('image/png');
 }

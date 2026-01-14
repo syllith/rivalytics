@@ -18,8 +18,8 @@ export async function handleEncountersCommand(message, args) {
   const loadingMsg = await message.reply(`🔍 Gathering recent encounters for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
-    // * Aggregated endpoint returns teammates / enemies arrays and per‑relation stats
-    const encountersUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/aggregated?localOffset=300&filter=encounters&season=${CURRENT_SEASON}`;
+    // * Aggregated endpoint returns teammates / enemies arrays and per‐relation stats
+    const encountersUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/aggregated?localOffset=300&filter=encounters&season=${CURRENT_SEASON}`;
     if (VERBOSE) console.log(`📡 Fetching aggregated encounters: ${encountersUrl}`);
 
     const resp = await fetchJsonDirect(encountersUrl);

@@ -39,10 +39,10 @@ export const commandMeta = [
     triggers: ['!scrims'],
     handler: 'handleScrimsCommand',
     title: '🎮 Scrims',
-    usage: '!scrims <user>',
+    usage: '!scrims <user> [count]',
     descriptionLines: [
   `Lists Season ${PUBLIC_SEASON} custom/scrim games for a user.`,
-      'Shows result, map, K/D, damage, and summary stats.'
+      'Shows result, map, K/D, damage, and summary stats. Optionally pass a count to return the last N scrim matches (max 100).'
     ]
   },
   {

@@ -16,7 +16,7 @@ export async function handleTournCommand(message, args) {
 
   try {
     // Fetch matches and filter by Tournament mode
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`;
+    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${CURRENT_SEASON}`;
     if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season ${CURRENT_SEASON}) from: ${url}`);
     const data = await scrapeJson(url);
     if (data.errors?.length) return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`); // ! API/user error

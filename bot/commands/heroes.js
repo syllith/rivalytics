@@ -16,8 +16,8 @@ export async function handleHeroesCommand(message, args) {
   const loadingMsg = await message.reply(`🔍 Looking up heroes for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
-    // Career segments (season aware). Currently season hard‑coded (mirrors original logic)
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/segments/career?mode=all&season=${CURRENT_SEASON}`;
+    // Career segments (season aware). Currently season hard‐coded (mirrors original logic)
+    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/segments/career?mode=all&season=${CURRENT_SEASON}`;
     if (VERBOSE) console.log(`📡 Fetching data from: ${url}`);
 
     const data = await scrapeJson(url);

@@ -17,7 +17,7 @@ export async function handleMatchesCommand(message, args) {
 
     try {
         // =============== Ranked Overview Fetch ===============
-        const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${username}/stats/overview/ranked?season=${CURRENT_SEASON}`;
+        const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/stats/overview/ranked?season=${CURRENT_SEASON}`;
         if (VERBOSE) console.log(`📡 Fetching ranked data (via !matches) from: ${url}`);
         const data = await scrapeJson(url);
         if (data.errors?.length) return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`); // ! API provided error
@@ -82,7 +82,7 @@ export async function handleMatchesCommand(message, args) {
         let recentMatchLines = [];
         let recentMatchObjs = [];
         try {
-            const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}`;
+            const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${CURRENT_SEASON}`;
             if (VERBOSE) console.log(`📡 Fetching recent matches for merge: ${matchesUrl}`);
             const matchResp = await scrapeJson(matchesUrl);
             const allMatches = matchResp.data?.matches || [];

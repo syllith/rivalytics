@@ -1,17 +1,20 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } from 'discord.js';
 import { scrapeJson } from '../browser.js';
 import { formatShortNumber, computeEffectiveness, scoreToGrade } from '../utils.js';
-import { renderScrimsCard } from '../renderers/scrimsCard.js';
+import { renderScrimsCard, SCRIMS_ROWS_PER_PAGE, SCRIMS_MAX_TOTAL } from '../renderers/scrimsCard.js';
 import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 
-// NOTE: Pagination removed per new requirements. We now aggregate all scrim (Unknown mode) matches
-// across a limited number of backend pages and render them in a single embed similar to !matches.
-// We also provide numbered buttons (1..n) that allow a user to copy replay IDs ephemerally.
+// NOTE: Supports up to 100 scrim matches with pagination (20 per page, 5 pages max).
+// 20 per page to match Discord's button limit (5 rows max, 1 for nav = 4 rows × 5 buttons = 20).
+// Navigation buttons allow paging through results, and numbered buttons show replay IDs.
+
+// Scrim mode names - tracker.gg now distinguishes between tournament customs ("Unknown") and regular customs ("Custom Game")
+const SCRIM_MODE_NAMES = ['unknown', 'custom game'];
 
 // * Fetch a single page of matches (optionally with next cursor)
 async function fetchMatchPage(username, nextCursor = null) {
   const cursorParam = nextCursor ? `&next=${encodeURIComponent(nextCursor)}` : '';
-  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${username}?season=${CURRENT_SEASON}${cursorParam}`;
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${CURRENT_SEASON}${cursorParam}`;
   if (VERBOSE) console.log(`📡 (scrims) Fetching: ${url}`);
   const data = await scrapeJson(url);
   if (data.errors?.length) throw new Error(data.errors[0].message || 'API error');
@@ -20,41 +23,56 @@ async function fetchMatchPage(username, nextCursor = null) {
   return { matches, cursorNext };
 }
 
-// * Convert raw matches -> only unknown mode matches
-function extractUnknown(matches) {
-  return matches.filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'unknown');
+// * Convert raw matches -> only scrim/custom mode matches
+function extractScrimMatches(matches) {
+  return matches.filter(m => {
+    const modeName = (m.metadata?.modeName || '').trim().toLowerCase();
+    return SCRIM_MODE_NAMES.includes(modeName);
+  });
 }
 
-// * Handle the !scrims command: list recent matches where modeName === 'Unknown'
+// * Handle the !scrims command: list recent matches where modeName is a scrim/custom mode
 export async function handleScrimsCommand(message, args) {
   //. Need username argument
-  if (args.length < 2) return message.reply('❌ Please provide a username. Usage: `!scrims <username>`');
+  if (args.length < 2) return message.reply('❌ Please provide a username. Usage: `!scrims <username> [count]`');
 
   const username = args[1];
   if (VERBOSE) console.log(`🔍 Scrims command requested for username: ${username}`);
 
-  const loadingMsg = await message.reply(`🔍 Aggregating scrim (Unknown mode) matches for **${username}** (Season ${PUBLIC_SEASON})...`);
+  // Optional: user may request a specific number of recent scrim matches to fetch
+  const DEFAULT_TARGET = 30;
+  const MAX_ALLOWED = SCRIMS_MAX_TOTAL; // Support up to 100 matches
+  let targetMatches = DEFAULT_TARGET;
+  if (args[2]) {
+    const parsed = parseInt(args[2], 10);
+    if (Number.isNaN(parsed) || parsed <= 0) return message.reply('❌ Invalid match count. Please provide a positive number for the count (e.g. `!scrims user 10`).');
+    targetMatches = Math.min(MAX_ALLOWED, parsed);
+  }
+
+  const loadingMsg = await message.reply(`🔍 Aggregating scrim/custom matches for **${username}** (Season ${PUBLIC_SEASON})${targetMatches !== DEFAULT_TARGET ? ` — last ${targetMatches} matches` : ''}...`);
   try {
-    const MAX_SOURCE_PAGES = 8; // backend pages to scan
-    const TARGET_MATCHES = 15; // we only want the last 15 scrim matches
+    const MAX_SOURCE_PAGES = 15; // backend pages to scan (increased to get more scrims)
+    const TARGET_MATCHES = targetMatches; // user-requested or default target
     let collected = [];
     let cursor = null;
     for (let i = 0; i < MAX_SOURCE_PAGES; i++) {
       const { matches: rawMatches, cursorNext } = await fetchMatchPage(username, cursor);
-      const unknown = extractUnknown(rawMatches);
-      if (unknown.length) collected = collected.concat(unknown);
+      const scrimMatches = extractScrimMatches(rawMatches);
+      if (scrimMatches.length) collected = collected.concat(scrimMatches);
       if (!cursorNext || collected.length >= TARGET_MATCHES) break; // stop once we have enough
       cursor = cursorNext;
     }
-    if (!collected.length) return loadingMsg.edit('❌ No recent Unknown-mode (scrim) matches found within scanned range.');
+    if (!collected.length) return loadingMsg.edit('❌ No recent scrim/custom matches found within scanned range.');
 
     // Prepare structured rows for canvas renderer
     let wins = 0, losses = 0, totalDamage = 0, totalKills = 0, totalDeaths = 0;
   const cardRows = [];
   const perMatchEffs = []; // collect per-match per-hero efficiencies for overall average
-  const LIMIT_FOR_CARD = TARGET_MATCHES; // 15 rows on card
+    const LIMIT_FOR_CARD = Math.min(TARGET_MATCHES, SCRIMS_MAX_TOTAL); // cap rows to max supported (100)
   replayCache.set(loadingMsg.id, []);
   matchIdCache.set(loadingMsg.id, []);
+  // Store session data for pagination
+  scrimSessionCache.set(loadingMsg.id, { username, season: PUBLIC_SEASON, currentPage: 0 });
     collected.slice(0, LIMIT_FOR_CARD).forEach((match, idx) => {
       const meta = match.metadata || {};
       const overview = match.segments?.find(s => s.type === 'overview');
@@ -122,33 +140,34 @@ export async function handleScrimsCommand(message, args) {
     const avgDmg = totalMatches ? formatShortNumber(totalDamage / Math.min(totalMatches, cardRows.length)) : '0';
     const avgKD = totalDeaths ? (totalKills / totalDeaths).toFixed(2) : totalKills.toFixed(2);
 
+    // Store cardRows for pagination
+    cardRowsCache.set(loadingMsg.id, cardRows);
+
     // Attempt canvas render first
     try {
-  const png = renderScrimsCard({ username, season: PUBLIC_SEASON, rows: cardRows });
+  const png = renderScrimsCard({ username, season: PUBLIC_SEASON, rows: cardRows, page: 0, totalRows: cardRows.length });
       const attachmentName = `scrims_${username}.png`;
       const attachment = new AttachmentBuilder(png, { name: attachmentName });
 
-      // Replay buttons correspond exactly to rendered rows
-      const replayIds = replayCache.get(loadingMsg.id);
-      const buttons = replayIds.slice(0, cardRows.length).map((_, i) => new ButtonBuilder()
-        .setCustomId(`scrimreplay_${loadingMsg.id}_${i}`)
-        .setLabel(String(i + 1))
-        .setStyle(ButtonStyle.Secondary));
-      const rowsComponents = [];
-      for (let i = 0; i < buttons.length; i += 5) rowsComponents.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
-      // matchIdCache already populated alongside replayCache above
+      // Build pagination and replay buttons
+      const components = buildScrimButtons(loadingMsg.id, cardRows, 0);
+      
       // Append overall average efficiency summary with grade
       let avgEff = 0, grade = '';
       if (perMatchEffs.length) {
         avgEff = perMatchEffs.reduce((a, b) => a + b, 0) / perMatchEffs.length;
         grade = scoreToGrade(avgEff);
       }
+      // Store efficiency data for use in pagination
+      scrimSessionCache.get(loadingMsg.id).avgEff = avgEff;
+      scrimSessionCache.get(loadingMsg.id).grade = grade;
+      
       const summaryEmbed = (perMatchEffs.length)
         ? new EmbedBuilder()
             .setColor(0x4B7BEC)
             .setDescription(`Average Scrim Efficiency: ${Math.round(avgEff)} (${grade})`)
         : null;
-      await loadingMsg.edit({ content: '', embeds: summaryEmbed ? [summaryEmbed] : [], files: [attachment], components: rowsComponents });
+      await loadingMsg.edit({ content: '', embeds: summaryEmbed ? [summaryEmbed] : [], files: [attachment], components });
     } catch (cardErr) {
       console.warn('⚠️ Scrims image render failed, falling back to embed:', cardErr.message);
       const embed = new EmbedBuilder()
@@ -163,18 +182,13 @@ export async function handleScrimsCommand(message, args) {
       }
       const headerLine = `Matches: ${totalMatches} • Wins: ${wins} • Losses: ${losses} • WinRate: ${winRate}%\nAvg Damage: ${avgDmg} • Avg K/D: ${avgKD}`;
       const threatLine = perMatchEffs.length ? `\nOverall Scrim Efficiency: ${Math.round(avgEff)} (${grade})` : '';
-      embed.setDescription(headerLine + threatLine + '\n\n' + cardRows.map(r => `• ${r.index}. ${r.resultEmoji} ${r.mapName} • ${r.kills}/${r.deaths} (K/D ${r.kd}) • ${formatShortNumber(r.damage)} dmg • ${r.duration}${r.heroes ? ' • ' + r.heroes : ''}${r.replay ? ' • 🔁 ' + r.replay : ''}`).join('\n'))
-        .setFooter({ text: `Showing ${cardRows.length} scrim matches (Unknown mode)` });
-      // Build buttons using replayCache
-      const replayIds = replayCache.get(loadingMsg.id);
-      const buttons = replayIds.slice(0, cardRows.length).map((_, i) => new ButtonBuilder()
-        .setCustomId(`scrimreplay_${loadingMsg.id}_${i}`)
-        .setLabel(String(i + 1))
-        .setStyle(ButtonStyle.Secondary));
-      const rowsComponents = [];
-      for (let i = 0; i < buttons.length; i += 5) rowsComponents.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
-      // matchIdCache already populated alongside replayCache above
-      await loadingMsg.edit({ content: '', embeds: [embed], components: rowsComponents });
+      // Show first page of matches in embed fallback
+      const pageRows = cardRows.slice(0, SCRIMS_ROWS_PER_PAGE);
+      embed.setDescription(headerLine + threatLine + '\n\n' + pageRows.map(r => `• ${r.index}. ${r.resultEmoji} ${r.mapName} • ${r.kills}/${r.deaths} (K/D ${r.kd}) • ${formatShortNumber(r.damage)} dmg • ${r.duration}${r.heroes ? ' • ' + r.heroes : ''}${r.replay ? ' • 🔁 ' + r.replay : ''}`).join('\n'))
+        .setFooter({ text: `Showing 1-${pageRows.length} of ${cardRows.length} scrim/custom matches` });
+      // Build pagination and replay buttons
+      const components = buildScrimButtons(loadingMsg.id, cardRows, 0);
+      await loadingMsg.edit({ content: '', embeds: [embed], components });
     }
   } catch (e) {
     console.error('❌ Scrims command error:', e);
@@ -191,12 +205,133 @@ export async function handleScrimsCommand(message, args) {
 const replayCache = new Map();
 // Parallel cache for scrims: messageId -> tracker match id[] for team comp links
 const matchIdCache = new Map();
+// Cache for cardRows data to support pagination (messageId -> cardRows[])
+const cardRowsCache = new Map();
+// Session cache for pagination state (messageId -> { username, season, currentPage, avgEff, grade })
+const scrimSessionCache = new Map();
 
-// * Interaction handler for scrim replay buttons
+// * Build button components for scrims with pagination support
+// Returns action rows with: navigation buttons (if multiple pages) + replay buttons for current page
+function buildScrimButtons(messageId, cardRows, currentPage) {
+  const totalPages = Math.ceil(cardRows.length / SCRIMS_ROWS_PER_PAGE);
+  const startIdx = currentPage * SCRIMS_ROWS_PER_PAGE;
+  const endIdx = Math.min(startIdx + SCRIMS_ROWS_PER_PAGE, cardRows.length);
+  const pageRows = cardRows.slice(startIdx, endIdx);
+  const replayIds = replayCache.get(messageId) || [];
+  
+  const components = [];
+  
+  // Navigation row (if multiple pages)
+  if (totalPages > 1) {
+    const navRow = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`scrimprev_${messageId}`)
+        .setLabel('◀ Previous')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(currentPage === 0),
+      new ButtonBuilder()
+        .setCustomId(`scrimpage_${messageId}`)
+        .setLabel(`Page ${currentPage + 1}/${totalPages}`)
+        .setStyle(ButtonStyle.Secondary)
+        .setDisabled(true),
+      new ButtonBuilder()
+        .setCustomId(`scrimnext_${messageId}`)
+        .setLabel('Next ▶')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(currentPage >= totalPages - 1)
+    );
+    components.push(navRow);
+  }
+  
+  // Replay buttons for current page matches (up to 20 buttons in 4 rows to leave room for nav)
+  const maxReplayButtons = totalPages > 1 ? 20 : 25; // Reserve 1 row for nav if paginated
+  const replayButtons = [];
+  for (let i = 0; i < Math.min(pageRows.length, maxReplayButtons); i++) {
+    const globalIdx = startIdx + i;
+    if (replayIds[globalIdx]) {
+      replayButtons.push(
+        new ButtonBuilder()
+          .setCustomId(`scrimreplay_${messageId}_${globalIdx}`)
+          .setLabel(String(globalIdx + 1))
+          .setStyle(ButtonStyle.Secondary)
+      );
+    }
+  }
+  
+  // Add replay buttons in rows of 5
+  for (let i = 0; i < replayButtons.length; i += 5) {
+    components.push(new ActionRowBuilder().addComponents(replayButtons.slice(i, i + 5)));
+  }
+  
+  return components;
+}
+
+// * Interaction handler for scrim replay buttons and pagination
 export async function handleScrimsInteraction(interaction) {
   if (!interaction.isButton()) return false;
-  if (!interaction.customId.startsWith('scrimreplay_')) return false;
-  const parts = interaction.customId.split('_');
+  const customId = interaction.customId;
+  
+  // Handle pagination buttons
+  if (customId.startsWith('scrimprev_') || customId.startsWith('scrimnext_')) {
+    const messageId = customId.split('_')[1];
+    const session = scrimSessionCache.get(messageId);
+    const cardRows = cardRowsCache.get(messageId);
+    
+    if (!session || !cardRows) {
+      try { await interaction.reply({ content: '⏰ Session expired. Please run the command again.', ephemeral: true }); } catch (_) { }
+      return true;
+    }
+    
+    const totalPages = Math.ceil(cardRows.length / SCRIMS_ROWS_PER_PAGE);
+    let newPage = session.currentPage;
+    
+    if (customId.startsWith('scrimprev_')) {
+      newPage = Math.max(0, newPage - 1);
+    } else {
+      newPage = Math.min(totalPages - 1, newPage + 1);
+    }
+    
+    if (newPage === session.currentPage) {
+      try { await interaction.deferUpdate(); } catch (_) { }
+      return true;
+    }
+    
+    session.currentPage = newPage;
+    
+    try {
+      // Re-render card for new page
+      const png = renderScrimsCard({ 
+        username: session.username, 
+        season: session.season, 
+        rows: cardRows, 
+        page: newPage, 
+        totalRows: cardRows.length 
+      });
+      const attachmentName = `scrims_${session.username}_p${newPage + 1}.png`;
+      const attachment = new AttachmentBuilder(png, { name: attachmentName });
+      const components = buildScrimButtons(messageId, cardRows, newPage);
+      
+      const summaryEmbed = session.avgEff
+        ? new EmbedBuilder()
+            .setColor(0x4B7BEC)
+            .setDescription(`Average Scrim Efficiency: ${Math.round(session.avgEff)} (${session.grade})`)
+        : null;
+      
+      await interaction.update({ 
+        embeds: summaryEmbed ? [summaryEmbed] : [], 
+        files: [attachment], 
+        components 
+      });
+    } catch (e) {
+      console.error('Pagination update error:', e);
+      try { await interaction.reply({ content: '❌ Failed to update page.', ephemeral: true }); } catch (_) { }
+    }
+    return true;
+  }
+  
+  // Handle replay buttons
+  if (!customId.startsWith('scrimreplay_')) return false;
+  const parts = customId.split('_');
   const messageId = parts[1];
   const idx = parseInt(parts[2], 10);
   const list = replayCache.get(messageId);
