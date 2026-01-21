@@ -3,6 +3,15 @@ import { scrapeJson } from '../browser.js';
 import { formatShortNumber } from '../utils.js';
 import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 
+// * Fetch matches for a specific season
+async function fetchMatchesForSeason(username, season) {
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${season}`;
+  if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season ${season}) from: ${url}`);
+  const data = await scrapeJson(url);
+  if (data.errors?.length) throw new Error(data.errors[0].message || 'User not found');
+  return data.data?.matches || [];
+}
+
 // * Handle the !tourn command: recent Tournament mode matches (public season display)
 export async function handleTournCommand(message, args) {
   //. Username required
@@ -15,17 +24,36 @@ export async function handleTournCommand(message, args) {
   const loadingMsg = await message.reply(`🔍 Looking up Season ${PUBLIC_SEASON} tournament matches for **${username}**...`);
 
   try {
-    // Fetch matches and filter by Tournament mode
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${CURRENT_SEASON}`;
-    if (VERBOSE) console.log(`📡 Fetching matches (tournament, Season ${CURRENT_SEASON}) from: ${url}`);
-    const data = await scrapeJson(url);
-    if (data.errors?.length) return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`); // ! API/user error
+    const TARGET_MATCHES = 10; // Target number of tournament matches to show
+    let allMatches = [];
+    
+    // Fetch from current season first
+    try {
+      allMatches = await fetchMatchesForSeason(username, CURRENT_SEASON);
+    } catch (e) {
+      return loadingMsg.edit(`❌ ${e.message}`);
+    }
 
-    const allMatches = data.data?.matches || [];
-    const tournMatches = allMatches.filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'tournament');
-    if (!tournMatches.length) return loadingMsg.edit('❌ No recent Tournament matches found.'); // ! No matches to show
+    // Filter for tournament matches
+    let tournMatches = allMatches.filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'tournament');
+    
+    // If we need more matches, try previous season
+    const PREVIOUS_SEASON = CURRENT_SEASON - 1;
+    if (tournMatches.length < TARGET_MATCHES && PREVIOUS_SEASON >= 1) {
+      if (VERBOSE) console.log(`📡 (tourn) Current season has ${tournMatches.length}/${TARGET_MATCHES} matches, fetching from previous season ${PREVIOUS_SEASON}`);
+      try {
+        const prevMatches = await fetchMatchesForSeason(username, PREVIOUS_SEASON);
+        const prevTourn = prevMatches.filter(m => (m.metadata?.modeName || '').trim().toLowerCase() === 'tournament');
+        tournMatches = tournMatches.concat(prevTourn);
+      } catch (e) {
+        // Non-fatal: previous season data might not exist
+        if (VERBOSE) console.log(`⚠️ Could not fetch previous season tournament matches: ${e.message}`);
+      }
+    }
+    
+    if (!tournMatches.length) return loadingMsg.edit('❌ No recent Tournament matches found.');
 
-    const slice = tournMatches.slice(0, 10);
+    const slice = tournMatches.slice(0, TARGET_MATCHES);
 
     let wins = 0, losses = 0, totalDamage = 0, totalKills = 0, totalDeaths = 0;
     const fields = [];

@@ -1,7 +1,7 @@
 import { createCanvas, roundRect, drawText, formatShortNumber, FONT_STACK } from './canvasCommon.js';
 
 // Render scrim-specific hero usage summary (top N heroes by time played)
-export function renderScrimHeroesCard({ username, season, heroes }) {
+export function renderScrimHeroesCard({ username, season, heroes, scrimMatchCount }) {
   //. Guard: limit processed heroes to a small, readable set
   const MAX_ROWS = Math.min(heroes.length, 10);
 
@@ -100,11 +100,12 @@ export function renderScrimHeroesCard({ username, season, heroes }) {
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
   // Title + user attribution
-  drawText(ctx, `Scrim-Used Heroes (S${season})`, OUTER_MARGIN, 56, { font: `600 ${FONT_TITLE}px ${FONT_STACK}` });
+  drawText(ctx, `Scrim-Only Heroes (S${season})`, OUTER_MARGIN, 56, { font: `600 ${FONT_TITLE}px ${FONT_STACK}` });
   drawText(ctx, username, WIDTH - OUTER_MARGIN, 56, { font: `300 ${FONT_USER}px ${FONT_STACK}`, align: 'right', color: '#AAB4CF' });
 
   // Subtitle: brief context for dataset
-  const subtitle = `Season totals for heroes used in scrim matches`;
+  const matchCountText = scrimMatchCount ? ` from ${scrimMatchCount} scrim matches` : '';
+  const subtitle = `Stats computed${matchCountText} (excludes competitive/ranked)`;
   drawText(ctx, subtitle, OUTER_MARGIN, 94, { font: `300 ${FONT_SMALL}px ${FONT_STACK}`, color: '#D1DAE8' });
 
   // Table container (rounded panel) + column x positioning

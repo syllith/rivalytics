@@ -4,6 +4,23 @@ import { scrapeJson } from '../browser.js';
 import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 import { renderHeroesCard } from '../renderers/heroesCard.js';
 
+// * Fetch career segments for a specific season
+async function fetchCareerSegments(username, season) {
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/segments/career?mode=all&season=${season}`;
+  if (VERBOSE) console.log(`📡 Fetching data from: ${url}`);
+  const data = await scrapeJson(url);
+  if (data.errors?.length) throw new Error(data.errors[0].message || 'User not found');
+  if (!Array.isArray(data.data)) return [];
+  
+  let heroes = getHeroesFromResponse(data);
+  // If multiple seasons included, filter to explicit requested season
+  if (data.data.some(seg => seg.attributes?.season)) {
+    const filteredSegments = { ...data, data: data.data.filter(seg => seg.attributes?.season === season) };
+    heroes = getHeroesFromResponse(filteredSegments);
+  }
+  return heroes;
+}
+
 // * Handle the !heroes command: show top hero stats for a player
 export async function handleHeroesCommand(message, args) {
   //. Require at least a username argument
@@ -16,24 +33,27 @@ export async function handleHeroesCommand(message, args) {
   const loadingMsg = await message.reply(`🔍 Looking up heroes for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
-    // Career segments (season aware). Currently season hard‐coded (mirrors original logic)
-    const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/segments/career?mode=all&season=${CURRENT_SEASON}`;
-    if (VERBOSE) console.log(`📡 Fetching data from: ${url}`);
-
-    const data = await scrapeJson(url);
-    if (data.errors?.length) return loadingMsg.edit(`❌ ${data.errors[0].message || 'User not found'}`); // ! API error / user missing
-    if (!Array.isArray(data.data)) return loadingMsg.edit('❌ No data returned from API.'); // ! Unexpected payload shape
-
-    // Extract hero stat objects (utility consolidates differences in structure)
-    let heroes = getHeroesFromResponse(data);
-
-    // If multiple seasons included, filter to explicit internal CURRENT_SEASON (behavior preserved)
-    if (data.data.some(seg => seg.attributes?.season)) {
-      const filteredSegments = { ...data, data: data.data.filter(seg => seg.attributes?.season === CURRENT_SEASON) };
-      heroes = getHeroesFromResponse(filteredSegments);
+    // Fetch current season first
+    let heroes = [];
+    try {
+      heroes = await fetchCareerSegments(username, CURRENT_SEASON);
+    } catch (e) {
+      return loadingMsg.edit(`❌ ${e.message}`);
     }
 
-    if (!heroes.length) return loadingMsg.edit('❌ No hero statistics found for this user.'); // ! Nothing to display
+    // If no heroes found in current season, try previous season
+    const PREVIOUS_SEASON = CURRENT_SEASON - 1;
+    if (!heroes.length && PREVIOUS_SEASON >= 1) {
+      if (VERBOSE) console.log(`📡 (heroes) No heroes found in current season, trying previous season ${PREVIOUS_SEASON}`);
+      try {
+        heroes = await fetchCareerSegments(username, PREVIOUS_SEASON);
+      } catch (e) {
+        // Non-fatal: previous season might not exist
+        if (VERBOSE) console.log(`⚠️ Could not fetch previous season heroes: ${e.message}`);
+      }
+    }
+
+    if (!heroes.length) return loadingMsg.edit('❌ No hero statistics found for this user.');
 
     // Sort by time played descending so most used heroes appear first
     heroes.sort((a, b) => b.TimePlayed - a.TimePlayed);

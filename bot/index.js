@@ -99,9 +99,11 @@ export const commandMeta = [
     triggers: ['!watch'],
     handler: 'handleWatchCommand',
     title: '👁️ Add to Watchlist',
-    usage: '!watch <user>',
+    usage: '!watch <user> [minutes]',
     descriptionLines: [
-      'Adds a user to the automated watchlist (matches + scrims every interval).'
+      'Adds a user to the automated watchlist (matches + scrims).',
+      'Default interval is 30 minutes. Specify minutes to customize.',
+      'Example: `!watch player123 60` for hourly updates.'
     ]
   },
   {
@@ -119,7 +121,7 @@ export const commandMeta = [
     title: '📋 List Watchlist',
     usage: '!watchlist',
     descriptionLines: [
-      'Shows currently watched users and last run times.'
+      'Shows currently watched users, their intervals, and last run times.'
     ]
   },
   // Removed !watchrun command per requirement (manual trigger no longer exposed)

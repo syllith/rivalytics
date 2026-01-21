@@ -3,6 +3,18 @@ import { fetchJsonDirect } from '../browser.js';
 import { CURRENT_SEASON, PUBLIC_SEASON, VERBOSE } from '../config.js';
 import { renderEncountersCard } from '../renderers/encountersCard.js';
 
+// * Fetch encounter data for a specific season
+async function fetchEncountersForSeason(username, season) {
+  const encountersUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/aggregated?localOffset=300&filter=encounters&season=${season}`;
+  if (VERBOSE) console.log(`📡 Fetching aggregated encounters (season ${season}): ${encountersUrl}`);
+  const resp = await fetchJsonDirect(encountersUrl);
+  if (resp?.errors?.length) throw new Error(resp.errors[0].message || 'API error fetching encounters.');
+  return {
+    teammates: resp?.data?.teammates || [],
+    enemies: resp?.data?.enemies || []
+  };
+}
+
 // * Handle the !encounters command: shows top teammates and opponents with shared stats
 export async function handleEncountersCommand(message, args) {
   //. Basic argument validation & usage hint
@@ -18,17 +30,48 @@ export async function handleEncountersCommand(message, args) {
   const loadingMsg = await message.reply(`🔍 Gathering recent encounters for **${username}** (Season ${PUBLIC_SEASON})...`);
 
   try {
-    // * Aggregated endpoint returns teammates / enemies arrays and per‐relation stats
-    const encountersUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/profile/ign/${encodeURIComponent(username)}/aggregated?localOffset=300&filter=encounters&season=${CURRENT_SEASON}`;
-    if (VERBOSE) console.log(`📡 Fetching aggregated encounters: ${encountersUrl}`);
-
-    const resp = await fetchJsonDirect(encountersUrl);
-    if (resp?.errors?.length) return loadingMsg.edit(`❌ ${resp.errors[0].message || 'API error fetching encounters.'}`); // ! API surfaced an error
-
-    // Raw relation arrays (may be empty independently)
-    const teammates = resp?.data?.teammates || [];
-    const enemies = resp?.data?.enemies || [];
-    if (!teammates.length && !enemies.length) return loadingMsg.edit('❌ No encounter data returned (teammates/enemies empty).'); // ! Nothing to show
+    let teammates = [];
+    let enemies = [];
+    
+    // Fetch from current season first
+    try {
+      const currentData = await fetchEncountersForSeason(username, CURRENT_SEASON);
+      teammates = currentData.teammates;
+      enemies = currentData.enemies;
+    } catch (e) {
+      return loadingMsg.edit(`❌ ${e.message}`);
+    }
+    
+    // If we have very few encounters, try previous season and merge
+    const PREVIOUS_SEASON = CURRENT_SEASON - 1;
+    const MIN_ENCOUNTERS = 5;
+    if ((teammates.length < MIN_ENCOUNTERS || enemies.length < MIN_ENCOUNTERS) && PREVIOUS_SEASON >= 1) {
+      if (VERBOSE) console.log(`📡 (encounters) Current season has limited encounters (${teammates.length} teammates, ${enemies.length} enemies), fetching from previous season ${PREVIOUS_SEASON}`);
+      try {
+        const prevData = await fetchEncountersForSeason(username, PREVIOUS_SEASON);
+        // Merge previous season data (avoid duplicates by handle)
+        const existingTeammateHandles = new Set(teammates.map(t => (t.platformInfo?.platformUserHandle || '').toLowerCase()));
+        const existingEnemyHandles = new Set(enemies.map(e => (e.platformInfo?.platformUserHandle || '').toLowerCase()));
+        
+        prevData.teammates.forEach(t => {
+          const handle = (t.platformInfo?.platformUserHandle || '').toLowerCase();
+          if (!existingTeammateHandles.has(handle)) {
+            teammates.push(t);
+          }
+        });
+        prevData.enemies.forEach(e => {
+          const handle = (e.platformInfo?.platformUserHandle || '').toLowerCase();
+          if (!existingEnemyHandles.has(handle)) {
+            enemies.push(e);
+          }
+        });
+      } catch (e) {
+        // Non-fatal: previous season might not exist
+        if (VERBOSE) console.log(`⚠️ Could not fetch previous season encounters: ${e.message}`);
+      }
+    }
+    
+    if (!teammates.length && !enemies.length) return loadingMsg.edit('❌ No encounter data returned (teammates/enemies empty).');
 
     // Helper: normalize an API relation record into a compact object we control
     function mapRecord(r, type) {

@@ -1,5 +1,5 @@
 import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { scrapeJson } from '../browser.js';
+import { scrapeJson, screenshotMatchScoreboard } from '../browser.js';
 import { CURRENT_SEASON, PUBLIC_SEASON, VERBOSE, RANKED_BOUNDARY_ENABLED, RANKED_BOUNDARY_THRESHOLD } from '../config.js';
 import { formatShortNumber, isCompetitiveMode } from '../utils.js';
 import { renderMatchesCard } from '../renderers/matchesCard.js';
@@ -81,18 +81,36 @@ export async function handleMatchesCommand(message, args) {
         // =============== Recent Competitive Matches ===============
         let recentMatchLines = [];
         let recentMatchObjs = [];
+        const TARGET_COMPETITIVE_MATCHES = 10;
         try {
+            // Fetch from current season
             const matchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${CURRENT_SEASON}`;
             if (VERBOSE) console.log(`📡 Fetching recent matches for merge: ${matchesUrl}`);
             const matchResp = await scrapeJson(matchesUrl);
-            const allMatches = matchResp.data?.matches || [];
+            let allMatches = matchResp.data?.matches || [];
 
             // Strict filter: only modes categorized as competitive (utility decides)
-            const competitive = allMatches.filter(m => isCompetitiveMode(m));
+            let competitive = allMatches.filter(m => isCompetitiveMode(m));
             if (VERBOSE) console.log(`🎯 Competitive matches (strict only): ${competitive.length} / ${allMatches.length}`);
+            
+            // If we need more matches, try previous season
+            const PREVIOUS_SEASON = CURRENT_SEASON - 1;
+            if (competitive.length < TARGET_COMPETITIVE_MATCHES && PREVIOUS_SEASON >= 1) {
+                if (VERBOSE) console.log(`📡 (matches) Current season has ${competitive.length}/${TARGET_COMPETITIVE_MATCHES} matches, fetching from previous season ${PREVIOUS_SEASON}`);
+                try {
+                    const prevMatchesUrl = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${PREVIOUS_SEASON}`;
+                    const prevMatchResp = await scrapeJson(prevMatchesUrl);
+                    const prevMatches = prevMatchResp.data?.matches || [];
+                    const prevCompetitive = prevMatches.filter(m => isCompetitiveMode(m));
+                    competitive = competitive.concat(prevCompetitive);
+                } catch (e) {
+                    // Non-fatal: previous season might not exist
+                    if (VERBOSE) console.log(`⚠️ Could not fetch previous season matches: ${e.message}`);
+                }
+            }
 
             // Determine if all targeted matches share identical modeName (e.g., all 'Competitive') so we can suppress it for brevity
-            const topCompetitive = competitive.slice(0, 10);
+            const topCompetitive = competitive.slice(0, TARGET_COMPETITIVE_MATCHES);
             const uniqueModeNames = new Set(topCompetitive.map(m => (m.metadata?.modeName || m.metadata?.mapModeName || '').trim()));
             const suppressModeName = uniqueModeNames.size === 1; // only one distinct mode (likely 'Competitive')
 
@@ -281,28 +299,49 @@ export async function handleMatchesInteraction(interaction) {
         try { await interaction.reply({ content: '❌ Replay unavailable.', ephemeral: true }); } catch (_) { }
         return true;
     }
+    
+    // Defer reply since screenshot may take a few seconds
+    try {
+        await interaction.deferReply({ ephemeral: false });
+    } catch (e) {
+        if (VERBOSE) console.log('⚠️ Could not defer reply:', e.message);
+    }
+    
     try {
         const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
-        if (link) {
-            const embed = new EmbedBuilder()
-                .setColor(0x5865F2)
-                .setDescription(`🎬 Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
-            await interaction.reply({ embeds: [embed], ephemeral: true });
-        } else {
-            await interaction.reply({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
-        }
-    } catch (e) {
-        // Fallback attempt
-        const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
-        try {
-            if (link) {
+        
+        if (matchId) {
+            // Take screenshot of the scoreboard
+            if (VERBOSE) console.log(`📸 Taking scoreboard screenshot for match ${idx + 1}: ${matchId}`);
+            
+            try {
+                const screenshotBuffer = await screenshotMatchScoreboard(matchId);
+                const attachment = new AttachmentBuilder(screenshotBuffer, { name: `scoreboard_${matchId}.png` });
+                
                 const embed = new EmbedBuilder()
                     .setColor(0x5865F2)
-                    .setDescription(`🎬 Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
-                await interaction.followUp({ embeds: [embed], ephemeral: true });
-            } else {
-                await interaction.followUp({ content: `🎬 Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+                    .setTitle(`📊 Match ${idx + 1} Scoreboard`)
+                    .setDescription(`🎬 Replay ID: \`${replayId}\`\n🔗 [View on Tracker.gg](${link})`)
+                    .setImage(`attachment://scoreboard_${matchId}.png`)
+                    .setFooter({ text: 'Scoreboard captured from tracker.gg' });
+                
+                await interaction.editReply({ embeds: [embed], files: [attachment] });
+            } catch (screenshotErr) {
+                // Fallback to link if screenshot fails
+                if (VERBOSE) console.log(`⚠️ Screenshot failed, falling back to link: ${screenshotErr.message}`);
+                const embed = new EmbedBuilder()
+                    .setColor(0x5865F2)
+                    .setDescription(`🎬 Replay ID (Match ${idx + 1}): \`${replayId}\`\n\n[📊 View Scoreboard](${link})\n\n_Screenshot unavailable - click link to view_`);
+                await interaction.editReply({ embeds: [embed] });
             }
+        } else {
+            // No match ID, just show replay ID
+            await interaction.editReply({ content: `🎬 Replay ID (Match ${idx + 1}): \`${replayId}\`` });
+        }
+    } catch (e) {
+        console.error('Replay button error:', e);
+        try {
+            await interaction.editReply({ content: `🎬 Replay ID (Match ${idx + 1}): \`${replayId}\`\n_Could not capture scoreboard_` });
         } catch (_) { }
     }
     return true;

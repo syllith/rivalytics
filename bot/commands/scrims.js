@@ -1,5 +1,5 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } from 'discord.js';
-import { scrapeJson } from '../browser.js';
+import { scrapeJson, screenshotMatchScoreboard } from '../browser.js';
 import { formatShortNumber, computeEffectiveness, scoreToGrade } from '../utils.js';
 import { renderScrimsCard, SCRIMS_ROWS_PER_PAGE, SCRIMS_MAX_TOTAL } from '../renderers/scrimsCard.js';
 import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
@@ -11,10 +11,10 @@ import { VERBOSE, CURRENT_SEASON, PUBLIC_SEASON } from '../config.js';
 // Scrim mode names - tracker.gg now distinguishes between tournament customs ("Unknown") and regular customs ("Custom Game")
 const SCRIM_MODE_NAMES = ['unknown', 'custom game'];
 
-// * Fetch a single page of matches (optionally with next cursor)
-async function fetchMatchPage(username, nextCursor = null) {
+// * Fetch a single page of matches (optionally with next cursor and specific season)
+async function fetchMatchPage(username, nextCursor = null, season = CURRENT_SEASON) {
   const cursorParam = nextCursor ? `&next=${encodeURIComponent(nextCursor)}` : '';
-  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${CURRENT_SEASON}${cursorParam}`;
+  const url = `https://api.tracker.gg/api/v2/marvel-rivals/standard/matches/ign/${encodeURIComponent(username)}?season=${season}${cursorParam}`;
   if (VERBOSE) console.log(`📡 (scrims) Fetching: ${url}`);
   const data = await scrapeJson(url);
   if (data.errors?.length) throw new Error(data.errors[0].message || 'API error');
@@ -51,17 +51,34 @@ export async function handleScrimsCommand(message, args) {
 
   const loadingMsg = await message.reply(`🔍 Aggregating scrim/custom matches for **${username}** (Season ${PUBLIC_SEASON})${targetMatches !== DEFAULT_TARGET ? ` — last ${targetMatches} matches` : ''}...`);
   try {
-    const MAX_SOURCE_PAGES = 15; // backend pages to scan (increased to get more scrims)
+    const MAX_SOURCE_PAGES = 15; // backend pages to scan per season
     const TARGET_MATCHES = targetMatches; // user-requested or default target
     let collected = [];
     let cursor = null;
+    
+    // First, fetch from current season
     for (let i = 0; i < MAX_SOURCE_PAGES; i++) {
-      const { matches: rawMatches, cursorNext } = await fetchMatchPage(username, cursor);
+      const { matches: rawMatches, cursorNext } = await fetchMatchPage(username, cursor, CURRENT_SEASON);
       const scrimMatches = extractScrimMatches(rawMatches);
       if (scrimMatches.length) collected = collected.concat(scrimMatches);
       if (!cursorNext || collected.length >= TARGET_MATCHES) break; // stop once we have enough
       cursor = cursorNext;
     }
+    
+    // If we still need more matches, try previous season
+    const PREVIOUS_SEASON = CURRENT_SEASON - 1;
+    if (collected.length < TARGET_MATCHES && PREVIOUS_SEASON >= 1) {
+      if (VERBOSE) console.log(`📡 (scrims) Current season has ${collected.length}/${TARGET_MATCHES} matches, fetching from previous season ${PREVIOUS_SEASON}`);
+      cursor = null; // reset cursor for new season
+      for (let i = 0; i < MAX_SOURCE_PAGES; i++) {
+        const { matches: rawMatches, cursorNext } = await fetchMatchPage(username, cursor, PREVIOUS_SEASON);
+        const scrimMatches = extractScrimMatches(rawMatches);
+        if (scrimMatches.length) collected = collected.concat(scrimMatches);
+        if (!cursorNext || collected.length >= TARGET_MATCHES) break;
+        cursor = cursorNext;
+      }
+    }
+    
     if (!collected.length) return loadingMsg.edit('❌ No recent scrim/custom matches found within scanned range.');
 
     // Prepare structured rows for canvas renderer
@@ -329,7 +346,7 @@ export async function handleScrimsInteraction(interaction) {
     return true;
   }
   
-  // Handle replay buttons
+  // Handle replay buttons - now shows scoreboard screenshot
   if (!customId.startsWith('scrimreplay_')) return false;
   const parts = customId.split('_');
   const messageId = parts[1];
@@ -346,27 +363,49 @@ export async function handleScrimsInteraction(interaction) {
     try { await interaction.reply({ content: '❌ Replay unavailable.', ephemeral: true }); } catch (_) { }
     return true;
   }
+  
+  // Defer reply since screenshot may take a few seconds
+  try {
+    await interaction.deferReply({ ephemeral: false });
+  } catch (e) {
+    if (VERBOSE) console.log('⚠️ Could not defer reply:', e.message);
+  }
+  
   try {
     const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
-    if (link) {
-      const embed = new EmbedBuilder()
-        .setColor(0x5865F2)
-        .setDescription(`🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
-      await interaction.reply({ embeds: [embed], ephemeral: true });
-    } else {
-      await interaction.reply({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
-    }
-  } catch (e) {
-    const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
-    try {
-      if (link) {
+    
+    if (matchId) {
+      // Take screenshot of the scoreboard
+      if (VERBOSE) console.log(`📸 Taking scoreboard screenshot for match ${idx + 1}: ${matchId}`);
+      
+      try {
+        const screenshotBuffer = await screenshotMatchScoreboard(matchId);
+        const attachment = new AttachmentBuilder(screenshotBuffer, { name: `scoreboard_${matchId}.png` });
+        
         const embed = new EmbedBuilder()
           .setColor(0x5865F2)
-          .setDescription(`🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}\n[View Lineup](${link})`);
-        await interaction.followUp({ embeds: [embed], ephemeral: true });
-      } else {
-        await interaction.followUp({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): ${replayId}`, ephemeral: true });
+          .setTitle(`📊 Match ${idx + 1} Scoreboard`)
+          .setDescription(`🎬 Replay ID: \`${replayId}\`\n🔗 [View on Tracker.gg](${link})`)
+          .setImage(`attachment://scoreboard_${matchId}.png`)
+          .setFooter({ text: 'Scoreboard captured from tracker.gg' });
+        
+        await interaction.editReply({ embeds: [embed], files: [attachment] });
+      } catch (screenshotErr) {
+        // Fallback to link if screenshot fails
+        if (VERBOSE) console.log(`⚠️ Screenshot failed, falling back to link: ${screenshotErr.message}`);
+        const embed = new EmbedBuilder()
+          .setColor(0x5865F2)
+          .setDescription(`🎬 Scrim Replay ID (Match ${idx + 1}): \`${replayId}\`\n\n[📊 View Scoreboard](${link})\n\n_Screenshot unavailable - click link to view_`);
+        await interaction.editReply({ embeds: [embed] });
       }
+    } else {
+      // No match ID, just show replay ID
+      await interaction.editReply({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): \`${replayId}\`` });
+    }
+  } catch (e) {
+    console.error('Replay button error:', e);
+    try {
+      await interaction.editReply({ content: `🎬 Replay ID (Match ${idx + 1}): \`${replayId}\`\n_Could not capture scoreboard_` });
     } catch (_) { }
   }
   return true;

@@ -1,6 +1,6 @@
 // * Watchlist manager: persistence + scheduled execution of !matches and !scrims for users
 //   Persists to bot/watchlist.json so restarts keep state.
-//   Each entry: { username: string, addedAt: ISOString, lastRun: ISOString|null }
+//   Each entry: { username: string, addedAt: ISOString, lastRun: ISOString|null, intervalMinutes: number|null }
 
 import fs from 'fs';
 import path from 'path';
@@ -47,16 +47,21 @@ export function initWatchlist(client) {
     startScheduler();
 }
 
-export function addToWatchlist(username) {
+export function addToWatchlist(username, intervalMinutes = null) {
     username = username.trim();
     if (!username) return { added: false, reason: 'Empty username' };
     if (watchlist.find(w => w.username.toLowerCase() === username.toLowerCase())) {
         return { added: false, reason: 'User already on watchlist' };
     }
-    const entry = { username, addedAt: new Date().toISOString(), lastRun: null };
+    const entry = { 
+        username, 
+        addedAt: new Date().toISOString(), 
+        lastRun: null,
+        intervalMinutes: intervalMinutes // custom interval per user (null = use global default)
+    };
     watchlist.push(entry);
     saveWatchlist();
-    if (VERBOSE) console.log(`➕ Added ${username} to watchlist`);
+    if (VERBOSE) console.log(`➕ Added ${username} to watchlist (interval: ${intervalMinutes || WATCHLIST_INTERVAL_MINUTES}m)`);
     return { added: true, entry };
 }
 
@@ -77,9 +82,10 @@ export function listWatchlist() {
 
 function startScheduler() {
     if (intervalHandle) clearInterval(intervalHandle);
-    const ms = Math.max(1, WATCHLIST_INTERVAL_MINUTES) * 60 * 1000;
-    intervalHandle = setInterval(runDueEntries, ms);
-    if (VERBOSE) console.log(`⏱️ Watchlist scheduler started (interval ${WATCHLIST_INTERVAL_MINUTES}m)`);
+    // Check every minute to support per-user intervals
+    const CHECK_INTERVAL_MS = 60 * 1000; // check every minute
+    intervalHandle = setInterval(runDueEntries, CHECK_INTERVAL_MS);
+    if (VERBOSE) console.log(`⏱️ Watchlist scheduler started (checking every minute, default interval ${WATCHLIST_INTERVAL_MINUTES}m)`);
     // Kick off immediately once at startup
     setTimeout(runDueEntries, 5_000);
 }
@@ -93,10 +99,11 @@ async function runDueEntries() {
         return;
     }
     const now = Date.now();
-    const thresholdMs = Math.max(1, WATCHLIST_INTERVAL_MINUTES) * 60 * 1000;
     for (const entry of watchlist) {
+        // Use per-user interval if set, otherwise fall back to global default
+        const entryIntervalMs = (entry.intervalMinutes || WATCHLIST_INTERVAL_MINUTES) * 60 * 1000;
         const last = entry.lastRun ? Date.parse(entry.lastRun) : 0;
-        if (now - last < thresholdMs) continue; // not due yet
+        if (now - last < entryIntervalMs) continue; // not due yet
         try {
             await runReportsForUser(channel, entry.username);
             entry.lastRun = new Date().toISOString();
