@@ -346,67 +346,107 @@ export async function handleScrimsInteraction(interaction) {
     return true;
   }
   
-  // Handle replay buttons - now shows scoreboard screenshot
-  if (!customId.startsWith('scrimreplay_')) return false;
-  const parts = customId.split('_');
-  const messageId = parts[1];
-  const idx = parseInt(parts[2], 10);
-  const list = replayCache.get(messageId);
-  if (!list) {
-    try { await interaction.reply({ content: '⏰ Replay buttons expired.', ephemeral: true }); } catch (_) { }
-    return true;
-  }
-  const replayId = list[idx];
-  const matchIds = matchIdCache.get(messageId) || [];
-  const matchId = matchIds[idx] || '';
-  if (!replayId) {
-    try { await interaction.reply({ content: '❌ Replay unavailable.', ephemeral: true }); } catch (_) { }
-    return true;
-  }
-  
-  // Defer reply since screenshot may take a few seconds
-  try {
-    await interaction.deferReply({ ephemeral: false });
-  } catch (e) {
-    if (VERBOSE) console.log('⚠️ Could not defer reply:', e.message);
-  }
-  
-  try {
-    const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
+  // Handle replay buttons - show replay ID/link instantly with option to get screenshot
+  if (customId.startsWith('scrimreplay_')) {
+    const parts = customId.split('_');
+    const messageId = parts[1];
+    const idx = parseInt(parts[2], 10);
+    const list = replayCache.get(messageId);
+    if (!list) {
+      try { await interaction.reply({ content: '⏰ Replay buttons expired.', ephemeral: true }); } catch (_) { }
+      return true;
+    }
+    const replayId = list[idx];
+    const matchIds = matchIdCache.get(messageId) || [];
+    const matchId = matchIds[idx] || '';
+    if (!replayId) {
+      try { await interaction.reply({ content: '❌ Replay unavailable.', ephemeral: true }); } catch (_) { }
+      return true;
+    }
     
-    if (matchId) {
-      // Take screenshot of the scoreboard
+    // Respond immediately with replay ID and link (no waiting for screenshot)
+    try {
+      const link = matchId ? `https://tracker.gg/marvel-rivals/matches/${matchId}` : null;
+      
+      const embed = new EmbedBuilder()
+        .setColor(0x5865F2)
+        .setTitle(`🎬 Match ${idx + 1} Details`)
+        .setDescription(
+          `**Replay ID:** \`${replayId}\`\n` +
+          (link ? `**Scoreboard:** [View on Tracker.gg](${link})` : '')
+        );
+      
+      // Add screenshot button if we have a match ID
+      // Use messageId and idx to look up matchId from cache (avoids issues with underscores in matchId)
+      const components = [];
+      if (matchId) {
+        const screenshotRow = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId(`scrimshot_${messageId}_${idx}`)
+            .setLabel('📸 Get Screenshot')
+            .setStyle(ButtonStyle.Primary)
+        );
+        components.push(screenshotRow);
+      }
+      
+      await interaction.reply({ embeds: [embed], components, ephemeral: false });
+    } catch (e) {
+      console.error('Replay button error:', e);
+      try {
+        await interaction.reply({ content: `🎬 Replay ID (Match ${idx + 1}): \`${replayId}\``, ephemeral: false });
+      } catch (_) { }
+    }
+    return true;
+  }
+  
+  // Handle screenshot button - takes the screenshot (slow operation)
+  if (customId.startsWith('scrimshot_')) {
+    const parts = customId.split('_');
+    const messageId = parts[1];
+    const idx = parseInt(parts[2], 10);
+    
+    // Look up match ID from cache (same pattern as replay buttons)
+    const matchIds = matchIdCache.get(messageId) || [];
+    const matchId = matchIds[idx] || '';
+    
+    if (!matchId) {
+      try { await interaction.reply({ content: '⏰ Session expired. Please run the command again.', ephemeral: true }); } catch (_) { }
+      return true;
+    }
+    
+    // Defer reply since screenshot takes ~10 seconds
+    try {
+      await interaction.deferReply({ ephemeral: false });
+    } catch (e) {
+      if (VERBOSE) console.log('⚠️ Could not defer reply:', e.message);
+      return true;
+    }
+    
+    try {
       if (VERBOSE) console.log(`📸 Taking scoreboard screenshot for match ${idx + 1}: ${matchId}`);
       
+      const screenshotBuffer = await screenshotMatchScoreboard(matchId);
+      const attachment = new AttachmentBuilder(screenshotBuffer, { name: `scoreboard_${idx + 1}.png` });
+      
+      const embed = new EmbedBuilder()
+        .setColor(0x5865F2)
+        .setTitle(`📊 Match ${idx + 1} Scoreboard`)
+        .setImage(`attachment://scoreboard_${idx + 1}.png`)
+        .setFooter({ text: 'Scoreboard captured from tracker.gg' });
+      
+      await interaction.editReply({ embeds: [embed], files: [attachment] });
+    } catch (screenshotErr) {
+      console.error('Screenshot error:', screenshotErr);
+      const link = `https://tracker.gg/marvel-rivals/matches/${matchId}`;
+      const embed = new EmbedBuilder()
+        .setColor(0xED4245)
+        .setDescription(`❌ Screenshot failed. [View scoreboard on Tracker.gg](${link})`);
       try {
-        const screenshotBuffer = await screenshotMatchScoreboard(matchId);
-        const attachment = new AttachmentBuilder(screenshotBuffer, { name: `scoreboard_${matchId}.png` });
-        
-        const embed = new EmbedBuilder()
-          .setColor(0x5865F2)
-          .setTitle(`📊 Match ${idx + 1} Scoreboard`)
-          .setDescription(`🎬 Replay ID: \`${replayId}\`\n🔗 [View on Tracker.gg](${link})`)
-          .setImage(`attachment://scoreboard_${matchId}.png`)
-          .setFooter({ text: 'Scoreboard captured from tracker.gg' });
-        
-        await interaction.editReply({ embeds: [embed], files: [attachment] });
-      } catch (screenshotErr) {
-        // Fallback to link if screenshot fails
-        if (VERBOSE) console.log(`⚠️ Screenshot failed, falling back to link: ${screenshotErr.message}`);
-        const embed = new EmbedBuilder()
-          .setColor(0x5865F2)
-          .setDescription(`🎬 Scrim Replay ID (Match ${idx + 1}): \`${replayId}\`\n\n[📊 View Scoreboard](${link})\n\n_Screenshot unavailable - click link to view_`);
         await interaction.editReply({ embeds: [embed] });
-      }
-    } else {
-      // No match ID, just show replay ID
-      await interaction.editReply({ content: `🎬 Scrim Replay ID (Match ${idx + 1}): \`${replayId}\`` });
+      } catch (_) { }
     }
-  } catch (e) {
-    console.error('Replay button error:', e);
-    try {
-      await interaction.editReply({ content: `🎬 Replay ID (Match ${idx + 1}): \`${replayId}\`\n_Could not capture scoreboard_` });
-    } catch (_) { }
+    return true;
   }
-  return true;
+  
+  return false;
 }
