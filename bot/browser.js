@@ -157,8 +157,6 @@ export async function screenshotMatchScoreboard(matchId) {
     console.log(`✅ Screenshot captured and cropped: ${croppedBuffer.length} bytes`);
     
     return croppedBuffer;
-    
-    return croppedBuffer;
   } catch (error) {
     console.error(`❌ Screenshot error for match ${matchId}:`, error.message);
     throw error;

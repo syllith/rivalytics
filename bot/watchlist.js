@@ -47,36 +47,49 @@ export function initWatchlist(client) {
     startScheduler();
 }
 
-export function addToWatchlist(username, intervalMinutes = null) {
+export function addToWatchlist(username, intervalMinutes = null, guildId = null) {
     username = username.trim();
     if (!username) return { added: false, reason: 'Empty username' };
-    if (watchlist.find(w => w.username.toLowerCase() === username.toLowerCase())) {
-        return { added: false, reason: 'User already on watchlist' };
+    // Check if this user is already on the watchlist for this specific guild
+    if (watchlist.find(w => w.username.toLowerCase() === username.toLowerCase() && w.guildId === guildId)) {
+        return { added: false, reason: 'User already on watchlist for this server' };
     }
     const entry = { 
         username, 
         addedAt: new Date().toISOString(), 
         lastRun: null,
-        intervalMinutes: intervalMinutes // custom interval per user (null = use global default)
+        intervalMinutes: intervalMinutes, // custom interval per user (null = use global default)
+        guildId: guildId // guild that added this user to watchlist
     };
     watchlist.push(entry);
     saveWatchlist();
-    if (VERBOSE) console.log(`➕ Added ${username} to watchlist (interval: ${intervalMinutes || WATCHLIST_INTERVAL_MINUTES}m)`);
+    if (VERBOSE) console.log(`➕ Added ${username} to watchlist for guild ${guildId} (interval: ${intervalMinutes || WATCHLIST_INTERVAL_MINUTES}m)`);
     return { added: true, entry };
 }
 
-export function removeFromWatchlist(username) {
+export function removeFromWatchlist(username, guildId = null) {
     const before = watchlist.length;
-    watchlist = watchlist.filter(w => w.username.toLowerCase() !== username.toLowerCase());
+    watchlist = watchlist.filter(w => {
+        const nameMatch = w.username.toLowerCase() === username.toLowerCase();
+        // If guildId provided, only remove from that guild; otherwise remove all matches
+        if (guildId) {
+            return !(nameMatch && w.guildId === guildId);
+        }
+        return !nameMatch;
+    });
     if (watchlist.length !== before) {
         saveWatchlist();
-        if (VERBOSE) console.log(`➖ Removed ${username} from watchlist`);
+        if (VERBOSE) console.log(`➖ Removed ${username} from watchlist${guildId ? ` for guild ${guildId}` : ''}`);
         return { removed: true };
     }
-    return { removed: false, reason: 'User not found' };
+    return { removed: false, reason: 'User not found on this server\'s watchlist' };
 }
 
-export function listWatchlist() {
+export function listWatchlist(guildId = null) {
+    // If guildId provided, only return entries for that guild
+    if (guildId) {
+        return watchlist.filter(w => w.guildId === guildId).map(w => ({ ...w }));
+    }
     return watchlist.map(w => ({ ...w }));
 }
 
@@ -93,21 +106,24 @@ function startScheduler() {
 async function runDueEntries() {
     if (!discordClient) return;
     if (!watchlist.length) return; // nothing to do
-    const channel = findWatchlistChannel();
-    if (!channel) {
-        if (VERBOSE) console.log('⚠️ Watchlist channel not found, skipping run');
-        return;
-    }
     const now = Date.now();
     for (const entry of watchlist) {
         // Use per-user interval if set, otherwise fall back to global default
         const entryIntervalMs = (entry.intervalMinutes || WATCHLIST_INTERVAL_MINUTES) * 60 * 1000;
         const last = entry.lastRun ? Date.parse(entry.lastRun) : 0;
         if (now - last < entryIntervalMs) continue; // not due yet
+        
+        // Find the watchlist channel for this entry's specific guild
+        const channel = findWatchlistChannel(entry.guildId);
+        if (!channel) {
+            if (VERBOSE) console.log(`⚠️ Watchlist channel not found for guild ${entry.guildId}, skipping ${entry.username}`);
+            continue;
+        }
+        
         try {
             await runReportsForUser(channel, entry.username);
             entry.lastRun = new Date().toISOString();
-            if (VERBOSE) console.log(`📤 Posted watchlist reports for ${entry.username}`);
+            if (VERBOSE) console.log(`📤 Posted watchlist reports for ${entry.username} to guild ${entry.guildId}`);
             // Persist after each success to keep lastRun up to date
             saveWatchlist();
         } catch (e) {
@@ -116,10 +132,18 @@ async function runDueEntries() {
     }
 }
 
-function findWatchlistChannel() {
+function findWatchlistChannel(guildId = null) {
     if (!discordClient) return null;
-    // Prefer by name; could be extended to accept ID env var later
     const guilds = discordClient.guilds?.cache;
+    
+    // If guildId is provided, only look in that specific guild
+    if (guildId) {
+        const guild = guilds.get(guildId);
+        if (!guild) return null;
+        return guild.channels.cache.find(ch => ch.name === WATCHLIST_CHANNEL_NAME && ch.isTextBased()) || null;
+    }
+    
+    // Fallback: search all guilds (for backwards compatibility with old entries)
     for (const guild of guilds.values()) {
         const channel = guild.channels.cache.find(ch => ch.name === WATCHLIST_CHANNEL_NAME && ch.isTextBased());
         if (channel) return channel;

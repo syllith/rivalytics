@@ -103,26 +103,23 @@ Future enhancements (ideas):
 The bot now supports an automated watchlist feature that periodically posts combined `!matches` and `!scrims` reports for tracked users into a designated channel.
 
 Commands:
-* `!watch <username>` – Add a user to the watchlist.
-* `!unwatch <username>` – Remove a user from the watchlist.
-* `!watchlist` – Display all currently watched users and their last run time.
-* `!watchrun` – Manually trigger a watchlist run (mainly for debugging / admins).
+* `!watch <username> [minutes]` – Add a user to the watchlist with optional custom interval (default: 30 minutes).
+* `!unwatch <username>` – Remove a user from this server's watchlist.
+* `!watchlist` – Display all currently watched users for this server, their intervals, and last run times.
 
 Configuration (environment variables in `.env`):
-* `WATCHLIST_INTERVAL_MINUTES` – Interval between automated report posts (default: `1` for testing; set higher like `120` for every 2 hours in production).
+* `WATCHLIST_INTERVAL_MINUTES` – Default interval between automated report posts (default: `30` minutes).
 * `WATCHLIST_CHANNEL_NAME` – Name of the text channel where updates will be posted (default: `watchlist`).
 
 Persistence:
-* State is stored in `bot/watchlist.json` so restarts preserve the list (each entry tracks `username`, `addedAt`, and `lastRun`).
+* State is stored in `bot/watchlist.json` so restarts preserve the list (each entry tracks `username`, `addedAt`, `lastRun`, `intervalMinutes`, and `guildId`).
 
 Behavior:
+* Each server maintains its own watchlist. Players are associated with the server where they were added.
+* Notifications are sent to each server's own `#watchlist` channel.
 * On each interval, the bot posts two messages per user: one from `!matches` (ranked + recent competitive) followed by one from `!scrims` (scrim/unknown mode matches).
 * Each user is run independently; failures for one user do not block others.
 * A small initial delay triggers an early run shortly after startup so you don't wait a full interval.
-
-Planned improvements (possible):
-* Combine both reports into a single embed set per user (optional mode).
-* Per-user custom intervals.
-* Channel ID targeting instead of name matching.
+* Per-user custom intervals are supported (e.g., `!watch player123 60` for hourly updates).
 
 ---

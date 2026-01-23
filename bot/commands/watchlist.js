@@ -32,7 +32,13 @@ export async function handleWatchCommand(message, args) {
     }
   }
   
-  const { added, reason, entry } = addToWatchlist(username, customMinutes);
+  // Get the guild ID from the message to associate this watchlist entry with this server
+  const guildId = message.guild?.id || null;
+  if (!guildId) {
+    return message.reply('❌ This command can only be used in a server, not in DMs.');
+  }
+  
+  const { added, reason, entry } = addToWatchlist(username, customMinutes, guildId);
   if (!added) return message.reply(`❌ Could not add **${username}**: ${reason}.`);
 
   // Derive a human-readable interval description
@@ -56,21 +62,26 @@ export async function handleWatchCommand(message, args) {
 export async function handleUnwatchCommand(message, args) {
   if (args.length < 2) return message.reply('❌ Please provide a username. Usage: `!unwatch <username>`');
   const username = args[1];
-  const { removed, reason } = removeFromWatchlist(username);
+  const guildId = message.guild?.id || null;
+  if (!guildId) {
+    return message.reply('❌ This command can only be used in a server, not in DMs.');
+  }
+  const { removed, reason } = removeFromWatchlist(username, guildId);
   if (!removed) return message.reply(`❌ Could not remove **${username}**: ${reason}.`);
   return message.reply(`✅ Removed **${username}** from the watchlist.`);
 }
 
 // * Handle !watchlist (list current entries)
 export async function handleWatchlistCommand(message) {
-  const list = listWatchlist();
-  if (!list.length) return message.reply('ℹ️ Watchlist is currently empty. Add a user with `!watch <username> [minutes]`.');
+  const guildId = message.guild?.id || null;
+  const list = listWatchlist(guildId);
+  if (!list.length) return message.reply('ℹ️ Watchlist is currently empty for this server. Add a user with `!watch <username> [minutes]`.');
   const lines = list.map(w => {
     const last = w.lastRun ? new Date(w.lastRun).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'never';
     const interval = w.intervalMinutes || WATCHLIST_INTERVAL_MINUTES;
     return `• **${w.username}** (${formatInterval(interval)}, last run: ${last})`;
   });
-  return message.reply('👁️ Current watchlist:\n' + lines.join('\n'));
+  return message.reply('👁️ Current watchlist for this server:\n' + lines.join('\n'));
 }
 
 // ! Removed manual !watchrun command per requirement (manual trigger deprecated)
