@@ -13,6 +13,7 @@ import {
     handleWatchCommand,
     handleUnwatchCommand,
     handleWatchlistCommand,
+    handleClearWatchlistCommand,
     commandMap
 } from './index.js';
 import { handleScrimsInteraction } from './commands/scrims.js';
@@ -40,7 +41,8 @@ const handlerLookup = {
     handleGenExampleCommand,
     handleWatchCommand,
     handleUnwatchCommand,
-    handleWatchlistCommand
+    handleWatchlistCommand,
+    handleClearWatchlistCommand
 };
 
 // Resolve a handler function by user-entered command trigger

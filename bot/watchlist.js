@@ -93,6 +93,21 @@ export function listWatchlist(guildId = null) {
     return watchlist.map(w => ({ ...w }));
 }
 
+export function clearWatchlist(guildId = null) {
+    if (!guildId) {
+        return { cleared: false, reason: 'Guild ID is required' };
+    }
+    const before = watchlist.length;
+    const removedCount = watchlist.filter(w => w.guildId === guildId).length;
+    if (removedCount === 0) {
+        return { cleared: false, reason: 'Watchlist is already empty for this server' };
+    }
+    watchlist = watchlist.filter(w => w.guildId !== guildId);
+    saveWatchlist();
+    if (VERBOSE) console.log(`🗑️ Cleared ${removedCount} entries from watchlist for guild ${guildId}`);
+    return { cleared: true, count: removedCount };
+}
+
 function startScheduler() {
     if (intervalHandle) clearInterval(intervalHandle);
     // Check every minute to support per-user intervals
@@ -108,6 +123,12 @@ async function runDueEntries() {
     if (!watchlist.length) return; // nothing to do
     const now = Date.now();
     for (const entry of watchlist) {
+        // Skip orphan entries that don't have a guildId (legacy entries from before multi-server support)
+        if (!entry.guildId) {
+            if (VERBOSE) console.log(`⚠️ Skipping orphan entry ${entry.username} (no guildId) - please re-add with !watch`);
+            continue;
+        }
+        
         // Use per-user interval if set, otherwise fall back to global default
         const entryIntervalMs = (entry.intervalMinutes || WATCHLIST_INTERVAL_MINUTES) * 60 * 1000;
         const last = entry.lastRun ? Date.parse(entry.lastRun) : 0;

@@ -10,7 +10,7 @@ export { handleTournCommand } from './commands/tourn.js';
 export { handleEncountersCommand } from './commands/encounters.js';
 export { handleHelpCommand } from './commands/help.js';
 export { handleGenExampleCommand } from './commands/genexample.js';
-export { handleWatchCommand, handleUnwatchCommand, handleWatchlistCommand } from './commands/watchlist.js';
+export { handleWatchCommand, handleUnwatchCommand, handleWatchlistCommand, handleClearWatchlistCommand } from './commands/watchlist.js';
 
 // * Command metadata (single source of truth for help + mapping)
 //   Each entry: { triggers: ['!cmd','!alias'], handler, title, usage, descriptionLines[] }
@@ -122,6 +122,15 @@ export const commandMeta = [
     usage: '!watchlist',
     descriptionLines: [
       'Shows currently watched users, their intervals, and last run times.'
+    ]
+  },
+  {
+    triggers: ['!clearwatchlist'],
+    handler: 'handleClearWatchlistCommand',
+    title: '🗑️ Clear Watchlist',
+    usage: '!clearwatchlist',
+    descriptionLines: [
+      'Removes all users from the watchlist for this server.'
     ]
   },
   // Removed !watchrun command per requirement (manual trigger no longer exposed)
