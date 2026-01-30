@@ -182,7 +182,7 @@ export async function handleMatchesCommand(message, args) {
                 kd: m.kd,
                 damage: m.damage,
                 duration: m.duration,
-                replay: m.replayShort ? m.replayShort.slice(-6) : '',
+                replay: m.replayShort || '',
                 matchId: m.matchId || '',
                 timestamp: m.timestamp || r.iso || null
             });

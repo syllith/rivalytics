@@ -27,7 +27,7 @@ export function renderScrimsCard({ username, season, rows, page = 0, totalRows =
     dmg: typeof r.damage === 'number' ? formatShortNumber(r.damage) : r.damage || '0',
     dur: r.duration || '?:??',
     heroes: r.heroes || '',
-    replay: r.replay ? r.replay.slice(-6) : '',
+    replay: r.replay || '',
     time: r.timestamp ? (() => { const d = new Date(r.timestamp); return d.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }) + ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); })() : ''
   }));
 

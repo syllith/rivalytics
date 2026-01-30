@@ -75,7 +75,7 @@ function formatShortNumber(num) {
   if (num == null || isNaN(num)) return '0';
   if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
   if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
-  return String(num);
+  return String(Math.round(num));
 }
 
 // HEROES CARD ----------------------------------------------------------------
@@ -431,7 +431,7 @@ export function renderScrimsCard({ username, season, rows }) {
     dmg: typeof r.damage === 'number' ? formatShortNumber(r.damage) : r.damage || '0',
     dur: r.duration || '?:??',
     heroes: r.heroes || '',
-    replay: r.replay ? r.replay.slice(-6) : '',
+    replay: r.replay || '',
     time: r.timestamp ? (() => { const d = new Date(r.timestamp); return d.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }) + ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); })() : ''
   }));
 

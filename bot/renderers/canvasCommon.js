@@ -76,7 +76,7 @@ export function formatShortNumber(num) {
   if (num == null || isNaN(num)) return '0';
   if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
   if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
-  return String(num);
+  return String(Math.round(num));
 }
 
 // Draw a win/loss outcome badge (circle + letter) independent of emoji fonts

@@ -145,7 +145,7 @@ export async function handleScrimsCommand(message, args) {
         damage,
         duration,
         heroes,
-        replay: replayId ? replayId.slice(-6) : '',
+        replay: replayId || '',
         matchId: matchId || '',
         timestamp: meta.timestamp || null
       });
